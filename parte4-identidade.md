@@ -141,5 +141,6 @@
 
 ## 4.6 Links e Artefatos
 
+- [x] Wireframes HTML gerados: `wireframes.html` — abra no navegador para visualizar as 3 telas
 - [ ] Link Figma/Canva com a prancha visual: _[cole aqui após criar]_
 - [ ] Exportar prancha como PNG para incluir no documento final

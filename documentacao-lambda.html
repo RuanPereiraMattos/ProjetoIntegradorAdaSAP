@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusVendas — Documentação do Projeto (Serverless)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:   #1E40AF;
+  --secondary: #3B82F6;
+  --alert:     #F59E0B;
+  --critical:  #EF4444;
+  --success:   #10B981;
+  --bg:        #F8FAFC;
+  --text:      #1E293B;
+  --border:    #E2E8F0;
+  --muted:     #64748B;
+  --white:     #FFFFFF;
+  --sidebar:   220px;
+  --lambda:    #FF9900; /* AWS orange */
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+
+/* ── Sidebar ── */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--primary);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+  padding:0 0 24px;
+}
+.sidebar-brand{
+  padding:20px 20px 16px;
+  border-bottom:1px solid rgba(255,255,255,.15);
+  margin-bottom:8px;
+}
+.sidebar-brand-logo{
+  width:34px;height:34px;background:var(--secondary);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:white;font-weight:700;font-size:16px;margin-bottom:8px;
+}
+.sidebar-brand-name{color:white;font-weight:700;font-size:15px;line-height:1.2;}
+.sidebar-brand-sub{color:#93C5FD;font-size:11px;margin-top:2px;}
+.sidebar-nav{display:flex;flex-direction:column;gap:2px;padding:0 12px;}
+.sidebar-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:8px;
+  color:#BFDBFE;font-size:13px;font-weight:500;
+  text-decoration:none;cursor:pointer;transition:background .15s;
+}
+.sidebar-item:hover{background:rgba(255,255,255,.1);color:white;}
+.sidebar-item.active{background:rgba(255,255,255,.18);color:white;font-weight:600;}
+.sidebar-num{
+  width:22px;height:22px;border-radius:50%;
+  background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;flex-shrink:0;
+}
+
+/* ── Main ── */
+.main{flex:1;min-width:0;padding:40px 48px;max-width:960px;}
+
+/* ── Cover ── */
+.cover{
+  background:linear-gradient(135deg,var(--primary) 0%,#1D4ED8 100%);
+  border-radius:16px;padding:48px 56px;margin-bottom:56px;color:white;
+  position:relative;overflow:hidden;
+}
+.cover::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:300px;height:300px;background:rgba(255,255,255,.06);
+  border-radius:50%;
+}
+.cover-label{font-size:12px;font-weight:600;color:#93C5FD;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;}
+.cover-title{font-size:38px;font-weight:700;line-height:1.15;margin-bottom:10px;}
+.cover-tag{font-size:18px;font-style:italic;color:#BFDBFE;margin-bottom:32px;}
+.cover-pills{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px;}
+.cover-pill{background:rgba(255,255,255,.15);padding:6px 14px;border-radius:20px;font-size:13px;font-weight:500;}
+.cover-pill.highlight{background:rgba(255,153,0,.35);border:1px solid rgba(255,153,0,.6);}
+.cover-insight{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  border-radius:12px;padding:16px 20px;
+  font-size:14px;color:#E0F2FE;line-height:1.6;
+}
+.cover-insight strong{color:white;}
+
+/* ── Section ── */
+.section{margin-bottom:56px;scroll-margin-top:32px;}
+.section-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:28px;
+  padding-bottom:16px;border-bottom:2px solid var(--border);
+}
+.section-num{
+  width:38px;height:38px;border-radius:10px;background:var(--primary);
+  display:flex;align-items:center;justify-content:center;
+  color:white;font-size:16px;font-weight:700;flex-shrink:0;
+}
+.section-title-block{}
+.section-title{font-size:22px;font-weight:700;}
+.section-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+
+/* ── Cards ── */
+.card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px 24px;}
+.card-title{font-size:14px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:14px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* ── Badges / pills ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600;}
+.badge-blue   {background:#DBEAFE;color:#1E40AF;}
+.badge-green  {background:#D1FAE5;color:#065F46;}
+.badge-amber  {background:#FEF3C7;color:#92400E;}
+.badge-red    {background:#FEE2E2;color:#991B1B;}
+.badge-gray   {background:#F1F5F9;color:#475569;}
+.badge-lambda {background:#FFF3E0;color:#E65100;border:1px solid #FFCC80;}
+.method-get   {background:#D1FAE5;color:#065F46;font-family:'JetBrains Mono',monospace;}
+.method-post  {background:#DBEAFE;color:#1E40AF;font-family:'JetBrains Mono',monospace;}
+.method-patch {background:#FEF3C7;color:#92400E;font-family:'JetBrains Mono',monospace;}
+
+/* ── Tables ── */
+.doc-table{width:100%;border-collapse:collapse;}
+.doc-table th{text-align:left;padding:10px 14px;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:#F8FAFC;border-bottom:1px solid var(--border);}
+.doc-table td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--border);}
+.doc-table tr:last-child td{border-bottom:none;}
+.doc-table tr:hover td{background:#FAFAFA;}
+code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;padding:2px 6px;border-radius:4px;color:var(--primary);}
+
+/* ── Code block ── */
+.code-block{
+  background:#0F172A;border-radius:10px;padding:18px 20px;
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  color:#E2E8F0;line-height:1.7;overflow-x:auto;
+}
+.code-block .kw{color:#7DD3FC;}
+.code-block .fn{color:#A5F3FC;}
+.code-block .str{color:#86EFAC;}
+.code-block .cm{color:#64748B;}
+.code-block .num{color:#FCA5A5;}
+.code-block .op{color:#F9A8D4;}
+
+/* ── Persona cards ── */
+.persona-card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px;}
+.persona-avatar{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px;}
+.persona-role{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+.persona-name{font-size:16px;font-weight:700;margin:2px 0 8px;}
+.persona-pain{font-size:13px;color:var(--text);line-height:1.5;background:#F8FAFC;border-radius:8px;padding:10px 12px;border-left:3px solid var(--secondary);}
+
+/* ── User story ── */
+.story{border:1px solid var(--border);border-radius:10px;padding:16px 18px;background:white;margin-bottom:10px;}
+.story-header{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.story-id{font-size:12px;font-weight:700;background:var(--primary);color:white;padding:2px 8px;border-radius:6px;}
+.story-title{font-size:14px;font-weight:600;}
+.story-body{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:10px;}
+.story-criteria{display:flex;flex-direction:column;gap:4px;}
+.criteria-item{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--success);}
+.criteria-item::before{content:'✓';font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* ── DB table card ── */
+.dbtable-card{background:white;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.dbtable-header{background:var(--primary);padding:10px 14px;color:white;display:flex;align-items:center;justify-content:space-between;}
+.dbtable-name{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;}
+.dbtable-count{font-size:11px;color:#BFDBFE;}
+.dbtable-body{padding:4px 0;}
+.dbtable-field{display:flex;align-items:center;gap:8px;padding:6px 14px;font-size:12px;border-bottom:1px solid var(--border);}
+.dbtable-field:last-child{border-bottom:none;}
+.field-pk{background:#FEF3C7;color:#92400E;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0;}
+.field-fk{background:#DBEAFE;color:#1E40AF;font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;flex-shrink:0;}
+.field-name{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--text);}
+.field-type{color:var(--muted);margin-left:auto;font-family:'JetBrains Mono',monospace;}
+
+/* ── ERD ── */
+.erd{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:16px 0;}
+.erd-rel{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:13px;}
+.erd-table{background:#DBEAFE;color:var(--primary);padding:3px 10px;border-radius:6px;font-weight:600;}
+.erd-line{color:var(--muted);}
+.erd-card{color:#065F46;background:#D1FAE5;padding:3px 10px;border-radius:6px;font-weight:600;}
+
+/* ── Color swatches ── */
+.swatch-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.swatch{border-radius:10px;overflow:hidden;border:1px solid var(--border);width:110px;}
+.swatch-color{height:56px;}
+.swatch-info{padding:8px 10px;background:white;}
+.swatch-name{font-size:11px;font-weight:600;color:var(--text);}
+.swatch-hex{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);}
+
+/* ── Typography scale ── */
+.typo-row{display:flex;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid var(--border);}
+.typo-row:last-child{border-bottom:none;}
+.typo-meta{width:140px;flex-shrink:0;font-size:12px;color:var(--muted);}
+.typo-sample{flex:1;}
+
+/* ── Architecture layers ── */
+.arch-layer{
+  border-radius:10px;padding:14px 18px;margin-bottom:8px;
+  display:flex;align-items:center;gap:16px;
+}
+.arch-layer-react   {background:#EFF6FF;border:1px solid #BFDBFE;}
+.arch-layer-gw      {background:#FFFBEB;border:2px solid #FCD34D;}
+.arch-layer-lambda  {background:#FFF7ED;border:2px solid #FDBA74;}
+.arch-layer-proxy   {background:#F0FDF4;border:1px solid #BBF7D0;}
+.arch-layer-db      {background:#FFF7ED;border:1px solid #FED7AA;}
+.arch-icon{font-size:22px;flex-shrink:0;}
+.arch-label{font-size:14px;font-weight:600;}
+.arch-desc{font-size:12px;color:var(--muted);margin-top:2px;}
+.arch-tech{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.arch-tech span{font-size:11px;background:rgba(0,0,0,.06);padding:2px 8px;border-radius:10px;font-weight:500;}
+.arch-arrow{text-align:center;color:var(--muted);font-size:18px;margin:2px 0;}
+
+/* ── Lambda function cards ── */
+.lambda-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0;}
+.lambda-fn{
+  background:white;border:1px solid #FDBA74;border-radius:10px;
+  padding:12px 14px;border-top:3px solid var(--lambda);
+}
+.lambda-fn-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#C2410C;margin-bottom:6px;}
+.lambda-fn-routes{font-size:11px;color:var(--muted);line-height:1.6;}
+
+/* ── Flow steps ── */
+.flow-steps{display:flex;flex-direction:column;gap:0;}
+.flow-step{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);}
+.flow-step:last-child{border-bottom:none;}
+.flow-num{
+  width:28px;height:28px;border-radius:50%;background:var(--primary);
+  color:white;font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
+}
+.flow-num.lambda-step{background:var(--lambda);}
+.flow-body{font-size:13px;line-height:1.5;}
+.flow-code{display:inline;font-family:'JetBrains Mono',monospace;font-size:11px;background:#F1F5F9;padding:1px 6px;border-radius:4px;color:var(--primary);}
+
+/* ── AWS services grid ── */
+.aws-card{background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+.aws-card.aws-new{border-color:#FDBA74;border-left:3px solid var(--lambda);}
+.aws-icon{font-size:24px;margin-bottom:8px;}
+.aws-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+.aws-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+.aws-new-badge{font-size:10px;font-weight:700;background:#FFF3E0;color:#C2410C;padding:1px 6px;border-radius:10px;margin-left:6px;}
+
+/* ── Roadmap ── */
+.roadmap-col{background:white;border:1px solid var(--border);border-radius:12px;padding:18px;}
+.roadmap-h{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px;}
+.roadmap-period{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;}
+.roadmap-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;margin-bottom:8px;line-height:1.4;}
+.roadmap-item::before{content:'→';color:var(--secondary);font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* ── Cost table ── */
+.cost-total{
+  background:var(--primary);color:white;
+  border-radius:10px;padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:12px;
+}
+.cost-total-label{font-size:13px;font-weight:600;}
+.cost-total-value{font-size:20px;font-weight:700;}
+.cost-row-new td{background:#FFF7ED;}
+.cost-row-removed td{text-decoration:line-through;opacity:.5;}
+
+/* ── SAP connection ── */
+.sap-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.sap-row:last-child{border-bottom:none;}
+.sap-left{color:var(--muted);width:200px;flex-shrink:0;}
+.sap-arrow{color:var(--secondary);font-size:16px;flex-shrink:0;}
+.sap-right{font-weight:500;}
+
+/* ── Insight banner ── */
+.insight-banner{
+  background:linear-gradient(90deg,#FEF3C7,#FFFBEB);
+  border:1px solid #FDE68A;border-left:4px solid var(--alert);
+  border-radius:10px;padding:14px 18px;margin-bottom:10px;
+}
+.insight-banner.critical{
+  background:linear-gradient(90deg,#FEE2E2,#FFF5F5);
+  border-color:#FECACA;border-left-color:var(--critical);
+}
+.insight-title{font-size:13px;font-weight:600;margin-bottom:3px;}
+.insight-flow{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* ── Anomaly ── */
+.anomaly{background:white;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;gap:14px;align-items:flex-start;}
+.anomaly-id{background:var(--alert);color:white;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0;margin-top:1px;}
+.anomaly-id.critical{background:var(--critical);}
+.anomaly-body{font-size:13px;}
+.anomaly-title{font-weight:600;margin-bottom:3px;}
+.anomaly-desc{color:var(--muted);font-size:12px;line-height:1.4;}
+
+/* ── Comparison table ── */
+.compare-win{color:var(--success);font-weight:600;}
+.compare-lose{color:var(--muted);}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-brand-logo">N</div>
+    <div class="sidebar-brand-name">NexusVendas</div>
+    <div class="sidebar-brand-sub">SAP Start Coding 2026 · Serverless</div>
+  </div>
+  <div class="sidebar-nav">
+    <a href="#cover"   class="sidebar-item active"><span class="sidebar-num">◈</span>Visão Geral</a>
+    <a href="#p1"      class="sidebar-item"><span class="sidebar-num">1</span>Produto</a>
+    <a href="#p2"      class="sidebar-item"><span class="sidebar-num">2</span>Banco de Dados</a>
+    <a href="#p3"      class="sidebar-item"><span class="sidebar-num">3</span>API REST</a>
+    <a href="#p4"      class="sidebar-item"><span class="sidebar-num">4</span>Identidade</a>
+    <a href="#p5"      class="sidebar-item"><span class="sidebar-num">5</span>Arquitetura</a>
+    <a href="#p6"      class="sidebar-item"><span class="sidebar-num">6</span>Evolução</a>
+  </div>
+</nav>
+
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<main class="main">
+
+<!-- ── COVER ── -->
+<div class="cover" id="cover">
+  <div class="cover-label">SAP Start Coding 2026 · Projeto Integrador · Arquitetura Serverless</div>
+  <div class="cover-title">NexusVendas</div>
+  <div class="cover-tag">"Venda mais. Perca menos. Decida melhor."</div>
+  <div class="cover-pills">
+    <span class="cover-pill">📦 Tema: Vendas & CX</span>
+    <span class="cover-pill">🏢 Empresa fictícia de médio porte</span>
+    <span class="cover-pill">⚙️ Inspirado no SAP Sales Cloud</span>
+    <span class="cover-pill">🗄️ PostgreSQL · Node.js · React</span>
+    <span class="cover-pill highlight">⚡ AWS Lambda + API Gateway · RDS · S3</span>
+  </div>
+  <div class="cover-insight">
+    <strong>Transação → Regra de Negócio → Insight → Ação</strong><br>
+    Plataforma serverless que resolve a perda de receita de médias empresas. Arquitetura baseada em <strong>4 funções Lambda</strong> independentes, orquestradas por <strong>API Gateway</strong> — sem servidor para gerenciar, escala automática para zero em idle.
+  </div>
+</div>
+
+<!-- ══════════════════════ PARTE 1 — VISÃO ══════════════════════ -->
+<section class="section" id="p1">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <div class="section-title-block">
+      <div class="section-title">Visão do Produto</div>
+      <div class="section-sub">Problema · Personas · User Stories · MVP · Insights</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;border-left:4px solid var(--critical);">
+    <div class="card-title">🎯 Problema</div>
+    <p style="font-size:14px;line-height:1.6;">Empresas de médio porte <strong>perdem receita</strong> por não identificar clientes em risco de churn a tempo e por não ter visibilidade consolidada do pipeline. Gestores tomam decisões com dados dispersos em planilhas, sem alertas automáticos — resultando em oportunidades perdidas, follow-ups esquecidos e cancelamentos evitáveis.</p>
+  </div>
+
+  <div class="card-title" style="margin-bottom:12px;">👤 Personas</div>
+  <div class="grid-3" style="margin-bottom:24px;">
+    <div class="persona-card">
+      <div class="persona-avatar" style="background:#EFF6FF;">📊</div>
+      <div class="persona-role">Persona 1</div>
+      <div class="persona-name">Gerente Comercial</div>
+      <div class="persona-pain">Não tem visão consolidada do funil de vendas e perde oportunidades por falta de dados em tempo real.</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-avatar" style="background:#F0FDF4;">💼</div>
+      <div class="persona-role">Persona 2</div>
+      <div class="persona-name">Vendedor</div>
+      <div class="persona-pain">Perde follow-ups por falta de alertas automáticos e não sabe quais clientes precisam de atenção.</div>
+    </div>
+    <div class="persona-card">
+      <div class="persona-avatar" style="background:#FFF7ED;">⭐</div>
+      <div class="persona-role">Persona 3</div>
+      <div class="persona-name">Analista de CX</div>
+      <div class="persona-pain">Dados de satisfação (NPS) separados das transações de venda — não consegue correlacionar queda de NPS com risco de churn.</div>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-bottom:12px;">📋 User Stories</div>
+  <div style="margin-bottom:24px;">
+    <div class="story">
+      <div class="story-header">
+        <span class="story-id">US-01</span>
+        <span class="story-title">Visão do pipeline em tempo real</span>
+      </div>
+      <div class="story-body"><strong>Como</strong> Gerente Comercial, <strong>quero</strong> visualizar o funil de vendas com taxas de conversão por etapa, <strong>para</strong> identificar gargalos antes de perder negócios no mês.</div>
+      <div class="story-criteria">
+        <div class="criteria-item">Dashboard exibe contagem e valor total por etapa (prospecção → proposta → negociação → fechado)</div>
+        <div class="criteria-item">Taxa de conversão entre etapas calculada automaticamente</div>
+        <div class="criteria-item">Etapas com conversão abaixo de 30% exibem alerta visual</div>
+      </div>
+    </div>
+    <div class="story">
+      <div class="story-header">
+        <span class="story-id">US-02</span>
+        <span class="story-title">Alerta de clientes em risco de churn</span>
+      </div>
+      <div class="story-body"><strong>Como</strong> Analista de CX, <strong>quero</strong> receber automaticamente clientes sem compra há ≥ 90 dias com o ticket médio histórico, <strong>para</strong> priorizar ações de reativação.</div>
+      <div class="story-criteria">
+        <div class="criteria-item">Lista atualiza diariamente com clientes inativos há ≥ 90 dias</div>
+        <div class="criteria-item">Cada item exibe: nome, dias sem compra, ticket médio e ação sugerida</div>
+        <div class="criteria-item">Ticket médio &gt; R$3.000 recebe ação diferenciada (desconto 10%)</div>
+      </div>
+    </div>
+    <div class="story">
+      <div class="story-header">
+        <span class="story-id">US-03</span>
+        <span class="story-title">Alerta de NPS crítico</span>
+      </div>
+      <div class="story-body"><strong>Como</strong> Analista de CX, <strong>quero</strong> ser notificado quando um cliente registrar 3+ avaliações consecutivas ≤ 6, <strong>para</strong> acionar Customer Success antes que o cliente se torne detrator.</div>
+      <div class="story-criteria">
+        <div class="criteria-item">Sistema avalia últimas 3 avaliações de cada cliente após cada nova resposta</div>
+        <div class="criteria-item">Cliente aparece no painel de alertas com status "NPS Crítico"</div>
+        <div class="criteria-item">Alerta inclui as notas recentes e botão de acionamento do CS</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card">
+      <div class="card-title">✅ Dentro do MVP</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;">
+        <div>✓ Dashboard com 4 KPIs (Receita, Pedidos, Risco, NPS)</div>
+        <div>✓ Gestão de clientes (CRUD)</div>
+        <div>✓ Gestão de pedidos (CRUD + status)</div>
+        <div>✓ Funil de oportunidades</div>
+        <div>✓ 3 insights automáticos (churn, NPS crítico, gargalo)</div>
+        <div>✓ Autenticação JWT com roles (admin, gerente, vendedor)</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔮 Backlog Futuro</div>
+      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--muted);">
+        <div>◯ Integração com e-mail (disparo automático de ofertas)</div>
+        <div>◯ Relatórios exportáveis em PDF</div>
+        <div>◯ Módulo de campanhas de marketing</div>
+        <div>◯ Predição de churn por ML (SageMaker)</div>
+        <div>◯ App mobile (React Native)</div>
+        <div>◯ Integração nativa com SAP S/4HANA</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-bottom:12px;">💡 Os 3 Insights Automáticos</div>
+  <div class="insight-banner critical">
+    <div class="insight-title">I-01 — Risco de Churn</div>
+    <div class="insight-flow"><strong>O que aconteceu:</strong> Beta Distribuidora sem compra há 118 dias · <strong>Por que importa:</strong> Ticket médio R$4.200/mês em risco · <strong>Ação:</strong> Enviar oferta de reativação com 10% de desconto</div>
+  </div>
+  <div class="insight-banner critical">
+    <div class="insight-title">I-02 — NPS Crítico</div>
+    <div class="insight-flow"><strong>O que aconteceu:</strong> Gama Serviços recebeu notas 5, 4 e 3 nas últimas 3 avaliações · <strong>Por que importa:</strong> Cliente detrator — risco de cancelamento · <strong>Ação:</strong> Acionar Customer Success imediatamente</div>
+  </div>
+  <div class="insight-banner">
+    <div class="insight-title">I-03 — Gargalo no Funil</div>
+    <div class="insight-flow"><strong>O que aconteceu:</strong> Conversão Proposta → Negociação em 22% (meta: 30%) · <strong>Por que importa:</strong> Meta de receita do mês em risco · <strong>Ação:</strong> Revisar script de abordagem na etapa Proposta</div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PARTE 2 — BANCO ══════════════════════ -->
+<section class="section" id="p2">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <div class="section-title-block">
+      <div class="section-title">Estrutura do Banco de Dados</div>
+      <div class="section-sub">7 tabelas · PostgreSQL · Dados fictícios · 3 anomalias intencionais</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔗 Diagrama Entidade-Relacionamento (simplificado)</div>
+    <div class="erd">
+      <div class="erd-rel"><span class="erd-table">clientes</span><span class="erd-line"> (1) ────────────── &lt; </span><span class="erd-card">pedidos</span><span style="color:var(--muted);font-size:12px;margin-left:8px;">(N)</span></div>
+      <div class="erd-rel"><span class="erd-table">pedidos</span><span class="erd-line">  (1) ────────────── &lt; </span><span class="erd-card">itens_pedido</span><span style="color:var(--muted);font-size:12px;margin-left:8px;">(N)</span></div>
+      <div class="erd-rel"><span class="erd-table">produtos</span><span class="erd-line"> (1) ────────────── &lt; </span><span class="erd-card">itens_pedido</span><span style="color:var(--muted);font-size:12px;margin-left:8px;">(N)</span></div>
+      <div class="erd-rel"><span class="erd-table">clientes</span><span class="erd-line"> (1) ────────────── &lt; </span><span class="erd-card">oportunidades</span><span style="color:var(--muted);font-size:12px;margin-left:8px;">(N)</span></div>
+      <div class="erd-rel"><span class="erd-table">clientes</span><span class="erd-line"> (1) ────────────── &lt; </span><span class="erd-card">avaliacoes_nps</span><span style="color:var(--muted);font-size:12px;margin-left:8px;">(N)</span></div>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-bottom:12px;">📋 Dicionário de Dados — 7 Tabelas</div>
+  <div class="grid-2" style="margin-bottom:20px;gap:12px;">
+    <div class="dbtable-card">
+      <div class="dbtable-header"><span class="dbtable-name">clientes</span><span class="dbtable-count">10 registros</span></div>
+      <div class="dbtable-body">
+        <div class="dbtable-field"><span class="field-pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">nome</span><span class="field-type">VARCHAR(100)</span></div>
+        <div class="dbtable-field"><span class="field-name">segmento</span><span class="field-type">VARCHAR(50)</span></div>
+        <div class="dbtable-field"><span class="field-name">cidade</span><span class="field-type">VARCHAR(80)</span></div>
+        <div class="dbtable-field"><span class="field-name">data_cadastro</span><span class="field-type">DATE</span></div>
+        <div class="dbtable-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+      </div>
+    </div>
+    <div class="dbtable-card">
+      <div class="dbtable-header"><span class="dbtable-name">pedidos</span><span class="dbtable-count">12 registros</span></div>
+      <div class="dbtable-body">
+        <div class="dbtable-field"><span class="field-pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-fk">FK</span><span class="field-name">cliente_id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">data_pedido</span><span class="field-type">DATE</span></div>
+        <div class="dbtable-field"><span class="field-name">data_entrega_prev</span><span class="field-type">DATE</span></div>
+        <div class="dbtable-field"><span class="field-name">valor_total</span><span class="field-type">DECIMAL(10,2)</span></div>
+        <div class="dbtable-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+      </div>
+    </div>
+    <div class="dbtable-card">
+      <div class="dbtable-header"><span class="dbtable-name">itens_pedido</span><span class="dbtable-count">N registros</span></div>
+      <div class="dbtable-body">
+        <div class="dbtable-field"><span class="field-pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-fk">FK</span><span class="field-name">pedido_id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-fk">FK</span><span class="field-name">produto_id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">quantidade</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">preco_unitario</span><span class="field-type">DECIMAL</span></div>
+      </div>
+    </div>
+    <div class="dbtable-card">
+      <div class="dbtable-header"><span class="dbtable-name">produtos</span><span class="dbtable-count">catálogo</span></div>
+      <div class="dbtable-body">
+        <div class="dbtable-field"><span class="field-pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">nome</span><span class="field-type">VARCHAR(100)</span></div>
+        <div class="dbtable-field"><span class="field-name">categoria</span><span class="field-type">VARCHAR(50)</span></div>
+        <div class="dbtable-field"><span class="field-name">preco_base</span><span class="field-type">DECIMAL(10,2)</span></div>
+        <div class="dbtable-field"><span class="field-name">ativo</span><span class="field-type">BOOLEAN</span></div>
+      </div>
+    </div>
+    <div class="dbtable-card">
+      <div class="dbtable-header"><span class="dbtable-name">oportunidades</span><span class="dbtable-count">funil CRM</span></div>
+      <div class="dbtable-body">
+        <div class="dbtable-field"><span class="field-pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-fk">FK</span><span class="field-name">cliente_id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">etapa</span><span class="field-type">ENUM</span></div>
+        <div class="dbtable-field"><span class="field-name">valor_estimado</span><span class="field-type">DECIMAL</span></div>
+        <div class="dbtable-field"><span class="field-name">responsavel</span><span class="field-type">VARCHAR</span></div>
+      </div>
+    </div>
+    <div class="dbtable-card">
+      <div class="dbtable-header"><span class="dbtable-name">avaliacoes_nps</span><span class="dbtable-count">8 registros</span></div>
+      <div class="dbtable-body">
+        <div class="dbtable-field"><span class="field-pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-fk">FK</span><span class="field-name">cliente_id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-fk">FK</span><span class="field-name">pedido_id</span><span class="field-type">INT?</span></div>
+        <div class="dbtable-field"><span class="field-name">nota</span><span class="field-type">INT (0–10)</span></div>
+        <div class="dbtable-field"><span class="field-name">data_avaliacao</span><span class="field-type">DATE</span></div>
+      </div>
+    </div>
+    <div class="dbtable-card" style="grid-column:1/-1;">
+      <div class="dbtable-header" style="background:#475569;"><span class="dbtable-name">audit_log</span><span class="dbtable-count">⚖️ obrigatória — registra todo INSERT/UPDATE/DELETE</span></div>
+      <div class="dbtable-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;">
+        <div class="dbtable-field"><span class="field-pk">PK</span><span class="field-name">id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">tabela</span><span class="field-type">VARCHAR(50)</span></div>
+        <div class="dbtable-field"><span class="field-name">operacao</span><span class="field-type">ENUM</span></div>
+        <div class="dbtable-field"><span class="field-name">registro_id</span><span class="field-type">INT</span></div>
+        <div class="dbtable-field"><span class="field-name">usuario</span><span class="field-type">VARCHAR</span></div>
+        <div class="dbtable-field"><span class="field-name">dados_anteriores</span><span class="field-type">JSON</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-bottom:12px;">⚠️ Anomalias Intencionais</div>
+  <div class="anomaly">
+    <span class="anomaly-id">A-01</span>
+    <div class="anomaly-body">
+      <div class="anomaly-title">Pedidos #2 e #3 — Atraso crítico na entrega</div>
+      <div class="anomaly-desc"><code>data_entrega_real</code> ultrapassa <code>data_entrega_prev</code> em 15+ dias → Pedido com atraso → NPS em risco</div>
+    </div>
+  </div>
+  <div class="anomaly">
+    <span class="anomaly-id">A-02</span>
+    <div class="anomaly-body">
+      <div class="anomaly-title">Clientes #2 (Beta) e #3 (Gama) — Inatividade prolongada</div>
+      <div class="anomaly-desc">Último pedido há 118 e 100 dias respectivamente → Dispara insight I-01 (churn risk)</div>
+    </div>
+  </div>
+  <div class="anomaly">
+    <span class="anomaly-id critical">A-03</span>
+    <div class="anomaly-body">
+      <div class="anomaly-title">NPS IDs 3, 4, 5 (cliente Gama) — 3 notas consecutivas ≤ 6</div>
+      <div class="anomaly-desc">Notas: 5 → 4 → 3 para o mesmo cliente → Dispara insight I-02 (NPS crítico → acionar CS)</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PARTE 3 — API ══════════════════════ -->
+<section class="section" id="p3">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <div class="section-title-block">
+      <div class="section-title">API REST</div>
+      <div class="section-sub">10 endpoints · JWT Bearer · Lambda Authorizer · 3 regras de insight</div>
+    </div>
+  </div>
+
+  <!-- Auth -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">🔐 Autenticação — JWT Bearer via Lambda Authorizer</div>
+    <div class="code-block">
+<span class="kw">POST</span> <span class="str">/auth/login</span>
+{ <span class="str">"email"</span>: <span class="str">"gerente@nexusvendas.com"</span>, <span class="str">"senha"</span>: <span class="str">"senha123"</span> }
+
+→ <span class="num">200</span> OK
+{ <span class="str">"token"</span>: <span class="str">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."</span>, <span class="str">"expiresIn"</span>: <span class="num">3600</span> }
+
+<span class="cm">// Demais rotas: API Gateway valida o token via Lambda Authorizer (fn-auth)
+// antes de rotear para fn-clientes, fn-pedidos ou fn-insights</span></div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+      <span class="badge badge-blue">admin — acesso total</span>
+      <span class="badge badge-green">gerente — leitura + insights</span>
+      <span class="badge badge-amber">vendedor — próprios pedidos</span>
+    </div>
+  </div>
+
+  <!-- Lambda handler example — NEW -->
+  <div class="card" style="margin-bottom:16px;border-left:4px solid var(--lambda);">
+    <div class="card-title">⚡ Handler Lambda — Exemplo: fn-insights (churn-risk)</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">Cada função Lambda recebe o evento do API Gateway, executa a lógica de negócio e retorna um objeto com <code>statusCode</code> e <code>body</code>. Não há servidor Express — o API Gateway monta o contexto HTTP.</p>
+    <div class="code-block">
+<span class="cm">// fn-insights/churn-risk.mjs — Node.js 20.x</span>
+<span class="kw">import</span> <span class="op">*</span> <span class="kw">as</span> repo <span class="kw">from</span> <span class="str">'./repository.mjs'</span>;
+
+<span class="kw">export const</span> <span class="fn">handler</span> = <span class="kw">async</span> (event) <span class="op">=&gt;</span> {
+  <span class="kw">const</span> dias = event.queryStringParameters<span class="op">?.</span>dias <span class="op">??</span> <span class="num">90</span>;
+  <span class="kw">const</span> clientes = <span class="kw">await</span> repo.<span class="fn">getClientesSemPedido</span>(dias);
+
+  <span class="kw">return</span> {
+    statusCode: <span class="num">200</span>,
+    headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    body: <span class="fn">JSON.stringify</span>({ total: clientes.length, clientes }),
+  };
+};</div>
+    <div class="lambda-grid" style="margin-top:16px;">
+      <div class="lambda-fn">
+        <div class="lambda-fn-name">fn-auth</div>
+        <div class="lambda-fn-routes">POST /auth/login<br>JWT Authorizer</div>
+      </div>
+      <div class="lambda-fn">
+        <div class="lambda-fn-name">fn-clientes</div>
+        <div class="lambda-fn-routes">GET /clientes<br>GET /clientes/:id<br>POST /clientes<br>PATCH /clientes/:id</div>
+      </div>
+      <div class="lambda-fn">
+        <div class="lambda-fn-name">fn-pedidos</div>
+        <div class="lambda-fn-routes">GET /pedidos<br>POST /pedidos<br>PATCH /pedidos/:id/status</div>
+      </div>
+      <div class="lambda-fn">
+        <div class="lambda-fn-name">fn-insights</div>
+        <div class="lambda-fn-routes">GET /insights/churn-risk<br>GET /insights/nps-alertas<br>GET /insights/pipeline</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Endpoints table -->
+  <div style="background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;margin-bottom:20px;">
+    <table class="doc-table">
+      <thead>
+        <tr><th>#</th><th>Método</th><th>Rota</th><th>Função Lambda</th><th>Descrição</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td><span class="badge method-post">POST</span></td><td><code>/auth/login</code></td><td><span class="badge badge-lambda">fn-auth</span></td><td>Autentica usuário e retorna JWT</td></tr>
+        <tr><td>1</td><td><span class="badge method-get">GET</span></td><td><code>/clientes</code></td><td><span class="badge badge-lambda">fn-clientes</span></td><td>Lista todos os clientes (filtros: status, segmento)</td></tr>
+        <tr><td>2</td><td><span class="badge method-get">GET</span></td><td><code>/clientes/:id</code></td><td><span class="badge badge-lambda">fn-clientes</span></td><td>Detalha cliente com histórico resumido</td></tr>
+        <tr><td>3</td><td><span class="badge method-post">POST</span></td><td><code>/clientes</code></td><td><span class="badge badge-lambda">fn-clientes</span></td><td>Cria novo cliente</td></tr>
+        <tr><td>4</td><td><span class="badge method-patch">PATCH</span></td><td><code>/clientes/:id</code></td><td><span class="badge badge-lambda">fn-clientes</span></td><td>Atualiza dados ou status do cliente</td></tr>
+        <tr><td>5</td><td><span class="badge method-get">GET</span></td><td><code>/pedidos</code></td><td><span class="badge badge-lambda">fn-pedidos</span></td><td>Lista pedidos (filtros: status, cliente_id, data)</td></tr>
+        <tr><td>6</td><td><span class="badge method-post">POST</span></td><td><code>/pedidos</code></td><td><span class="badge badge-lambda">fn-pedidos</span></td><td>Cria novo pedido com itens</td></tr>
+        <tr><td>7</td><td><span class="badge method-patch">PATCH</span></td><td><code>/pedidos/:id/status</code></td><td><span class="badge badge-lambda">fn-pedidos</span></td><td>Atualiza status do pedido</td></tr>
+        <tr><td>8</td><td><span class="badge method-get">GET</span></td><td><code>/insights/churn-risk</code></td><td><span class="badge badge-lambda">fn-insights</span></td><td>Clientes sem pedido há ≥ N dias (default: 90)</td></tr>
+        <tr><td>9</td><td><span class="badge method-get">GET</span></td><td><code>/insights/nps-alertas</code></td><td><span class="badge badge-lambda">fn-insights</span></td><td>Clientes com 3+ avaliações consecutivas ≤ 6</td></tr>
+        <tr><td>10</td><td><span class="badge method-get">GET</span></td><td><code>/insights/pipeline</code></td><td><span class="badge badge-lambda">fn-insights</span></td><td>Funil com taxa de conversão por etapa</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 3 Insight rules -->
+  <div class="card-title" style="margin-bottom:12px;">🧠 Regras de Insight (Pseudocódigo)</div>
+  <div class="grid-2" style="gap:14px;">
+    <div>
+      <div class="card-title" style="margin-bottom:8px;">I-01 — Risco de Churn</div>
+      <div class="code-block" style="font-size:11px;">
+<span class="fn">FUNÇÃO</span> calcularChurnRisk(diasLimite = <span class="num">90</span>):
+  <span class="kw">PARA CADA</span> cliente:
+    diasSemCompra = diasDesde(ultimoPedido)
+    <span class="kw">SE</span> diasSemCompra >= diasLimite:
+      <span class="kw">SE</span> ticketMedio > <span class="num">3000</span>:
+        acao = <span class="str">"Oferta 10% desconto"</span>
+      <span class="kw">SENÃO</span>:
+        acao = <span class="str">"Ligar para relacionamento"</span>
+  <span class="kw">RETORNAR</span> lista <span class="cm">ordenada por ticketMedio DESC</span></div>
+    </div>
+    <div>
+      <div class="card-title" style="margin-bottom:8px;">I-02 — NPS Crítico</div>
+      <div class="code-block" style="font-size:11px;">
+<span class="fn">FUNÇÃO</span> alertasNPS():
+  <span class="kw">PARA CADA</span> cliente:
+    avaliacoes = buscar(limite=<span class="num">3</span>, ordem=<span class="str">"DESC"</span>)
+    <span class="kw">SE</span> avaliacoes.length == <span class="num">3</span>:
+      <span class="kw">SE TODAS</span> nota <= <span class="num">6</span>:
+        ADICIONAR alerta:
+          acao = <span class="str">"Acionar CS imediatamente"</span>
+  <span class="kw">RETORNAR</span> resultado</div>
+    </div>
+    <div style="grid-column:1/-1;">
+      <div class="card-title" style="margin-bottom:8px;">I-03 — Gargalo no Funil</div>
+      <div class="code-block" style="font-size:11px;">
+<span class="fn">FUNÇÃO</span> analisarFunil():
+  etapas = [<span class="str">"prospeccao"</span>, <span class="str">"proposta"</span>, <span class="str">"negociacao"</span>, <span class="str">"fechado_ganho"</span>]
+  <span class="kw">PARA CADA</span> par de etapas consecutivas:
+    taxa = total_proxima / total_atual
+    <span class="kw">SE</span> taxa < <span class="num">0.30</span>:
+      ADICIONAR alerta { de, para, taxa, mensagem: <span class="str">"Gargalo detectado"</span> }
+  <span class="kw">RETORNAR</span> alertas  <span class="cm">← atualmente: Proposta→Negociação em 22%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PARTE 4 — IDENTIDADE ══════════════════════ -->
+<section class="section" id="p4">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <div class="section-title-block">
+      <div class="section-title">Identidade Visual</div>
+      <div class="section-sub">Nome · Paleta · Tipografia · Componentes</div>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-bottom:12px;">🎨 Paleta de Cores</div>
+  <div class="swatch-row">
+    <div class="swatch"><div class="swatch-color" style="background:#1E40AF;"></div><div class="swatch-info"><div class="swatch-name">Primária</div><div class="swatch-hex">#1E40AF</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#3B82F6;"></div><div class="swatch-info"><div class="swatch-name">Secundária</div><div class="swatch-hex">#3B82F6</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F59E0B;"></div><div class="swatch-info"><div class="swatch-name">Alerta</div><div class="swatch-hex">#F59E0B</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#EF4444;"></div><div class="swatch-info"><div class="swatch-name">Crítico</div><div class="swatch-hex">#EF4444</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#10B981;"></div><div class="swatch-info"><div class="swatch-name">Sucesso</div><div class="swatch-hex">#10B981</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#F8FAFC;border:1px solid #E2E8F0;"></div><div class="swatch-info"><div class="swatch-name">Fundo</div><div class="swatch-hex">#F8FAFC</div></div></div>
+    <div class="swatch"><div class="swatch-color" style="background:#1E293B;"></div><div class="swatch-info"><div class="swatch-name">Texto</div><div class="swatch-hex">#1E293B</div></div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">✍️ Tipografia — Inter (Google Fonts)</div>
+    <div class="typo-row">
+      <div class="typo-meta">H1 · 32px · Bold 700</div>
+      <div class="typo-sample" style="font-size:32px;font-weight:700;">NexusVendas</div>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta">H2 · 24px · SemiBold 600</div>
+      <div class="typo-sample" style="font-size:24px;font-weight:600;">Painel Comercial</div>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta">Corpo · 16px · Regular 400</div>
+      <div class="typo-sample" style="font-size:16px;">Cliente sem compra há 118 dias — ticket médio em risco.</div>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta">Labels · 14px · Medium 500</div>
+      <div class="typo-sample" style="font-size:14px;font-weight:500;">RECEITA / MÊS · CLIENTES EM RISCO</div>
+    </div>
+    <div class="typo-row">
+      <div class="typo-meta">Caption · 12px · Regular 400</div>
+      <div class="typo-sample" style="font-size:12px;color:var(--muted);">Atualizado agora · Novembro 2026</div>
+    </div>
+  </div>
+
+  <div class="card-title" style="margin-bottom:12px;">🧩 Componentes-chave</div>
+  <div class="card" style="margin-bottom:16px;">
+    <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;">
+      <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px;width:140px;">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">RECEITA</div>
+        <div style="font-size:22px;font-weight:700;">R$68.200</div>
+        <div style="font-size:12px;color:var(--success);font-weight:600;">▲ +12%</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">STATUS BADGES</div>
+        <span class="badge badge-blue">● Ativo</span>
+        <span class="badge badge-amber">⚠ Em Risco</span>
+        <span class="badge badge-gray">○ Inativo</span>
+        <span class="badge badge-red">🔴 Crítico</span>
+        <span class="badge badge-green">✓ Entregue</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">BOTÕES</div>
+        <button style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Acionar</button>
+        <button style="background:white;color:var(--primary);border:1.5px solid var(--primary);padding:7px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Exportar</button>
+        <button style="background:var(--alert);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Enviar Oferta</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PARTE 5 — ARQUITETURA (SERVERLESS) ══════════════════════ -->
+<section class="section" id="p5">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <div class="section-title-block">
+      <div class="section-title">Arquitetura da Solução — Serverless</div>
+      <div class="section-sub">Lambda + API Gateway · RDS Proxy · AWS · Fluxo de requisição · Conexão SAP CX</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:20px;align-items:start;">
+    <!-- Layer diagram -->
+    <div>
+      <div class="card-title" style="margin-bottom:12px;">🏗️ Camadas — Serverless (sem servidor persistente)</div>
+
+      <div class="arch-layer arch-layer-react">
+        <div class="arch-icon">⚛️</div>
+        <div><div class="arch-label">View — React + Vite (SPA)</div><div class="arch-desc">Dashboard · Pedidos · Clientes · Insights</div><div class="arch-tech"><span>React</span><span>Vite</span><span>Recharts</span><span>JWT</span></div></div>
+      </div>
+
+      <div class="arch-arrow">↕ HTTPS — todas as chamadas passam pelo API Gateway</div>
+
+      <div class="arch-layer arch-layer-gw">
+        <div class="arch-icon">🚦</div>
+        <div>
+          <div class="arch-label">API Gateway (HTTP API)</div>
+          <div class="arch-desc">Roteamento · Rate limiting · Lambda Authorizer (JWT)</div>
+          <div class="arch-tech"><span>API Gateway</span><span>Lambda Authorizer</span><span>CORS</span></div>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↕ Invoca função por rota</div>
+
+      <div class="arch-layer arch-layer-lambda">
+        <div class="arch-icon">⚡</div>
+        <div>
+          <div class="arch-label">4 Funções Lambda — Node.js 20.x</div>
+          <div class="arch-desc">Cada função é independente · sem servidor para gerenciar</div>
+          <div class="arch-tech"><span>fn-auth</span><span>fn-clientes</span><span>fn-pedidos</span><span>fn-insights</span></div>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↕ SQL via RDS Proxy (pool de conexões gerenciado)</div>
+
+      <div class="arch-layer arch-layer-proxy">
+        <div class="arch-icon">🔀</div>
+        <div>
+          <div class="arch-label">RDS Proxy</div>
+          <div class="arch-desc">Gerencia o pool de conexões — essencial pois Lambda abre/fecha conexão a cada invocação</div>
+          <div class="arch-tech"><span>RDS Proxy</span><span>Connection pooling</span></div>
+        </div>
+      </div>
+
+      <div class="arch-arrow">↕ SQL</div>
+
+      <div class="arch-layer arch-layer-db">
+        <div class="arch-icon">🐘</div>
+        <div><div class="arch-label">RDS PostgreSQL</div><div class="arch-desc">7 tabelas · Backups automáticos · Encryption at rest</div><div class="arch-tech"><span>PostgreSQL</span><span>db.t3.micro</span></div></div>
+      </div>
+    </div>
+
+    <!-- AWS Services -->
+    <div>
+      <div class="card-title" style="margin-bottom:12px;">☁️ Serviços AWS</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="aws-card aws-new">
+          <div class="aws-icon">🚦</div>
+          <div class="aws-name">API Gateway <span class="aws-new-badge">NOVO</span></div>
+          <div class="aws-desc">Entry point HTTP · roteamento por rota → função Lambda · Lambda Authorizer</div>
+        </div>
+        <div class="aws-card aws-new">
+          <div class="aws-icon">⚡</div>
+          <div class="aws-name">Lambda × 4 <span class="aws-new-badge">NOVO</span></div>
+          <div class="aws-desc">fn-auth, fn-clientes, fn-pedidos, fn-insights — Node.js 20.x · deploy independente</div>
+        </div>
+        <div class="aws-card aws-new">
+          <div class="aws-icon">🔀</div>
+          <div class="aws-name">RDS Proxy <span class="aws-new-badge">NOVO</span></div>
+          <div class="aws-desc">Connection pooling obrigatório para Lambda — evita esgotar conexões do PostgreSQL</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🗄️</div>
+          <div class="aws-name">RDS PostgreSQL</div>
+          <div class="aws-desc">Banco gerenciado com backups automáticos (mantido)</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🌐</div>
+          <div class="aws-name">S3 + CloudFront</div>
+          <div class="aws-desc">Hosting do React com CDN global (mantido)</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🔑</div>
+          <div class="aws-name">Secrets Manager</div>
+          <div class="aws-desc">JWT secret e credenciais do banco injetadas nas Lambdas via env</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">📊</div>
+          <div class="aws-name">CloudWatch Logs</div>
+          <div class="aws-desc">Log group automático por função Lambda · duração · cold start</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🔔</div>
+          <div class="aws-name">CloudWatch Alarms</div>
+          <div class="aws-desc">Erros Lambda &gt;1% · duração &gt;2s · throttling &gt;0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request flow -->
+  <div class="card" style="margin-bottom:20px;">
+    <div class="card-title">🔄 Fluxo de Requisição — GET /insights/churn-risk (Serverless)</div>
+    <div class="flow-steps">
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-body">Gerente abre o <strong>Dashboard</strong> no React</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-body">React dispara <span class="flow-code">GET /insights/churn-risk?dias=90</span> com header <span class="flow-code">Authorization: Bearer &lt;JWT&gt;</span> para o <strong>API Gateway</strong></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num lambda-step">3</div>
+        <div class="flow-body"><strong>API Gateway</strong> aciona o <strong>Lambda Authorizer</strong> (<span class="flow-code">fn-auth</span>) para validar o JWT antes de qualquer processamento</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num lambda-step">4</div>
+        <div class="flow-body"><span class="flow-code">fn-auth</span> valida a assinatura do token e retorna uma <strong>IAM Policy</strong> permitindo ou negando a chamada</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num lambda-step">5</div>
+        <div class="flow-body">API Gateway roteia para <span class="flow-code">fn-insights</span> com o contexto do usuário (role, id) já injetado no evento</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num lambda-step">6</div>
+        <div class="flow-body"><span class="flow-code">fn-insights</span> conecta ao RDS via <strong>RDS Proxy</strong> (reutiliza conexão do pool) e executa a query de churn risk</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num lambda-step">7</div>
+        <div class="flow-body">Função retorna <span class="flow-code">&#123; statusCode: 200, body: JSON.stringify(resultado) &#125;</span> — API Gateway converte para resposta HTTP</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">8</div>
+        <div class="flow-body">React renderiza os <strong>cards de alerta</strong> no Dashboard com botão "Acionar"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAP CX connection -->
+  <div class="card">
+    <div class="card-title">🔗 Conexão com SAP Sales Cloud</div>
+    <div class="sap-row"><div class="sap-left">Pipeline de oportunidades</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>oportunidades</code> + <code>fn-insights</code> via <code>/insights/pipeline</code></div></div>
+    <div class="sap-row"><div class="sap-left">Deal scoring (risco de perda)</div><div class="sap-arrow">→</div><div class="sap-right">Regra I-03: conversão de funil abaixo de 30% — calculada em <code>fn-insights</code></div></div>
+    <div class="sap-row"><div class="sap-left">Customer churn prediction</div><div class="sap-arrow">→</div><div class="sap-right">Regra I-01: dias sem compra + ticket médio — <code>fn-insights</code></div></div>
+    <div class="sap-row"><div class="sap-left">NPS e Voice of Customer</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>avaliacoes_nps</code> + Regra I-02 em <code>fn-insights</code></div></div>
+    <div class="sap-row"><div class="sap-left">Audit trail</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>audit_log</code> — cada Lambda grava antes de retornar</div></div>
+  </div>
+</section>
+
+<!-- ══════════════════════ PARTE 6 — EVOLUÇÃO ══════════════════════ -->
+<section class="section" id="p6">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <div class="section-title-block">
+      <div class="section-title">Evolução e Escalabilidade</div>
+      <div class="section-sub">Roadmap 3 horizontes · Segurança · LGPD · Custos AWS · Riscos · Lambda vs Beanstalk</div>
+    </div>
+  </div>
+
+  <!-- Roadmap -->
+  <div class="card-title" style="margin-bottom:12px;">🗺️ Roadmap — 3 Horizontes</div>
+  <div class="grid-3" style="margin-bottom:24px;">
+    <div class="roadmap-col" style="border-top:4px solid var(--success);">
+      <div class="roadmap-h" style="color:var(--success);">Curto Prazo</div>
+      <div class="roadmap-period">0–6 meses · MVP em produção</div>
+      <div class="roadmap-item">Deploy na AWS (Lambda + API Gateway)</div>
+      <div class="roadmap-item">Autenticação JWT + Lambda Authorizer</div>
+      <div class="roadmap-item">3 insights automáticos ativos</div>
+      <div class="roadmap-item">Monitoramento com CloudWatch</div>
+      <div class="roadmap-item">Onboarding dos primeiros clientes</div>
+    </div>
+    <div class="roadmap-col" style="border-top:4px solid var(--secondary);">
+      <div class="roadmap-h" style="color:var(--secondary);">Médio Prazo</div>
+      <div class="roadmap-period">6–18 meses · Performance & alcance</div>
+      <div class="roadmap-item">Cache Redis (ElastiCache) — TTL 5 min nos insights</div>
+      <div class="roadmap-item">EventBridge Scheduler para jobs diários de churn</div>
+      <div class="roadmap-item">Relatórios exportáveis em PDF</div>
+      <div class="roadmap-item">Integração e-mail (AWS SES via Lambda)</div>
+      <div class="roadmap-item">App mobile React Native</div>
+    </div>
+    <div class="roadmap-col" style="border-top:4px solid var(--primary);">
+      <div class="roadmap-h" style="color:var(--primary);">Longo Prazo</div>
+      <div class="roadmap-period">18–36 meses · Inteligência & escala</div>
+      <div class="roadmap-item">ML para predição de churn (SageMaker)</div>
+      <div class="roadmap-item">Step Functions para fluxos complexos</div>
+      <div class="roadmap-item">Multitenancy (múltiplas empresas)</div>
+      <div class="roadmap-item">BI avançado com QuickSight</div>
+      <div class="roadmap-item">Integração SAP S/4HANA</div>
+    </div>
+  </div>
+
+  <!-- Security + LGPD -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">🔒 Segurança e LGPD</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="font-size:13px;display:flex;flex-direction:column;gap:8px;">
+        <div>🔐 <strong>JWT</strong> — expiração 1h · validado pelo Lambda Authorizer em cada requisição</div>
+        <div>👥 <strong>RBAC</strong> — admin / gerente / vendedor · role injetada no contexto Lambda</div>
+        <div>🔒 <strong>HTTPS</strong> — TLS 1.2+ obrigatório no API Gateway</div>
+        <div>💾 <strong>RDS encryption at rest</strong> habilitado</div>
+      </div>
+      <div style="font-size:13px;display:flex;flex-direction:column;gap:8px;">
+        <div>⚖️ <strong>LGPD</strong> — clientes são PJ fictícios (sem dados pessoais)</div>
+        <div>📋 <strong>audit_log</strong> — cada Lambda grava INSERT/UPDATE/DELETE antes de retornar</div>
+        <div>🔑 <strong>Secrets Manager</strong> — credenciais injetadas via variáveis de ambiente criptografadas</div>
+        <div>✅ <strong>Validação</strong> — cada Lambda valida o payload antes de acessar o RDS Proxy</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AWS Costs -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">💰 Estimativa de Custos AWS — MVP Serverless</div>
+    <div style="background:white;border-radius:10px;overflow:hidden;border:1px solid var(--border);">
+      <table class="doc-table">
+        <thead><tr><th>Serviço</th><th>Configuração</th><th>Custo / mês</th></tr></thead>
+        <tbody>
+          <tr class="cost-row-new"><td>⚡ Lambda × 4 <span class="badge badge-lambda" style="margin-left:4px;">NOVO</span></td><td>Node.js 20.x · 128 MB · primeiro 1M req gratuito</td><td><strong style="color:var(--success);">~$0–3</strong></td></tr>
+          <tr class="cost-row-new"><td>🚦 API Gateway (HTTP API) <span class="badge badge-lambda" style="margin-left:4px;">NOVO</span></td><td>$1/milhão de requisições + transferência</td><td><strong>~$3–5</strong></td></tr>
+          <tr class="cost-row-new"><td>🔀 RDS Proxy <span class="badge badge-lambda" style="margin-left:4px;">NOVO</span></td><td>db.t3.micro — por hora de instância</td><td><strong>~$10–15</strong></td></tr>
+          <tr><td>🗄️ RDS PostgreSQL</td><td>db.t3.micro, 20 GB, Multi-AZ off</td><td><strong>~$15–25</strong></td></tr>
+          <tr><td>🌐 S3 + CloudFront</td><td>&lt;1 GB storage, &lt;10 GB transferência</td><td><strong>~$2–6</strong></td></tr>
+          <tr><td>📊 CloudWatch</td><td>Logs básicos + 3 alarmes</td><td><strong>~$3–8</strong></td></tr>
+          <tr><td>🔑 Secrets Manager</td><td>2 secrets</td><td><strong>~$1</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="cost-total">
+      <div>
+        <div class="cost-total-label">Total MVP Serverless / mês</div>
+        <div style="font-size:11px;color:#BFDBFE;margin-top:2px;">Médio prazo (+ ElastiCache + SES): ~$80–150 · Longo prazo (+ SageMaker): ~$300–600</div>
+        <div style="font-size:11px;color:#93C5FD;margin-top:2px;">⚡ Lambda escala para zero em idle — não paga em horário sem uso</div>
+      </div>
+      <div class="cost-total-value">~$34–63</div>
+    </div>
+  </div>
+
+  <!-- Lambda vs Elastic Beanstalk comparison -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">⚡ Lambda vs Elastic Beanstalk — Comparativo</div>
+    <table class="doc-table" style="margin-top:4px;">
+      <thead><tr><th>Critério</th><th>⚡ Lambda (esta versão)</th><th>🖥️ Elastic Beanstalk</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Custo em idle</td>
+          <td class="compare-win">$0 — escala para zero automaticamente</td>
+          <td class="compare-lose">~$5–10/mês (EC2 rodando mesmo sem requisições)</td>
+        </tr>
+        <tr>
+          <td>Gerenciamento de servidor</td>
+          <td class="compare-win">Nenhum — AWS gerencia tudo</td>
+          <td class="compare-lose">Patching do SO, monitoramento de instância</td>
+        </tr>
+        <tr>
+          <td>Escala horizontal</td>
+          <td class="compare-win">Automática e ilimitada (cada invocação é isolada)</td>
+          <td class="compare-lose">Auto-scaling com warmup (minutos para subir instância)</td>
+        </tr>
+        <tr>
+          <td>Deploy independente</td>
+          <td class="compare-win">fn-insights pode ser atualizada sem afetar fn-clientes</td>
+          <td class="compare-lose">Deploy substitui a aplicação inteira no EC2</td>
+        </tr>
+        <tr>
+          <td>Cold start</td>
+          <td class="compare-lose">50–200ms em Node.js (primeira invocação após idle)</td>
+          <td class="compare-win">Sem cold start — servidor sempre quente</td>
+        </tr>
+        <tr>
+          <td>Limite de execução</td>
+          <td class="compare-lose">Máximo 15 minutos por invocação</td>
+          <td class="compare-win">Sem limite de duração</td>
+        </tr>
+        <tr>
+          <td>Connection pooling com RDS</td>
+          <td class="compare-lose">Exige RDS Proxy (custo adicional ~$10–15/mês)</td>
+          <td class="compare-win">Pool gerenciado pela própria aplicação Express</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Risks -->
+  <div class="card">
+    <div class="card-title">⚠️ Riscos e Mitigações</div>
+    <table class="doc-table" style="margin-top:4px;">
+      <thead><tr><th>Risco</th><th>Probabilidade</th><th>Impacto</th><th>Mitigação</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Cold start do Lambda</strong> (latência na 1ª invocação após idle)</td>
+          <td><span class="badge badge-green">Baixa</span></td>
+          <td><span class="badge badge-green">Baixo</span></td>
+          <td>Provisioned Concurrency nas funções críticas ou warm-up ping via EventBridge a cada 5 min</td>
+        </tr>
+        <tr>
+          <td>Baixa adoção pelos vendedores</td>
+          <td><span class="badge badge-amber">Média</span></td>
+          <td><span class="badge badge-red">Alto</span></td>
+          <td>UX simples, valor visível no primeiro acesso</td>
+        </tr>
+        <tr>
+          <td>Qualidade dos dados (garbage in, garbage out)</td>
+          <td><span class="badge badge-red">Alta</span></td>
+          <td><span class="badge badge-red">Alto</span></td>
+          <td>Validações em cada Lambda, campos obrigatórios, audit_log</td>
+        </tr>
+        <tr>
+          <td>Crescimento inesperado de volume</td>
+          <td><span class="badge badge-green">Baixa</span></td>
+          <td><span class="badge badge-amber">Médio</span></td>
+          <td>Lambda escala automaticamente — ajustar limite de concorrência e RDS Proxy max connections</td>
+        </tr>
+        <tr>
+          <td>Custo AWS acima do planejado</td>
+          <td><span class="badge badge-green">Baixa</span></td>
+          <td><span class="badge badge-amber">Médio</span></td>
+          <td>AWS Budgets com alerta a 80% · Lambda pay-per-request minimiza custo em baixo volume</td>
+        </tr>
+        <tr>
+          <td>Vazamento de dados de clientes</td>
+          <td><span class="badge badge-green">Baixa</span></td>
+          <td><span class="badge badge-red">Muito Alto</span></td>
+          <td>HTTPS + Lambda Authorizer + RBAC + criptografia em repouso + Secrets Manager</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</main>
+</body>
+</html>
