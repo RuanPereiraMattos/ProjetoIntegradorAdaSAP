@@ -502,7 +502,7 @@ Prancha visual completa: _[link Figma/Canva]_
 ┌─────────────────────────────────────────────────────────┐
 │ 🔷 NexusVendas                           Ana Lima ▼     │
 ├─────────────┬─────────────┬─────────────┬───────────────┤
-│ R$ 68.200   │ 12 ativos   │ ⚠ 2 clientes│ NPS: 6,9      │
+│ R$ 68.200   │ 12 ativos   │ ⚠ 3 clientes│ Nota: 6,9     │
 │ Receita/mês │ Pedidos     │ Em Risco    │ ▼ -0,3        │
 ├─────────────┴─────────────┴─────────────┴───────────────┤
 │  Receita dos últimos 6 meses  [gráfico de linha]        │
