@@ -6,24 +6,26 @@
 
 ## 3.1 Autenticação
 
-**Padrão:** JWT (Bearer Token)
+**Modelo:** Token ERP validado via Express middleware (sem login próprio no módulo)
+
+O NexusVendas é um módulo implantado no ERP corporativo. O usuário já está autenticado no ERP — o frontend repassa o token JWT emitido pelo IdP corporativo (ex: Azure AD, Okta) em cada requisição. Não existe endpoint `/auth/login` no módulo.
 
 ```http
-POST /auth/login
-Content-Type: application/json
-
-{ "email": "gerente@nexusvendas.com", "senha": "senha123" }
-
-→ 200 OK
-{ "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...", "expiresIn": 3600 }
+GET /insights/churn-risk
+Authorization: Bearer <token-emitido-pelo-erp>
 ```
 
-Todas as demais rotas exigem o header:
+O `authMiddleware` do Express é aplicado em todas as rotas protegidas. A função valida:
+1. Assinatura do JWT (chave pública do IdP corporativo)
+2. Expiração do token (`exp`)
+3. Extração do `role` das claims para injetar em `req.user`
+
 ```
-Authorization: Bearer <token>
+Token inválido ou ausente → 401 Unauthorized
+Token válido → req.user = { userId, role } disponível no controller
 ```
 
-**Roles disponíveis:** `admin` | `gerente` | `vendedor`
+**Roles lidas das claims do token:** `admin` | `gerente` | `vendedor`
 
 ---
 
@@ -55,9 +57,9 @@ Authorization: Bearer <token>
 
 ### Autenticação
 
-| # | Método | Rota | Descrição |
-|---|---|---|---|
-| 0 | POST | `/auth/login` | Autentica usuário e retorna JWT |
+| Mecanismo | Descrição |
+|---|---|
+| Express authMiddleware | Valida o token JWT do ERP em todas as rotas protegidas; injeta `req.user = { userId, role }` no controller |
 
 ### Clientes
 
@@ -82,7 +84,7 @@ Authorization: Bearer <token>
 |---|---|---|---|
 | 8 | GET | `/insights/churn-risk` | Clientes sem pedido há ≥ N dias (default: 90) |
 | 9 | GET | `/insights/nps-alertas` | Clientes com 3+ avaliações consecutivas ≤ 6 |
-| 10 | GET | `/insights/pipeline` | Análise do funil com taxa de conversão por etapa |
+| 10 | GET | `/insights/pipeline` | Análise do funil com proporção de estoque por etapa |
 
 ---
 
@@ -140,7 +142,7 @@ Authorization: Bearer eyJhbGc...
 **Resposta 200:**
 ```json
 {
-  "total": 2,
+  "total": 3,
   "clientes": [
     {
       "id": 2,
@@ -156,6 +158,14 @@ Authorization: Bearer eyJhbGc...
       "ultimo_pedido": "2024-07-28",
       "dias_sem_compra": 100,
       "ticket_medio": 1850.00,
+      "acao_sugerida": "Agendar ligação de relacionamento"
+    },
+    {
+      "id": 7,
+      "nome": "Eta Educação S.A.",
+      "ultimo_pedido": null,
+      "dias_sem_compra": 583,
+      "ticket_medio": null,
       "acao_sugerida": "Agendar ligação de relacionamento"
     }
   ]
@@ -196,14 +206,24 @@ Authorization: Bearer eyJhbGc...
 ### Regra I-01: Risco de Churn
 
 ```
+-- data_referencia declarada explicitamente para reproduzir os exemplos
+data_referencia = '2024-11-05'
+
 FUNÇÃO calcularChurnRisk(diasLimite = 90):
   resultado = []
   PARA CADA cliente EM clientes:
-    ultimoPedido = buscarUltimoPedido(cliente.id)
-    diasSemCompra = diasDesde(ultimoPedido.data_pedido)
+    ultimoPedido = buscarUltimoPedido(cliente.id)  -- busca apenas status ≠ cancelado
 
-    SE ultimoPedido É NULO OU diasSemCompra >= diasLimite:
-      ticketMedio = MÉDIA(pedidos.valor_total ONDE cliente_id = cliente.id)
+    -- fallback para data_cadastro evita falso positivo no onboarding
+    -- (quando pedidos ainda não foram sincronizados do ERP)
+    ref = ultimoPedido.data_pedido SE ultimoPedido NÃO É NULO
+          SENÃO cliente.data_cadastro
+
+    diasSemCompra = diasDesde(ref, data_referencia)
+
+    SE diasSemCompra >= diasLimite:
+      ticketMedio = MÉDIA(pedidos.valor_total ONDE cliente_id = cliente.id
+                          E status ≠ 'cancelado')
 
       SE ticketMedio > 3000:
         acao = "Enviar oferta de reativação com 10% de desconto"
@@ -212,11 +232,12 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
 
       ADICIONAR { cliente, diasSemCompra, ticketMedio, acao } ao resultado
 
-  RETORNAR resultado ORDENADO POR ticketMedio DESC
+  RETORNAR resultado ORDENADO POR ticketMedio DESC NULLS LAST
+  -- dados com defasagem máx. 24h (batch sync diário do ERP)
 ```
 
 **O que aconteceu:** Cliente sem compra há N dias
-**Por que importa:** Ticket médio representa receita recorrente em risco
+**Por que importa:** Ticket médio por pedido representa receita em risco
 **Ação sugerida:** Baseada no valor histórico do cliente
 
 ---
@@ -245,33 +266,36 @@ FUNÇÃO alertasNPS():
 
 ### Regra I-03: Gargalo no Funil de Vendas
 
+> **Nota técnica:** a tabela `oportunidades` armazena apenas a etapa *atual* de cada oportunidade — não há histórico de transições. O cálculo abaixo mede a **proporção relativa de estoque entre etapas consecutivas**, não uma taxa de conversão histórica. A proporção é usada como proxy de gargalo: quando a razão entre estoques cai abaixo de 30%, a etapa é sinalizada para revisão.
+
 ```
 FUNÇÃO analisarFunil():
   etapas = ["prospeccao", "proposta", "negociacao", "fechado_ganho"]
   alertas = []
 
   PARA i DE 0 ATÉ etapas.length - 2:
-    etapa_atual  = etapas[i]
+    etapa_atual   = etapas[i]
     proxima_etapa = etapas[i + 1]
 
     total_atual   = CONTAR(oportunidades ONDE etapa = etapa_atual)
     total_proxima = CONTAR(oportunidades ONDE etapa = proxima_etapa)
 
     SE total_atual > 0:
-      taxa = total_proxima / total_atual
+      proporcao = total_proxima / total_atual
 
-      SE taxa < 0.30:
+      SE proporcao < 0.30:
         ADICIONAR {
           de: etapa_atual,
           para: proxima_etapa,
-          taxa_conversao: taxa,
-          alerta: "Gargalo: conversão de " + etapa_atual + " está em " + (taxa * 100) + "%"
+          proporcao_estoque: proporcao,
+          alerta: "Possível gargalo: proporção " + etapa_atual
+                  + " → " + proxima_etapa + " está em " + (proporcao * 100) + "%"
         }
 
   RETORNAR alertas
 ```
 
-**O que aconteceu:** Taxa de conversão entre etapas abaixo de 30%
+**O que aconteceu:** proporção de estoque entre etapas consecutivas abaixo de 30%
 **Por que importa:** Meta de receita do mês em risco
 **Ação sugerida:** Revisar abordagem na etapa com menor conversão
 
@@ -291,7 +315,7 @@ Os casos abaixo verificam cada regra de negócio — caminho feliz, bordas e ent
 | TC-02 | Cliente inativo há mais de 90 dias com ticket baixo | Gama Serviços (id=3), `diasLimite=90` | Retornado; `acao = "Agendar ligação de relacionamento"` (ticket R$1.850 ≤ R$3.000) |
 | TC-03 | Cliente com pedido recente | Delta Indústria (id=4), `diasLimite=90` | **Não retornado** — último pedido há menos de 90 dias |
 | TC-04 | Limite customizado mais restrito | Qualquer cliente, `diasLimite=30` | Lista maior que com `diasLimite=90` — clientes inativos há 30+ dias incluídos |
-| TC-05 | Cliente sem nenhum pedido | Novo cliente cadastrado sem pedidos | Retornado — `ultimoPedido É NULO` cobre esse caso na regra |
+| TC-05 | Cliente sem nenhum pedido | Eta Educação (id=7) cadastrado em 2023-04-02, sem pedidos | Retornado — `ref = data_cadastro` (fallback); `dias_sem_compra=583`; `ticket_medio=null`; `acao="Agendar ligação"` (ticket null ≤ 3000) |
 | TC-06 | Ordenação por ticket médio DESC | Beta (R$4.200) e Gama (R$1.850) ambos em risco | Beta aparece antes de Gama na lista retornada |
 
 ---
@@ -312,10 +336,10 @@ Os casos abaixo verificam cada regra de negócio — caminho feliz, bordas e ent
 
 | ID | Cenário | Entrada | Resultado esperado |
 |---|---|---|---|
-| TC-12 | Gargalo real na transição Proposta→Negociação | `proposta=9`, `negociacao=2` | Alerta gerado: `de="proposta"`, `para="negociacao"`, `taxa_conversao=0.22`, texto indica 22% |
-| TC-13 | Transição saudável (sem gargalo) | `negociacao=2`, `fechado_ganho=1` → taxa 50% | **Sem alerta** — 50% > 30% |
+| TC-12 | Gargalo real na transição Proposta→Negociação | `proposta=9`, `negociacao=2` | Alerta gerado: `de="proposta"`, `para="negociacao"`, `proporcao_estoque≈0.22` (tolerância ±0.01 — 2/9 = 0,2222…), texto indica 22% |
+| TC-13 | Transição saudável (sem gargalo) | `negociacao=2`, `fechado_ganho=1` → proporção 50% | **Sem alerta** — 50% > 30% |
 | TC-14 | Etapa com 0 registros não gera divisão por zero | Etapa `prospeccao` zerada | Transição ignorada silenciosamente — `SE total_atual > 0` protege o cálculo |
-| TC-15 | Alerta contém todos os campos obrigatórios | Qualquer gargalo detectado | Resposta inclui: `de`, `para`, `taxa_conversao` (número entre 0 e 1) e `alerta` (string descritiva) |
+| TC-15 | Alerta contém todos os campos obrigatórios | Qualquer gargalo detectado | Resposta inclui: `de`, `para`, `proporcao_estoque` (número ≥ 0; pode ultrapassar 1 quando há mais oportunidades na etapa seguinte que na atual) e `alerta` (string descritiva) |
 
 ---
 
@@ -325,4 +349,4 @@ Os casos abaixo verificam cada regra de negócio — caminho feliz, bordas e ent
 |---|---|
 | Lógica de programação | Condicionais e laços das regras I-01, I-02 e I-03 testados em TC-01 a TC-15 |
 | Testes | Este plano — casos de caminho feliz, bordas e entradas inválidas para cada regra |
-| Node.js + Express | Endpoints `GET /insights/*` que executam as funções testadas acima |
+| Node.js + Express | Endpoints `GET /insights/*` que executam as funções testadas acima; authMiddleware valida JWT do ERP |

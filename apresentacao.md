@@ -235,7 +235,7 @@ _Por que empresas de médio porte perdem receita desnecessariamente_
 | Pipeline de oportunidades | Tabela `oportunidades` + `/insights/pipeline` |
 | Churn prediction | Regra I-01: dias sem compra + ticket médio |
 | NPS / Voice of Customer | Tabela `avaliacoes_nps` + Regra I-02 |
-| Deal scoring | Regra I-03: conversão de funil |
+| Deal scoring | Regra I-03: proporção de estoque no funil |
 
 ---
 
@@ -260,7 +260,7 @@ _Quem usa o NexusVendas e o que cada um precisa_
 ## User Stories
 
 **US-01 — Gerente Comercial**
-> Como Gerente Comercial, quero visualizar o funil de vendas com taxa de conversão por etapa, para identificar gargalos antes de perder negócios no mês.
+> Como Gerente Comercial, quero visualizar o funil de vendas com proporção de estoque por etapa, para identificar gargalos antes de perder negócios no mês.
 
 **Critérios de aceite:** Dashboard exibe contagem e valor por etapa · Taxa calculada automaticamente · Etapas < 30% exibem alerta
 
@@ -302,9 +302,9 @@ _O ciclo: transação → regra → insight → ação_
 
 | # | O que aconteceu | Por que importa | Ação sugerida |
 |---|---|---|---|
-| **I-01** | Beta Distribuidora sem compra há 118 dias | Ticket médio era R$4.200/mês — receita em risco | Enviar oferta de reativação com 10% de desconto |
+| **I-01** | Beta Distribuidora sem compra há 118 dias | Ticket médio R$4.200 por pedido — receita em risco | Enviar oferta de reativação com 10% de desconto |
 | **I-02** | Gama Serviços: notas NPS 5, 4 e 3 consecutivas | Cliente detrator pode cancelar e prejudicar reputação | Acionar Customer Success imediatamente |
-| **I-03** | Conversão Proposta→Negociação em 22% (meta: 30%) | Meta de receita do mês em risco | Revisar script de abordagem na etapa de proposta |
+| **I-03** | Proporção Proposta→Negociação em 22% (meta: 30%) | Meta de receita do mês em risco | Revisar script de abordagem na etapa de proposta |
 
 ---
 
@@ -358,13 +358,14 @@ Diagrama ER completo: _[link dbdiagram.io]_
 | 9 | Iota Financeira S.A. | Financeiro | ativo |
 | ... | ... | ... | ... |
 
-**3 Anomalias intencionais:**
+**4 Anomalias intencionais:**
 
 | # | Anomalia | Insight disparado |
 |---|---|---|
 | A-01 | Pedidos 2 e 3: entrega 15+ dias após o previsto | Pedido com atraso crítico |
 | A-02 | Clientes 2 e 3: sem pedido há 118 e 100 dias | Risco de churn |
-| A-03 | Clientes 3: notas NPS 5, 4, 3 consecutivas | Cliente detrator |
+| A-03 | Cliente 3: notas NPS 5, 4, 3 consecutivas | Cliente detrator |
+| A-04 | 9 oportunidades em proposta, apenas 2 em negociação | Gargalo no funil (22%) |
 
 ---
 
@@ -372,7 +373,7 @@ Diagrama ER completo: _[link dbdiagram.io]_
 
 # 5. API REST
 
-_10 endpoints, autenticação JWT e 3 regras de insight_
+_10 endpoints, token ERP via Express middleware e 3 regras de insight_
 
 ---
 
@@ -380,7 +381,7 @@ _10 endpoints, autenticação JWT e 3 regras de insight_
 
 | # | Método | Rota | Descrição |
 |---|---|---|---|
-| 0 | POST | `/auth/login` | Autenticação — retorna JWT |
+| — | — | — | Sem login próprio — token JWT emitido pelo ERP, validado pelo authMiddleware |
 | 1 | GET | `/clientes` | Lista clientes (filtros: status, segmento) |
 | 2 | GET | `/clientes/:id` | Detalha cliente com histórico |
 | 3 | POST | `/clientes` | Cria novo cliente |
@@ -390,7 +391,7 @@ _10 endpoints, autenticação JWT e 3 regras de insight_
 | 7 | PATCH | `/pedidos/:id/status` | Atualiza status do pedido |
 | 8 | GET | `/insights/churn-risk` | Clientes sem pedido há ≥ N dias |
 | 9 | GET | `/insights/nps-alertas` | Clientes com 3+ avaliações ≤ 6 |
-| 10 | GET | `/insights/pipeline` | Funil com taxa de conversão |
+| 10 | GET | `/insights/pipeline` | Funil com proporção de estoque por etapa |
 
 ---
 
@@ -424,13 +425,16 @@ Authorization: Bearer eyJhbGc...
 **Resposta 200:**
 ```json
 {
-  "total": 2,
+  "total": 3,
   "clientes": [
     { "id": 2, "nome": "Beta Distribuidora S.A.",
       "dias_sem_compra": 118, "ticket_medio": 4200.00,
       "acao_sugerida": "Enviar oferta de reativação com 10% de desconto" },
     { "id": 3, "nome": "Gama Serviços Ltda",
       "dias_sem_compra": 100, "ticket_medio": 1850.00,
+      "acao_sugerida": "Agendar ligação de relacionamento" },
+    { "id": 7, "nome": "Eta Educação S.A.",
+      "dias_sem_compra": 583, "ticket_medio": null,
       "acao_sugerida": "Agendar ligação de relacionamento" }
   ]
 }
@@ -458,8 +462,8 @@ PARA CADA cliente:
 **I-03: Gargalo no Funil**
 ```
 PARA CADA par de etapas consecutivas:
-  taxa = clientes_proxima / clientes_atual
-  SE taxa < 0.30 → ALERTAR gargalo nessa transição
+  proporcao = estoque_proxima / estoque_atual
+  SE proporcao < 0.30 → ALERTAR gargalo nessa transição
 ```
 
 ---
@@ -498,7 +502,7 @@ Prancha visual completa: _[link Figma/Canva]_
 ┌─────────────────────────────────────────────────────────┐
 │ 🔷 NexusVendas                           Ana Lima ▼     │
 ├─────────────┬─────────────┬─────────────┬───────────────┤
-│ R$ 68.200   │ 12 ativos   │ ⚠ 2 clientes│ NPS: 7,4      │
+│ R$ 68.200   │ 12 ativos   │ ⚠ 2 clientes│ NPS: 6,9      │
 │ Receita/mês │ Pedidos     │ Em Risco    │ ▼ -0,3        │
 ├─────────────┴─────────────┴─────────────┴───────────────┤
 │  Receita dos últimos 6 meses  [gráfico de linha]        │
@@ -621,7 +625,7 @@ _Roadmap em 3 horizontes, gargalos, segurança e custos_
 - HTTPS obrigatório (TLS 1.2+) · RDS encryption at rest
 - Secrets via AWS Secrets Manager
 
-**LGPD:** Dados fictícios de PJ — nenhum dado pessoal de pessoa física. `audit_log` registra todo INSERT/UPDATE/DELETE.
+**LGPD:** Amostra fictícia de PJ — nenhum titular real. Em produção: o módulo processa dados pessoais (`responsavel`, `usuario`, comentários NPS, claims JWT) — exige base legal, minimização, política de retenção e mascaramento para logs/exports.
 
 **Observabilidade:**
 - CloudWatch Logs: erros 4xx/5xx, latência por endpoint

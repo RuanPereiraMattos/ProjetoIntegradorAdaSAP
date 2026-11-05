@@ -21,7 +21,7 @@ O NexusVendas resolve um problema real de médias empresas: perda de receita por
 | Parte | Arquivo | O que contém |
 |---|---|---|
 | 1 — Visão do Produto | `parte1-visao.md` | Problema, personas, user stories, MVP e backlog |
-| 2 — Banco de Dados | `parte2-banco.md` | 7 tabelas, dicionário de dados, 10+ registros fictícios, 3 anomalias |
+| 2 — Banco de Dados | `parte2-banco.md` | 7 tabelas, dicionário de dados, 10+ registros fictícios, 4 anomalias, batch sync |
 | 3 — API REST | `parte3-api.md` | 10 endpoints, exemplos JSON, 3 regras de insight em pseudocódigo |
 | 4 — Identidade Visual | `parte4-identidade.md` | Nome, paleta, tipografia, wireframes das 3 telas principais |
 | 5 — Arquitetura | `parte5-arquitetura.md` | Diagrama de camadas, serviços AWS, fluxo de requisição |
@@ -43,7 +43,7 @@ Cada insight segue o padrão: **o que aconteceu → por que importa → ação s
 
 ## Apresentação
 
-O arquivo `apresentacao.md` contém 24 slides em formato **Marp**, prontos para exportar como PDF ou PPTX.
+O arquivo `apresentacao.md` contém **~33 slides** em formato **Marp**, prontos para exportar como PDF ou PPTX. Para uma apresentação de 10 minutos, recomenda-se condensar para ~24 slides antes da entrega.
 
 **Exportar via CLI:**
 ```bash

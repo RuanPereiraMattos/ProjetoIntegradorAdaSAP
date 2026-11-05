@@ -334,7 +334,7 @@
       <div class="page-header">
         <div>
           <div class="page-title">Painel Comercial</div>
-          <div class="page-sub">Atualizado agora · Novembro 2026</div>
+          <div class="page-sub">Atualizado agora · Novembro 2024</div>
         </div>
         <button class="btn btn-outline btn-sm">↓ Exportar</button>
       </div>
@@ -357,8 +357,8 @@
           <div class="kpi-change warn">⚠ Atenção necessária</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">NPS médio</div>
-          <div class="kpi-value">7,4</div>
+          <div class="kpi-label">Média das notas (0–10)</div>
+          <div class="kpi-value">6,9</div>
           <div class="kpi-change down">▼ -0,3 vs. trimestre</div>
         </div>
       </div>
@@ -414,6 +414,7 @@
           <div class="insight-body">
             <div class="insight-title">Beta Distribuidora — 118 dias sem compra</div>
             <div class="insight-desc">Ticket médio: R$ 4.200 → Enviar oferta de reativação com 10% de desconto</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px">data_referencia = 2024-11-05 (amostra fictícia)</div>
           </div>
           <button class="btn btn-primary btn-sm">Acionar</button>
         </div>
@@ -599,7 +600,7 @@
         <div class="kpi-card">
           <div class="kpi-label">Último pedido</div>
           <div class="kpi-value" style="font-size:20px">10/07/2024</div>
-          <div class="kpi-change warn">⚠ 118 dias atrás</div>
+          <div class="kpi-change warn">⚠ 118 dias atrás<br><span style="font-size:10px;color:var(--muted)">(data_referencia 2024-11-05)</span></div>
         </div>
       </div>
 
@@ -676,7 +677,7 @@
       <div class="recommend-card">
         <div class="recommend-title">💡 Insight Recomendado</div>
         <div class="recommend-text">
-          Cliente sem compra há <strong>118 dias</strong>. Ticket médio de <strong>R$ 4.200/mês</strong> representa receita recorrente em risco.<br>
+          Cliente sem compra há <strong>118 dias</strong>. Ticket médio de <strong>R$ 4.200 por pedido</strong> representa receita em risco.<br>
           NPS em queda consistente: 8 → 7 → 6 → 5 → 4. Risco de churn elevado.<br>
           <strong>→ Enviar oferta de reativação com 10% de desconto no próximo pedido.</strong>
         </div>
@@ -749,7 +750,7 @@
           <div class="kpi-change up">▲ 3 negócios ganhos</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Taxa de conversão geral</div>
+          <div class="kpi-label">Proporção geral por etapa</div>
           <div class="kpi-value" style="color:var(--alert)">12,5%</div>
           <div class="kpi-change warn">⚠ Abaixo da meta (20%)</div>
         </div>
@@ -759,7 +760,7 @@
       <div class="chart-card" style="margin-bottom:20px;">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
           <div class="chart-title" style="margin:0;">Funil de Oportunidades</div>
-          <span style="font-size:12px;color:var(--muted);">Meta de conversão por etapa: ≥ 30%</span>
+          <span style="font-size:12px;color:var(--muted);">Meta de proporção por etapa: ≥ 30%</span>
         </div>
 
         <!-- Stage rows -->
@@ -782,7 +783,7 @@
             <div style="width:110px;flex-shrink:0;"></div>
             <div style="display:flex;align-items:center;gap:8px;padding-left:8px;">
               <span style="color:var(--muted);font-size:18px;">↓</span>
-              <span style="background:#D1FAE5;color:#065F46;font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;">75% conversão</span>
+              <span style="background:#D1FAE5;color:#065F46;font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;">75% proporção</span>
             </div>
           </div>
 
@@ -803,7 +804,7 @@
             <div style="width:110px;flex-shrink:0;"></div>
             <div style="display:flex;align-items:center;gap:8px;padding-left:8px;">
               <span style="color:var(--critical);font-size:18px;">↓</span>
-              <span style="background:#FEE2E2;color:#991B1B;font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;">⚠ 22% conversão — GARGALO (meta: 30%)</span>
+              <span style="background:#FEE2E2;color:#991B1B;font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;">⚠ 22% proporção — GARGALO (meta: 30%)</span>
             </div>
           </div>
 
@@ -823,7 +824,7 @@
             <div style="width:110px;flex-shrink:0;"></div>
             <div style="display:flex;align-items:center;gap:8px;padding-left:8px;">
               <span style="color:var(--muted);font-size:18px;">↓</span>
-              <span style="background:#D1FAE5;color:#065F46;font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;">75% conversão</span>
+              <span style="background:#D1FAE5;color:#065F46;font-size:12px;font-weight:600;padding:2px 10px;border-radius:20px;">75% proporção</span>
             </div>
           </div>
 
@@ -843,7 +844,7 @@
         <div style="margin-top:18px;background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid var(--critical);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:16px;">
           <div>
             <div style="font-size:13px;font-weight:600;color:#991B1B;margin-bottom:2px;">💡 I-03 — Gargalo detectado: Proposta → Negociação</div>
-            <div style="font-size:12px;color:var(--muted);">Conversão em 22% (meta: 30%). Meta de receita do mês em risco se não corrigido esta semana.</div>
+            <div style="font-size:12px;color:var(--muted);">Proporção de estoque em 22% (meta: 30%). Meta de receita do mês em risco se não corrigido esta semana.</div>
           </div>
           <button class="btn btn-sm" style="background:#EF4444;color:white;white-space:nowrap;">Revisar Abordagem</button>
         </div>

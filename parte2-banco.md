@@ -40,10 +40,11 @@ pedidos  (1) ──────────────────< avaliacoes_
 | Campo | Tipo | Obrigatório | Descrição | Regra |
 |---|---|---|---|---|
 | id | INT (PK) | Sim | Identificador único | Auto-increment |
+| erp_id | VARCHAR(50) | Não | ID do cliente no ERP | UNIQUE — chave de deduplicação no batch sync |
 | nome | VARCHAR(100) | Sim | Razão social da empresa | — |
 | segmento | VARCHAR(50) | Não | Ex: Varejo, Tecnologia, Indústria | — |
 | cidade | VARCHAR(80) | Não | Cidade sede | — |
-| data_cadastro | DATE | Sim | Data de criação do registro | Default: NOW() |
+| data_cadastro | DATE | Sim | Data de criação do registro | Default: CURRENT_DATE |
 | status | ENUM | Sim | `ativo` / `inativo` / `em_risco` | Default: ativo |
 
 ### Tabela: `pedidos`
@@ -51,8 +52,9 @@ pedidos  (1) ──────────────────< avaliacoes_
 | Campo | Tipo | Obrigatório | Descrição | Regra |
 |---|---|---|---|---|
 | id | INT (PK) | Sim | Identificador único | Auto-increment |
+| erp_id | VARCHAR(50) | Não | ID do pedido no ERP | UNIQUE — idempotência no UPSERT do sync |
 | cliente_id | INT (FK) | Sim | Empresa compradora | FK → clientes.id |
-| data_pedido | DATE | Sim | Data de criação | Default: NOW() |
+| data_pedido | DATE | Sim | Data de criação | Default: CURRENT_DATE |
 | data_entrega_prev | DATE | Não | Previsão de entrega acordada | — |
 | data_entrega_real | DATE | Não | Data de entrega efetiva | — |
 | valor_total | DECIMAL(10,2) | Sim | Valor total do pedido | > 0 |
@@ -63,6 +65,7 @@ pedidos  (1) ──────────────────< avaliacoes_
 | Campo | Tipo | Obrigatório | Descrição | Regra |
 |---|---|---|---|---|
 | id | INT (PK) | Sim | Identificador único | Auto-increment |
+| erp_id | VARCHAR(50) | Não | ID do item no ERP | UNIQUE — idempotência |
 | pedido_id | INT (FK) | Sim | Pedido ao qual pertence | FK → pedidos.id |
 | produto_id | INT (FK) | Sim | Produto comprado | FK → produtos.id |
 | quantidade | INT | Sim | Quantidade comprada | > 0 |
@@ -73,6 +76,7 @@ pedidos  (1) ──────────────────< avaliacoes_
 | Campo | Tipo | Obrigatório | Descrição | Regra |
 |---|---|---|---|---|
 | id | INT (PK) | Sim | Identificador único | Auto-increment |
+| erp_id | VARCHAR(50) | Não | ID do produto no ERP | UNIQUE — sincronizado do catálogo ERP |
 | nome | VARCHAR(100) | Sim | Nome do produto ou serviço | — |
 | categoria | VARCHAR(50) | Não | Ex: Software, Hardware, Consultoria | — |
 | preco_base | DECIMAL(10,2) | Sim | Preço de referência atual | > 0 |
@@ -95,11 +99,12 @@ pedidos  (1) ──────────────────< avaliacoes_
 | Campo | Tipo | Obrigatório | Descrição | Regra |
 |---|---|---|---|---|
 | id | INT (PK) | Sim | Identificador único | Auto-increment |
+| erp_id | VARCHAR(50) | Não | ID da avaliação no ERP | UNIQUE — idempotência |
 | cliente_id | INT (FK) | Sim | Cliente que avaliou | FK → clientes.id |
 | pedido_id | INT (FK) | Não | Pedido relacionado à avaliação | FK → pedidos.id |
 | nota | INT | Sim | Nota de 0 a 10 | Entre 0 e 10 |
 | comentario | TEXT | Não | Feedback livre do cliente | — |
-| data_avaliacao | DATE | Sim | Data da resposta | Default: NOW() |
+| data_avaliacao | DATE | Sim | Data da resposta | Default: CURRENT_DATE |
 
 ### Tabela: `audit_log` _(obrigatória)_
 
@@ -110,7 +115,7 @@ pedidos  (1) ──────────────────< avaliacoes_
 | operacao | ENUM | Sim | `INSERT` / `UPDATE` / `DELETE` | — |
 | registro_id | INT | Sim | ID do registro afetado | — |
 | usuario | VARCHAR(100) | Sim | Usuário que realizou a ação | — |
-| timestamp | DATETIME | Sim | Data e hora da operação | Default: NOW() |
+| timestamp | TIMESTAMPTZ | Sim | Data e hora da operação (com fuso) | Default: NOW() |
 | dados_anteriores | JSON | Não | Snapshot do registro antes da mudança | Preenchido em UPDATE e DELETE |
 
 ---
@@ -161,6 +166,10 @@ pedidos  (1) ──────────────────< avaliacoes_
 | 6 | 4 | 4 | 10 | Excelente atendimento | 2024-09-26 |
 | 7 | 8 | 8 | 8 | Boa experiência geral | 2024-10-09 |
 | 8 | 10 | 10 | 7 | Dentro do esperado | 2024-09-01 |
+| 9 | 5 | 5 | 8 | Prazo respeitado, produto conforme | 2024-10-15 |
+| 10 | 9 | 9 | 9 | Ótimo atendimento comercial | 2024-10-22 |
+
+> IDs 9 e 10 completam o mínimo de 10 registros exigido. Média das notas (0–10) dos 10 registros: **(9+6+5+4+3+10+8+7+8+9) / 10 = 6,9** — nota: o NPS convencional seria −10 (3 promotores, 4 detratores em 10 respostas), mas o KPI exibido no painel é a média aritmética das notas.
 
 ### `produtos` (10 registros)
 
@@ -238,7 +247,7 @@ pedidos  (1) ──────────────────< avaliacoes_
 | 20 | 7 | fechado_perdido | 5500.00 | 2024-07-01 | 2024-10-15 | Rodrigo Silva |
 
 > Distribuição: prospeccao=6 · proposta=9 · negociacao=2 · fechado_ganho=1 · fechado_perdido=2
-> Taxa Proposta→Negociação: 2/9 = **22%** (abaixo dos 30% de meta → dispara I-03)
+> Proporção de estoque Proposta→Negociação: 2/9 = **22%** (abaixo dos 30% de meta → dispara I-03)
 
 ### `audit_log` (12 registros — rastreia o ciclo completo de dois clientes em risco)
 
@@ -268,4 +277,56 @@ pedidos  (1) ──────────────────< avaliacoes_
 | A-01 | `pedidos` | IDs 2 e 3 | `data_entrega_real` ultrapassa `data_entrega_prev` em 15+ dias | Pedido com atraso crítico → NPS em risco |
 | A-02 | `clientes` | IDs 2 e 3 | Último pedido há 118 e 100 dias respectivamente | Risco de churn → oferta de reativação |
 | A-03 | `avaliacoes_nps` | IDs 3, 4 e 5 (cliente 3) | 3 notas consecutivas ≤ 6 para Gama Serviços | Cliente detrator → acionar CS imediatamente |
-| A-04 | `oportunidades` | IDs 7–15 vs 16–17 | 9 registros em "proposta", apenas 2 em "negociacao" → conversão de 22% | Gargalo no funil → revisar abordagem na etapa de proposta |
+| A-04 | `oportunidades` | IDs 7–15 vs 16–17 | 9 registros em "proposta", apenas 2 em "negociacao" → proporção de estoque de 22% | Gargalo no funil → revisar abordagem na etapa de proposta |
+
+---
+
+## 2.6 Batch Sync Diário — ERP → NexusVendas
+
+O NexusVendas é um módulo de inteligência implantado sobre o ERP corporativo. Os dados transacionais **originam-se no ERP** e são copiados diariamente para o RDS do NexusVendas pelo **SyncJob** (Node.js), disparado pelo **EventBridge Scheduler** às 02h00.
+
+### Origem dos dados por tabela
+
+| Tabela | Fonte | Defasagem máx. | Observação |
+|---|---|---|---|
+| `clientes` | ERP (fonte primária) | 24 horas | Cadastro de empresas clientes |
+| `pedidos` | ERP (fonte primária) | 24 horas | Transações de venda |
+| `itens_pedido` | ERP (fonte primária) | 24 horas | Itens de cada pedido |
+| `produtos` | ERP (fonte primária) | 24 horas | Catálogo de produtos |
+| `avaliacoes_nps` | ERP (fonte primária) | 24 horas | Pesquisas de satisfação pós-venda |
+| `oportunidades` | NexusVendas (nativo) | Tempo real | Criadas e gerenciadas pelo módulo CRM |
+| `audit_log` | NexusVendas (nativo) | Tempo real | Gerado pelos controllers a cada operação de usuário **e** pela Lambda SyncJob (com `usuario='syncjob'`) a cada execução do batch |
+
+### Idempotência via `erp_id`
+
+Cada tabela sincronizada possui o campo `erp_id VARCHAR(50) UNIQUE` com o identificador do registro no ERP. O SyncJob executa `UPSERT ON CONFLICT` para evitar duplicatas em execuções consecutivas:
+
+```sql
+INSERT INTO pedidos (cliente_id, data_pedido, data_entrega_real, valor_total, status, erp_id)
+VALUES (:cliente_id, :data_pedido, :data_entrega_real, :valor_total, :status, :erp_id)
+ON CONFLICT (erp_id) DO UPDATE SET
+  status            = EXCLUDED.status,
+  data_entrega_real = EXCLUDED.data_entrega_real;
+```
+
+### Problema de onboarding e fallback NULL
+
+Quando a empresa contrata o módulo, a tabela `pedidos` pode estar **vazia** no primeiro dia (sync ainda não rodou). Sem proteção, a regra I-01 retornaria todos os clientes como "em risco" — falso positivo em massa.
+
+A regra usa `data_cadastro` como fallback quando não há pedidos:
+
+```
+ref = ultimoPedido ?? data_cadastro
+diasSemCompra = diasDesde(ref)
+```
+
+Um cliente cadastrado há 30 dias, mas sem pedidos ainda por causa do onboarding, não será erroneamente alertado como inativo há 30 dias.
+
+### Gatilho e execução
+
+| Componente | Detalhe |
+|---|---|
+| **EventBridge Scheduler** | Cron `0 2 * * *` — dispara às 02h00 diariamente; invoca uma **Lambda SyncJob** dedicada (EventBridge não consegue invocar uma instância EC2/Beanstalk diretamente) |
+| **Lambda SyncJob** | Node.js (função Lambda separada do Beanstalk) — conecta à API REST ou read replica do ERP, executa os UPSERTs no RDS e registra a execução no `audit_log` com `usuario='syncjob'` |
+| **Fonte** | API REST ou read replica do banco ERP corporativo |
+| **Log** | Cada execução registra registros inseridos/atualizados no CloudWatch Logs; erros de sync disparam CloudWatch Alarm |

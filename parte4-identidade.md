@@ -52,7 +52,7 @@
 | **KPI Card** | Número grande + label + variação % (verde/vermelho) |
 | **Badge de status** | Pill colorido: azul (ativo), âmbar (em risco), cinza (inativo), vermelho (crítico) |
 | **Tabela de pedidos** | Colunas sortáveis, filtros inline, paginação |
-| **Funil de oportunidades** | Barras horizontais por etapa com contagem e taxa de conversão |
+| **Funil de oportunidades** | Barras horizontais por etapa com contagem e proporção de estoque entre etapas |
 | **Gráfico de linha** | Receita mensal dos últimos 6 meses (Recharts) |
 | **Card de insight** | Fundo âmbar/azul com ícone de alerta, texto em 3 partes e botão de ação |
 
@@ -62,12 +62,14 @@
 
 ### Tela 1 — Dashboard (visão geral)
 
+> _Valores do wireframe são ilustrativos — em produção são calculados dinamicamente pela API a partir dos dados do banco._
+
 ```
 ┌──────────────────────────────────────────────────────────┐
 │  🔷 NexusVendas                         Ana Lima ▼       │
 ├──────────────┬──────────────┬──────────────┬─────────────┤
 │ Receita/mês  │ Pedidos      │ Em Risco     │ NPS Médio   │
-│ R$ 68.200    │ 12 ativos    │ ⚠ 2 clientes │ 7,4         │
+│ R$ 68.200    │ 12 ativos    │ ⚠ 2 clientes │ 6,9         │
 │ ↑ +12%       │ 3 pendentes  │              │ ▼ -0,3      │
 ├──────────────┴──────────────┴──────────────┴─────────────┤
 │  Receita dos últimos 6 meses                             │
@@ -131,7 +133,7 @@
 ├──────────────────────────────────────────────────────────┤
 │  💡 Insight Recomendado                                  │
 │  Cliente sem compra há 118 dias. Ticket médio de         │
-│  R$4.200/mês representa receita recorrente em risco.     │
+│  R$4.200 por pedido representa receita em risco.         │
 │  → Enviar oferta de reativação com 10% de desconto       │
 │                                   [Enviar Oferta]        │
 └──────────────────────────────────────────────────────────┘

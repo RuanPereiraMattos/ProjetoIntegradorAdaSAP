@@ -132,11 +132,12 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
   font-family:'JetBrains Mono',monospace;font-size:12px;
   color:#E2E8F0;line-height:1.7;overflow-x:auto;
 }
-.code-block .kw{color:#7DD3FC;}  /* keyword */
-.code-block .fn{color:#A5F3FC;}  /* function */
-.code-block .str{color:#86EFAC;} /* string */
-.code-block .cm{color:#64748B;}  /* comment */
-.code-block .num{color:#FCA5A5;} /* number */
+.code-block .kw{color:#7DD3FC;}
+.code-block .fn{color:#A5F3FC;}
+.code-block .str{color:#86EFAC;}
+.code-block .cm{color:#64748B;}
+.code-block .num{color:#FCA5A5;}
+.code-block .op{color:#F9A8D4;}
 
 /* ── Persona cards ── */
 .persona-card{background:white;border:1px solid var(--border);border-radius:12px;padding:20px;}
@@ -194,15 +195,24 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
   border-radius:10px;padding:14px 18px;margin-bottom:8px;
   display:flex;align-items:center;gap:16px;
 }
-.arch-layer-react  {background:#EFF6FF;border:1px solid #BFDBFE;}
-.arch-layer-api    {background:#F0FDF4;border:1px solid #BBF7D0;}
-.arch-layer-db     {background:#FFF7ED;border:1px solid #FED7AA;}
+.arch-layer-react   {background:#EFF6FF;border:1px solid #BFDBFE;}
+.arch-layer-express {background:#F0FDF4;border:2px solid #6EE7B7;}
+.arch-layer-db      {background:#FFF7ED;border:1px solid #FED7AA;}
 .arch-icon{font-size:22px;flex-shrink:0;}
 .arch-label{font-size:14px;font-weight:600;}
 .arch-desc{font-size:12px;color:var(--muted);margin-top:2px;}
 .arch-tech{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
 .arch-tech span{font-size:11px;background:rgba(0,0,0,.06);padding:2px 8px;border-radius:10px;font-weight:500;}
 .arch-arrow{text-align:center;color:var(--muted);font-size:18px;margin:2px 0;}
+
+/* ── Express route cards ── */
+.route-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0;}
+.route-card{
+  background:white;border:1px solid #BBF7D0;border-radius:10px;
+  padding:12px 14px;border-top:3px solid var(--success);
+}
+.route-card-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#065F46;margin-bottom:6px;}
+.route-card-routes{font-size:11px;color:var(--muted);line-height:1.6;}
 
 /* ── Flow steps ── */
 .flow-steps{display:flex;flex-direction:column;gap:0;}
@@ -266,6 +276,10 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
 .anomaly-body{font-size:13px;}
 .anomaly-title{font-weight:600;margin-bottom:3px;}
 .anomaly-desc{color:var(--muted);font-size:12px;line-height:1.4;}
+
+/* ── Comparison table ── */
+.compare-win{color:var(--success);font-weight:600;}
+.compare-lose{color:var(--muted);}
 </style>
 </head>
 <body>
@@ -293,19 +307,19 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
 
 <!-- ── COVER ── -->
 <div class="cover" id="cover">
-  <div class="cover-label">SAP Start Coding 2026 · Projeto Integrador</div>
+  <div class="cover-label">SAP Start Coding 2026 · Projeto Integrador · Módulo ERP</div>
   <div class="cover-title">NexusVendas</div>
   <div class="cover-tag">"Venda mais. Perca menos. Decida melhor."</div>
   <div class="cover-pills">
     <span class="cover-pill">📦 Tema: Vendas & CX</span>
-    <span class="cover-pill">🏢 Empresa fictícia de médio porte</span>
+    <span class="cover-pill">🏢 Módulo ERP — empresa fictícia de médio porte</span>
     <span class="cover-pill">⚙️ Inspirado no SAP Sales Cloud</span>
     <span class="cover-pill">🗄️ PostgreSQL · Node.js · React</span>
-    <span class="cover-pill">☁️ AWS (Elastic Beanstalk · RDS · S3)</span>
+    <span class="cover-pill">🚀 AWS Elastic Beanstalk · RDS · S3</span>
   </div>
   <div class="cover-insight">
     <strong>Transação → Regra de Negócio → Insight → Ação</strong><br>
-    Plataforma que resolve a perda de receita de médias empresas por falta de visibilidade do pipeline e ausência de alertas automáticos sobre clientes em risco de churn.
+    Módulo do ERP corporativo com dois pilares: <strong>clientes em risco de churn</strong> (inatividade + NPS) e <strong>funil de vendas</strong> (oportunidades por etapa). API Node.js + Express hospedada no Elastic Beanstalk — sem login próprio. O <strong>Express middleware</strong> valida o JWT emitido pelo ERP e injeta <code>{ userId, role }</code> em cada requisição.
   </div>
 </div>
 
@@ -319,13 +333,11 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- Problema -->
   <div class="card" style="margin-bottom:16px;border-left:4px solid var(--critical);">
     <div class="card-title">🎯 Problema</div>
     <p style="font-size:14px;line-height:1.6;">Empresas de médio porte <strong>perdem receita</strong> por não identificar clientes em risco de churn a tempo e por não ter visibilidade consolidada do pipeline. Gestores tomam decisões com dados dispersos em planilhas, sem alertas automáticos — resultando em oportunidades perdidas, follow-ups esquecidos e cancelamentos evitáveis.</p>
   </div>
 
-  <!-- Personas -->
   <div class="card-title" style="margin-bottom:12px;">👤 Personas</div>
   <div class="grid-3" style="margin-bottom:24px;">
     <div class="persona-card">
@@ -348,7 +360,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- User Stories -->
   <div class="card-title" style="margin-bottom:12px;">📋 User Stories</div>
   <div style="margin-bottom:24px;">
     <div class="story">
@@ -356,11 +367,11 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <span class="story-id">US-01</span>
         <span class="story-title">Visão do pipeline em tempo real</span>
       </div>
-      <div class="story-body"><strong>Como</strong> Gerente Comercial, <strong>quero</strong> visualizar o funil de vendas com taxas de conversão por etapa, <strong>para</strong> identificar gargalos antes de perder negócios no mês.</div>
+      <div class="story-body"><strong>Como</strong> Gerente Comercial, <strong>quero</strong> visualizar o funil de vendas com proporção de estoque por etapa, <strong>para</strong> identificar gargalos antes de perder negócios no mês.</div>
       <div class="story-criteria">
         <div class="criteria-item">Dashboard exibe contagem e valor total por etapa (prospecção → proposta → negociação → fechado)</div>
-        <div class="criteria-item">Taxa de conversão entre etapas calculada automaticamente</div>
-        <div class="criteria-item">Etapas com conversão abaixo de 30% exibem alerta visual</div>
+        <div class="criteria-item">Proporção de estoque entre etapas calculada automaticamente</div>
+        <div class="criteria-item">Etapas com proporção abaixo de 30% exibem alerta visual</div>
       </div>
     </div>
     <div class="story">
@@ -370,7 +381,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
       </div>
       <div class="story-body"><strong>Como</strong> Analista de CX, <strong>quero</strong> receber automaticamente clientes sem compra há ≥ 90 dias com o ticket médio histórico, <strong>para</strong> priorizar ações de reativação.</div>
       <div class="story-criteria">
-        <div class="criteria-item">Lista atualiza diariamente com clientes inativos há ≥ 90 dias</div>
+        <div class="criteria-item">Lista atualiza diariamente via batch sync com o ERP (defasagem máx. 24h)</div>
         <div class="criteria-item">Cada item exibe: nome, dias sem compra, ticket médio e ação sugerida</div>
         <div class="criteria-item">Ticket médio &gt; R$3.000 recebe ação diferenciada (desconto 10%)</div>
       </div>
@@ -389,17 +400,23 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- MVP -->
   <div class="grid-2" style="margin-bottom:16px;">
     <div class="card">
-      <div class="card-title">✅ Dentro do MVP</div>
-      <div style="display:flex;flex-direction:column;gap:7px;font-size:13px;">
-        <div>✓ Dashboard com 4 KPIs (Receita, Pedidos, Risco, NPS)</div>
-        <div>✓ Gestão de clientes (CRUD)</div>
-        <div>✓ Gestão de pedidos (CRUD + status)</div>
-        <div>✓ Funil de oportunidades</div>
-        <div>✓ 3 insights automáticos (churn, NPS crítico, gargalo)</div>
-        <div>✓ Autenticação JWT com roles (admin, gerente, vendedor)</div>
+      <div class="card-title">✅ Dois Pilares do MVP</div>
+      <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
+        <div style="font-weight:600;color:var(--critical);">Pilar 1 — Clientes em Risco de Churn</div>
+        <div style="padding-left:10px;display:flex;flex-direction:column;gap:5px;">
+          <div>✓ Dashboard: KPIs de risco, NPS médio, receita</div>
+          <div>✓ Lista de clientes inativos (≥ 90 dias) com ação sugerida</div>
+          <div>✓ Alerta NPS crítico (3 avaliações ≤ 6)</div>
+        </div>
+        <div style="font-weight:600;color:var(--secondary);">Pilar 2 — Funil de Vendas</div>
+        <div style="padding-left:10px;display:flex;flex-direction:column;gap:5px;">
+          <div>✓ Painel de oportunidades por etapa</div>
+          <div>✓ Proporção de estoque entre etapas</div>
+          <div>✓ Alerta de gargalo (proporção &lt; 30%)</div>
+        </div>
+        <div style="color:var(--muted);">✓ Token ERP via Express middleware — sem login próprio</div>
       </div>
     </div>
     <div class="card">
@@ -415,11 +432,10 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- Insights -->
   <div class="card-title" style="margin-bottom:12px;">💡 Os 3 Insights Automáticos</div>
   <div class="insight-banner critical">
     <div class="insight-title">I-01 — Risco de Churn</div>
-    <div class="insight-flow"><strong>O que aconteceu:</strong> Beta Distribuidora sem compra há 118 dias · <strong>Por que importa:</strong> Ticket médio R$4.200/mês em risco · <strong>Ação:</strong> Enviar oferta de reativação com 10% de desconto</div>
+    <div class="insight-flow"><strong>O que aconteceu:</strong> Beta Distribuidora sem compra há 118 dias · <strong>Por que importa:</strong> Ticket médio R$4.200 por pedido em risco · <strong>Ação:</strong> Enviar oferta de reativação com 10% de desconto</div>
   </div>
   <div class="insight-banner critical">
     <div class="insight-title">I-02 — NPS Crítico</div>
@@ -437,11 +453,10 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div class="section-num">2</div>
     <div class="section-title-block">
       <div class="section-title">Estrutura do Banco de Dados</div>
-      <div class="section-sub">7 tabelas · PostgreSQL · Dados fictícios · 3 anomalias intencionais</div>
+      <div class="section-sub">7 tabelas · PostgreSQL · Dados fictícios · 4 anomalias intencionais</div>
     </div>
   </div>
 
-  <!-- ERD -->
   <div class="card" style="margin-bottom:20px;">
     <div class="card-title">🔗 Diagrama Entidade-Relacionamento (simplificado)</div>
     <div class="erd">
@@ -453,10 +468,8 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- 7 table cards -->
   <div class="card-title" style="margin-bottom:12px;">📋 Dicionário de Dados — 7 Tabelas</div>
   <div class="grid-2" style="margin-bottom:20px;gap:12px;">
-
     <div class="dbtable-card">
       <div class="dbtable-header"><span class="dbtable-name">clientes</span><span class="dbtable-count">10 registros</span></div>
       <div class="dbtable-body">
@@ -468,7 +481,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <div class="dbtable-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
       </div>
     </div>
-
     <div class="dbtable-card">
       <div class="dbtable-header"><span class="dbtable-name">pedidos</span><span class="dbtable-count">12 registros</span></div>
       <div class="dbtable-body">
@@ -480,7 +492,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <div class="dbtable-field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
       </div>
     </div>
-
     <div class="dbtable-card">
       <div class="dbtable-header"><span class="dbtable-name">itens_pedido</span><span class="dbtable-count">N registros</span></div>
       <div class="dbtable-body">
@@ -491,7 +502,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <div class="dbtable-field"><span class="field-name">preco_unitario</span><span class="field-type">DECIMAL</span></div>
       </div>
     </div>
-
     <div class="dbtable-card">
       <div class="dbtable-header"><span class="dbtable-name">produtos</span><span class="dbtable-count">catálogo</span></div>
       <div class="dbtable-body">
@@ -502,7 +512,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <div class="dbtable-field"><span class="field-name">ativo</span><span class="field-type">BOOLEAN</span></div>
       </div>
     </div>
-
     <div class="dbtable-card">
       <div class="dbtable-header"><span class="dbtable-name">oportunidades</span><span class="dbtable-count">funil CRM</span></div>
       <div class="dbtable-body">
@@ -513,7 +522,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <div class="dbtable-field"><span class="field-name">responsavel</span><span class="field-type">VARCHAR</span></div>
       </div>
     </div>
-
     <div class="dbtable-card">
       <div class="dbtable-header"><span class="dbtable-name">avaliacoes_nps</span><span class="dbtable-count">8 registros</span></div>
       <div class="dbtable-body">
@@ -524,7 +532,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <div class="dbtable-field"><span class="field-name">data_avaliacao</span><span class="field-type">DATE</span></div>
       </div>
     </div>
-
     <div class="dbtable-card" style="grid-column:1/-1;">
       <div class="dbtable-header" style="background:#475569;"><span class="dbtable-name">audit_log</span><span class="dbtable-count">⚖️ obrigatória — registra todo INSERT/UPDATE/DELETE</span></div>
       <div class="dbtable-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;">
@@ -538,7 +545,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- Anomalias -->
   <div class="card-title" style="margin-bottom:12px;">⚠️ Anomalias Intencionais</div>
   <div class="anomaly">
     <span class="anomaly-id">A-01</span>
@@ -569,23 +575,74 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div class="section-num">3</div>
     <div class="section-title-block">
       <div class="section-title">API REST</div>
-      <div class="section-sub">10 endpoints · JWT Bearer · Roles · 3 regras de insight</div>
+      <div class="section-sub">10 endpoints · JWT Bearer · Middleware Express · 3 regras de insight</div>
     </div>
   </div>
 
   <!-- Auth -->
   <div class="card" style="margin-bottom:16px;">
-    <div class="card-title">🔐 Autenticação — JWT Bearer</div>
+    <div class="card-title">🔐 Autenticação — Token ERP via Express Middleware</div>
     <div class="code-block">
-<span class="kw">POST</span> <span class="str">/auth/login</span>
-{ <span class="str">"email"</span>: <span class="str">"gerente@nexusvendas.com"</span>, <span class="str">"senha"</span>: <span class="str">"senha123"</span> }
+<span class="cm">// O usuário já está autenticado no ERP corporativo.</span>
+<span class="cm">// O frontend repassa o token JWT do ERP em cada requisição.</span>
+<span class="cm">// NexusVendas não tem endpoint /auth/login.</span>
 
-→ <span class="num">200</span> OK
-{ <span class="str">"token"</span>: <span class="str">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."</span>, <span class="str">"expiresIn"</span>: <span class="num">3600</span> }</div>
+<span class="kw">GET</span> <span class="str">/insights/churn-risk</span>
+Authorization: Bearer <span class="str">&lt;token-emitido-pelo-erp&gt;</span>
+
+<span class="cm">// Express middleware (authMiddleware) em todas as rotas:</span>
+<span class="cm">// 1. Lê header Authorization: Bearer &lt;JWT&gt;</span>
+<span class="cm">// 2. Verifica assinatura com chave pública do IdP corporativo</span>
+<span class="cm">// 3. Verifica expiração (exp)</span>
+<span class="cm">// 4. Extrai role das claims → injeta em req.user</span>
+
+<span class="cm">// Token inválido → 401 Unauthorized</span>
+<span class="cm">// Token válido  → req.user = { userId, role } disponível no controller</span>
+</div>
     <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
       <span class="badge badge-blue">admin — acesso total</span>
       <span class="badge badge-green">gerente — leitura + insights</span>
       <span class="badge badge-amber">vendedor — próprios pedidos</span>
+      <div style="font-size:12px;color:var(--muted);align-self:center;margin-left:4px;">roles lidas das claims do token ERP</div>
+    </div>
+  </div>
+
+  <!-- Express route handler example -->
+  <div class="card" style="margin-bottom:16px;border-left:4px solid var(--success);">
+    <div class="card-title">🟢 Route Handler Express — Exemplo: InsightController (churn-risk)</div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;">O Express recebe a requisição HTTP, o middleware <code>auth</code> valida o JWT, e o controller delega ao service. O servidor é persistente — não há cold start.</p>
+    <div class="code-block">
+<span class="cm">// src/insights/InsightController.js — Express + Node.js</span>
+<span class="kw">import</span> { InsightService } <span class="kw">from</span> <span class="str">'./InsightService.js'</span>;
+
+<span class="kw">export const</span> <span class="fn">getChurnRisk</span> = <span class="kw">async</span> (req, res) <span class="op">=&gt;</span> {
+  <span class="kw">const</span> dias = req.query.dias <span class="op">??</span> <span class="num">90</span>;
+  <span class="kw">const</span> clientes = <span class="kw">await</span> InsightService.<span class="fn">getClientesSemPedido</span>(dias);
+
+  res.<span class="fn">json</span>({ total: clientes.length, clientes });
+};
+
+<span class="cm">// src/routes/insights.js</span>
+router.<span class="fn">get</span>(<span class="str">'/churn-risk'</span>, auth, getChurnRisk);
+router.<span class="fn">get</span>(<span class="str">'/nps-alertas'</span>, auth, getNpsAlertas);
+router.<span class="fn">get</span>(<span class="str">'/pipeline'</span>,   auth, getPipeline);</div>
+    <div class="route-grid" style="margin-top:16px;">
+      <div class="route-card">
+        <div class="route-card-name">auth middleware</div>
+        <div class="route-card-routes">Valida JWT<br>Injeta req.user<br>em todas as rotas</div>
+      </div>
+      <div class="route-card">
+        <div class="route-card-name">ClienteController</div>
+        <div class="route-card-routes">GET /clientes<br>GET /clientes/:id<br>POST /clientes<br>PATCH /clientes/:id</div>
+      </div>
+      <div class="route-card">
+        <div class="route-card-name">PedidoController</div>
+        <div class="route-card-routes">GET /pedidos<br>POST /pedidos<br>PATCH /pedidos/:id/status</div>
+      </div>
+      <div class="route-card">
+        <div class="route-card-name">InsightController</div>
+        <div class="route-card-routes">GET /insights/churn-risk<br>GET /insights/nps-alertas<br>GET /insights/pipeline</div>
+      </div>
     </div>
   </div>
 
@@ -596,7 +653,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <tr><th>#</th><th>Método</th><th>Rota</th><th>Descrição</th></tr>
       </thead>
       <tbody>
-        <tr><td>0</td><td><span class="badge method-post">POST</span></td><td><code>/auth/login</code></td><td>Autentica usuário e retorna JWT</td></tr>
         <tr><td>1</td><td><span class="badge method-get">GET</span></td><td><code>/clientes</code></td><td>Lista todos os clientes (filtros: status, segmento)</td></tr>
         <tr><td>2</td><td><span class="badge method-get">GET</span></td><td><code>/clientes/:id</code></td><td>Detalha cliente com histórico resumido</td></tr>
         <tr><td>3</td><td><span class="badge method-post">POST</span></td><td><code>/clientes</code></td><td>Cria novo cliente</td></tr>
@@ -604,9 +660,9 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <tr><td>5</td><td><span class="badge method-get">GET</span></td><td><code>/pedidos</code></td><td>Lista pedidos (filtros: status, cliente_id, data)</td></tr>
         <tr><td>6</td><td><span class="badge method-post">POST</span></td><td><code>/pedidos</code></td><td>Cria novo pedido com itens</td></tr>
         <tr><td>7</td><td><span class="badge method-patch">PATCH</span></td><td><code>/pedidos/:id/status</code></td><td>Atualiza status do pedido</td></tr>
-        <tr><td>8</td><td><span class="badge method-get">GET</span></td><td><code>/insights/churn-risk</code></td><td>Clientes sem pedido há ≥ N dias (default: 90)</td></tr>
-        <tr><td>9</td><td><span class="badge method-get">GET</span></td><td><code>/insights/nps-alertas</code></td><td>Clientes com 3+ avaliações consecutivas ≤ 6</td></tr>
-        <tr><td>10</td><td><span class="badge method-get">GET</span></td><td><code>/insights/pipeline</code></td><td>Funil com taxa de conversão por etapa</td></tr>
+        <tr style="background:#F0FDF4;"><td>8</td><td><span class="badge method-get">GET</span></td><td><code>/insights/churn-risk</code></td><td>Pilar 1 — Clientes sem pedido há ≥ N dias (default: 90)</td></tr>
+        <tr style="background:#F0FDF4;"><td>9</td><td><span class="badge method-get">GET</span></td><td><code>/insights/nps-alertas</code></td><td>Pilar 1 — Clientes com 3+ avaliações consecutivas ≤ 6</td></tr>
+        <tr style="background:#EFF6FF;"><td>10</td><td><span class="badge method-get">GET</span></td><td><code>/insights/pipeline</code></td><td>Pilar 2 — Funil com proporção de estoque por etapa</td></tr>
       </tbody>
     </table>
   </div>
@@ -619,13 +675,16 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
       <div class="code-block" style="font-size:11px;">
 <span class="fn">FUNÇÃO</span> calcularChurnRisk(diasLimite = <span class="num">90</span>):
   <span class="kw">PARA CADA</span> cliente:
-    diasSemCompra = diasDesde(ultimoPedido)
+    <span class="cm">// ultimoPedido vem do sync diário do ERP</span>
+    <span class="cm">// fallback p/ data_cadastro evita falso negativo no onboarding</span>
+    ref = ultimoPedido ?? data_cadastro
+    diasSemCompra = diasDesde(ref)
     <span class="kw">SE</span> diasSemCompra >= diasLimite:
       <span class="kw">SE</span> ticketMedio > <span class="num">3000</span>:
         acao = <span class="str">"Oferta 10% desconto"</span>
       <span class="kw">SENÃO</span>:
         acao = <span class="str">"Ligar para relacionamento"</span>
-  <span class="kw">RETORNAR</span> lista <span class="cm">ordenada por ticketMedio DESC</span></div>
+  <span class="kw">RETORNAR</span> lista <span class="cm">ordenada por ticketMedio DESC · dados com defasagem máx. 24h</span></div>
     </div>
     <div>
       <div class="card-title" style="margin-bottom:8px;">I-02 — NPS Crítico</div>
@@ -645,9 +704,10 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
 <span class="fn">FUNÇÃO</span> analisarFunil():
   etapas = [<span class="str">"prospeccao"</span>, <span class="str">"proposta"</span>, <span class="str">"negociacao"</span>, <span class="str">"fechado_ganho"</span>]
   <span class="kw">PARA CADA</span> par de etapas consecutivas:
-    taxa = total_proxima / total_atual
-    <span class="kw">SE</span> taxa < <span class="num">0.30</span>:
-      ADICIONAR alerta { de, para, taxa, mensagem: <span class="str">"Gargalo detectado"</span> }
+    <span class="kw">SE</span> total_atual > <span class="num">0</span>:
+      proporcao = total_proxima / total_atual
+      <span class="kw">SE</span> proporcao < <span class="num">0.30</span>:
+        ADICIONAR alerta { de, para, proporcao, mensagem: <span class="str">"Gargalo detectado"</span> }
   <span class="kw">RETORNAR</span> alertas  <span class="cm">← atualmente: Proposta→Negociação em 22%</span></div>
     </div>
   </div>
@@ -663,7 +723,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- Colors -->
   <div class="card-title" style="margin-bottom:12px;">🎨 Paleta de Cores</div>
   <div class="swatch-row">
     <div class="swatch"><div class="swatch-color" style="background:#1E40AF;"></div><div class="swatch-info"><div class="swatch-name">Primária</div><div class="swatch-hex">#1E40AF</div></div></div>
@@ -675,7 +734,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div class="swatch"><div class="swatch-color" style="background:#1E293B;"></div><div class="swatch-info"><div class="swatch-name">Texto</div><div class="swatch-hex">#1E293B</div></div></div>
   </div>
 
-  <!-- Typography -->
   <div class="card" style="margin-bottom:16px;">
     <div class="card-title">✍️ Tipografia — Inter (Google Fonts)</div>
     <div class="typo-row">
@@ -700,17 +758,14 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     </div>
   </div>
 
-  <!-- Components showcase -->
   <div class="card-title" style="margin-bottom:12px;">🧩 Componentes-chave</div>
   <div class="card" style="margin-bottom:16px;">
     <div style="display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start;">
-      <!-- KPI card mini -->
       <div style="background:white;border:1px solid var(--border);border-radius:10px;padding:14px;width:140px;">
         <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">RECEITA</div>
         <div style="font-size:22px;font-weight:700;">R$68.200</div>
         <div style="font-size:12px;color:var(--success);font-weight:600;">▲ +12%</div>
       </div>
-      <!-- Badges -->
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">STATUS BADGES</div>
         <span class="badge badge-blue">● Ativo</span>
@@ -719,7 +774,6 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
         <span class="badge badge-red">🔴 Crítico</span>
         <span class="badge badge-green">✓ Entregue</span>
       </div>
-      <!-- Buttons -->
       <div style="display:flex;flex-direction:column;gap:6px;">
         <div style="font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;margin-bottom:2px;">BOTÕES</div>
         <button style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;">Acionar</button>
@@ -736,27 +790,47 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div class="section-num">5</div>
     <div class="section-title-block">
       <div class="section-title">Arquitetura da Solução</div>
-      <div class="section-sub">MVC Simplificado · AWS · Fluxo de requisição · Conexão SAP CX</div>
+      <div class="section-sub">MVC · Express.js · AWS Elastic Beanstalk · Fluxo de requisição · Conexão SAP CX</div>
     </div>
   </div>
 
   <div class="grid-2" style="margin-bottom:20px;align-items:start;">
     <!-- Layer diagram -->
     <div>
-      <div class="card-title" style="margin-bottom:12px;">🏗️ Camadas (MVC Simplificado)</div>
+      <div class="card-title" style="margin-bottom:12px;">🏗️ Camadas — MVC (servidor persistente)</div>
+
       <div class="arch-layer arch-layer-react">
         <div class="arch-icon">⚛️</div>
         <div><div class="arch-label">View — React + Vite (SPA)</div><div class="arch-desc">Dashboard · Pedidos · Clientes · Insights</div><div class="arch-tech"><span>React</span><span>Vite</span><span>Recharts</span><span>JWT</span></div></div>
       </div>
+
       <div class="arch-arrow">↕ HTTPS / REST JSON</div>
-      <div class="arch-layer arch-layer-api">
+
+      <div class="arch-layer arch-layer-express">
         <div class="arch-icon">🟢</div>
-        <div><div class="arch-label">Controller + Service — Node.js + Express</div><div class="arch-desc">Validação HTTP · Regras de negócio · Insights</div><div class="arch-tech"><span>Express.js</span><span>JWT Middleware</span><span>RBAC</span></div></div>
+        <div>
+          <div class="arch-label">Controller + Service — Node.js + Express</div>
+          <div class="arch-desc">Validação HTTP · JWT Middleware · Regras de negócio · Insights</div>
+          <div class="arch-tech"><span>Express.js</span><span>JWT Middleware</span><span>RBAC</span><span>pg-pool</span></div>
+        </div>
       </div>
-      <div class="arch-arrow">↕ SQL</div>
+
+      <div class="arch-arrow">↕ SQL via pg-pool (connection pool local)</div>
+
       <div class="arch-layer arch-layer-db">
         <div class="arch-icon">🐘</div>
-        <div><div class="arch-label">Repository + Database — PostgreSQL</div><div class="arch-desc">7 tabelas · Queries SQL · node-postgres</div><div class="arch-tech"><span>PostgreSQL</span><span>node-postgres</span></div></div>
+        <div><div class="arch-label">Repository + Database — PostgreSQL</div><div class="arch-desc">7 tabelas · Queries SQL · node-postgres · Backups automáticos</div><div class="arch-tech"><span>PostgreSQL</span><span>node-postgres</span><span>db.t3.micro</span></div></div>
+      </div>
+
+      <div class="arch-arrow">↑ Batch sync diário — pedidos, clientes, avaliações NPS</div>
+
+      <div class="arch-layer" style="background:#F5F3FF;border:2px dashed #A78BFA;">
+        <div class="arch-icon">🏢</div>
+        <div>
+          <div class="arch-label">ERP Corporativo (fonte de dados)</div>
+          <div class="arch-desc">Origem dos pedidos, clientes e avaliações — NexusVendas não substitui o ERP</div>
+          <div class="arch-tech"><span>EventBridge Scheduler</span><span>SyncJob (Node.js)</span><span>API ERP ou DB read replica</span></div>
+        </div>
       </div>
     </div>
 
@@ -764,12 +838,41 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div>
       <div class="card-title" style="margin-bottom:12px;">☁️ Serviços AWS</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-        <div class="aws-card"><div class="aws-icon">🚀</div><div class="aws-name">Elastic Beanstalk</div><div class="aws-desc">Deploy da API Node.js com auto-scaling</div></div>
-        <div class="aws-card"><div class="aws-icon">🗄️</div><div class="aws-name">RDS PostgreSQL</div><div class="aws-desc">Banco gerenciado com backups automáticos</div></div>
-        <div class="aws-card"><div class="aws-icon">🌐</div><div class="aws-name">S3 + CloudFront</div><div class="aws-desc">Hosting do React com CDN global</div></div>
-        <div class="aws-card"><div class="aws-icon">🔑</div><div class="aws-name">Secrets Manager</div><div class="aws-desc">JWT secret e credenciais — nunca no código</div></div>
-        <div class="aws-card"><div class="aws-icon">📊</div><div class="aws-name">CloudWatch Logs</div><div class="aws-desc">Logs de erros e tempo de resposta</div></div>
-        <div class="aws-card"><div class="aws-icon">🔔</div><div class="aws-name">CloudWatch Alarms</div><div class="aws-desc">CPU &gt;80%, taxa de erro &gt;1%</div></div>
+        <div class="aws-card">
+          <div class="aws-icon">🚀</div>
+          <div class="aws-name">Elastic Beanstalk</div>
+          <div class="aws-desc">Deploy da API Node.js com auto-scaling — servidor sempre quente, sem cold start</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🗄️</div>
+          <div class="aws-name">RDS PostgreSQL</div>
+          <div class="aws-desc">Banco gerenciado com backups automáticos e encryption at rest</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🌐</div>
+          <div class="aws-name">S3 + CloudFront</div>
+          <div class="aws-desc">Hosting do React com CDN global</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🔑</div>
+          <div class="aws-name">Secrets Manager</div>
+          <div class="aws-desc">JWT secret e credenciais do banco — nunca no código</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">📊</div>
+          <div class="aws-name">CloudWatch Logs</div>
+          <div class="aws-desc">Logs de erros, tempo de resposta e acesso via Beanstalk</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-icon">🔔</div>
+          <div class="aws-name">CloudWatch Alarms</div>
+          <div class="aws-desc">CPU &gt;80% · taxa de erro &gt;1% · latência &gt;2s</div>
+        </div>
+        <div class="aws-card" style="border-left:3px solid #A78BFA;">
+          <div class="aws-icon">⏰</div>
+          <div class="aws-name">EventBridge Scheduler</div>
+          <div class="aws-desc">Dispara o SyncJob diariamente às 02h — copia pedidos, clientes e avaliações NPS do ERP para o RDS</div>
+        </div>
       </div>
     </div>
   </div>
@@ -778,24 +881,49 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
   <div class="card" style="margin-bottom:20px;">
     <div class="card-title">🔄 Fluxo de Requisição — GET /insights/churn-risk</div>
     <div class="flow-steps">
-      <div class="flow-step"><div class="flow-num">1</div><div class="flow-body">Gerente abre o <strong>Dashboard</strong> no React</div></div>
-      <div class="flow-step"><div class="flow-num">2</div><div class="flow-body">React dispara <span class="flow-code">GET /insights/churn-risk?dias=90</span> com header <span class="flow-code">Authorization: Bearer &lt;JWT&gt;</span></div></div>
-      <div class="flow-step"><div class="flow-num">3</div><div class="flow-body">Express executa <strong>middleware de autenticação</strong> → valida JWT, extrai role do usuário</div></div>
-      <div class="flow-step"><div class="flow-num">4</div><div class="flow-body">Controller chama <span class="flow-code">InsightService.getChurnRisk(90)</span></div></div>
-      <div class="flow-step"><div class="flow-num">5</div><div class="flow-body">Service executa a regra: Repository busca clientes sem pedido → calcula ticket médio → monta lista com ação sugerida por faixa</div></div>
-      <div class="flow-step"><div class="flow-num">6</div><div class="flow-body">Controller retorna <span class="flow-code">JSON 200</span> com a lista de clientes em risco</div></div>
-      <div class="flow-step"><div class="flow-num">7</div><div class="flow-body">React renderiza os <strong>cards de alerta</strong> no Dashboard com botão "Acionar"</div></div>
+      <div class="flow-step">
+        <div class="flow-num">1</div>
+        <div class="flow-body">Gerente abre o <strong>Dashboard</strong> no React</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">2</div>
+        <div class="flow-body">React dispara <span class="flow-code">GET /insights/churn-risk?dias=90</span> com header <span class="flow-code">Authorization: Bearer &lt;JWT&gt;</span> para o servidor Express no <strong>Elastic Beanstalk</strong></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">3</div>
+        <div class="flow-body">Express executa o <strong>middleware de autenticação</strong> → verifica assinatura JWT, extrai <code>{ userId, role }</code> e injeta em <code>req.user</code></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">4</div>
+        <div class="flow-body">Express roteia para <span class="flow-code">InsightController.getChurnRisk</span> com o contexto do usuário já disponível</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">5</div>
+        <div class="flow-body">Controller chama <span class="flow-code">InsightService.getClientesSemPedido(90)</span></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">6</div>
+        <div class="flow-body">Service executa a regra: Repository busca clientes sem pedido via <strong>pg-pool</strong> → calcula ticket médio → monta lista com ação sugerida por faixa de ticket</div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">7</div>
+        <div class="flow-body">Controller retorna <span class="flow-code">res.json({ total, clientes })</span> — Express converte para HTTP <code>200 OK</code></div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-num">8</div>
+        <div class="flow-body">React renderiza os <strong>cards de alerta</strong> no Dashboard com botão "Acionar"</div>
+      </div>
     </div>
   </div>
 
   <!-- SAP CX connection -->
   <div class="card">
     <div class="card-title">🔗 Conexão com SAP Sales Cloud</div>
-    <div class="sap-row"><div class="sap-left">Pipeline de oportunidades</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>oportunidades</code> + endpoint <code>/insights/pipeline</code></div></div>
-    <div class="sap-row"><div class="sap-left">Deal scoring (risco de perda)</div><div class="sap-arrow">→</div><div class="sap-right">Regra I-03: conversão de funil abaixo de 30%</div></div>
-    <div class="sap-row"><div class="sap-left">Customer churn prediction</div><div class="sap-arrow">→</div><div class="sap-right">Regra I-01: dias sem compra + ticket médio</div></div>
-    <div class="sap-row"><div class="sap-left">NPS e Voice of Customer</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>avaliacoes_nps</code> + Regra I-02</div></div>
-    <div class="sap-row"><div class="sap-left">Audit trail</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>audit_log</code> em todas as operações</div></div>
+    <div class="sap-row"><div class="sap-left">Pipeline de oportunidades</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>oportunidades</code> + endpoint <code>/insights/pipeline</code> via <code>InsightController</code></div></div>
+    <div class="sap-row"><div class="sap-left">Deal scoring (risco de perda)</div><div class="sap-arrow">→</div><div class="sap-right">Regra I-03: proporção de estoque no funil abaixo de 30% — calculada no <code>InsightService</code></div></div>
+    <div class="sap-row"><div class="sap-left">Customer churn prediction</div><div class="sap-arrow">→</div><div class="sap-right">Regra I-01: dias sem compra + ticket médio — <code>InsightService</code></div></div>
+    <div class="sap-row"><div class="sap-left">NPS e Voice of Customer</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>avaliacoes_nps</code> + Regra I-02 no <code>InsightService</code></div></div>
+    <div class="sap-row"><div class="sap-left">Audit trail</div><div class="sap-arrow">→</div><div class="sap-right">Tabela <code>audit_log</code> — cada Service grava antes de retornar ao Controller</div></div>
   </div>
 </section>
 
@@ -805,7 +933,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div class="section-num">6</div>
     <div class="section-title-block">
       <div class="section-title">Evolução e Escalabilidade</div>
-      <div class="section-sub">Roadmap 3 horizontes · Segurança · LGPD · Custos AWS · Riscos</div>
+      <div class="section-sub">Roadmap 3 horizontes · Segurança · LGPD · Custos AWS · Riscos · Beanstalk vs Lambda</div>
     </div>
   </div>
 
@@ -816,7 +944,8 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
       <div class="roadmap-h" style="color:var(--success);">Curto Prazo</div>
       <div class="roadmap-period">0–6 meses · MVP em produção</div>
       <div class="roadmap-item">Deploy na AWS (Elastic Beanstalk)</div>
-      <div class="roadmap-item">Autenticação JWT + RBAC</div>
+      <div class="roadmap-item">Batch sync diário do ERP (EventBridge + SyncJob)</div>
+      <div class="roadmap-item">Token ERP via Express middleware — sem login próprio</div>
       <div class="roadmap-item">3 insights automáticos ativos</div>
       <div class="roadmap-item">Monitoramento com CloudWatch</div>
       <div class="roadmap-item">Onboarding dos primeiros clientes</div>
@@ -824,7 +953,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div class="roadmap-col" style="border-top:4px solid var(--secondary);">
       <div class="roadmap-h" style="color:var(--secondary);">Médio Prazo</div>
       <div class="roadmap-period">6–18 meses · Performance & alcance</div>
-      <div class="roadmap-item">Cache Redis (TTL 5 min nos insights)</div>
+      <div class="roadmap-item">Cache Redis (ElastiCache) — TTL 5 min nos insights</div>
       <div class="roadmap-item">Fila assíncrona SQS para notificações</div>
       <div class="roadmap-item">Relatórios exportáveis em PDF</div>
       <div class="roadmap-item">Integração e-mail (AWS SES)</div>
@@ -834,7 +963,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
       <div class="roadmap-h" style="color:var(--primary);">Longo Prazo</div>
       <div class="roadmap-period">18–36 meses · Inteligência & escala</div>
       <div class="roadmap-item">ML para predição de churn (SageMaker)</div>
-      <div class="roadmap-item">Microsserviços por domínio</div>
+      <div class="roadmap-item">Migração para microsserviços / serverless</div>
       <div class="roadmap-item">Multitenancy (múltiplas empresas)</div>
       <div class="roadmap-item">BI avançado com QuickSight</div>
       <div class="roadmap-item">Integração SAP S/4HANA</div>
@@ -846,16 +975,16 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
     <div class="card-title">🔒 Segurança e LGPD</div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
       <div style="font-size:13px;display:flex;flex-direction:column;gap:8px;">
-        <div>🔐 <strong>JWT</strong> — expiração 1h + refresh token 7 dias</div>
-        <div>👥 <strong>RBAC</strong> — admin / gerente / vendedor</div>
-        <div>🔒 <strong>HTTPS</strong> — TLS 1.2+ em todos os endpoints</div>
+        <div>🔐 <strong>Token ERP</strong> — JWT emitido pelo IdP corporativo (ex: Azure AD) · validado pelo Express middleware em cada requisição · sem login próprio no módulo</div>
+        <div>👥 <strong>RBAC</strong> — admin / gerente / vendedor · role extraída das claims do token ERP</div>
+        <div>🔒 <strong>HTTPS</strong> — TLS 1.2+ em todos os endpoints (Elastic Beanstalk)</div>
         <div>💾 <strong>RDS encryption at rest</strong> habilitado</div>
       </div>
       <div style="font-size:13px;display:flex;flex-direction:column;gap:8px;">
-        <div>⚖️ <strong>LGPD</strong> — clientes são PJ fictícios (sem dados pessoais)</div>
-        <div>📋 <strong>audit_log</strong> — todo INSERT/UPDATE/DELETE rastreado</div>
-        <div>🔑 <strong>Secrets Manager</strong> — credenciais nunca no código</div>
-        <div>✅ <strong>Validação</strong> — campos obrigatórios validados na API</div>
+        <div>⚖️ <strong>LGPD</strong> — amostra fictícia de PJ (sem titular real); em produção: <code>responsavel</code>, <code>usuario</code>, comentários NPS e claims JWT são dados pessoais — exige base legal, minimização e política de retenção</div>
+        <div>📋 <strong>audit_log</strong> — todo INSERT/UPDATE/DELETE rastreado pelo Service</div>
+        <div>🔑 <strong>Secrets Manager</strong> — credenciais injetadas via variáveis de ambiente</div>
+        <div>✅ <strong>Validação</strong> — campos obrigatórios validados no Controller antes do Service</div>
       </div>
     </div>
   </div>
@@ -867,18 +996,67 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
       <table class="doc-table">
         <thead><tr><th>Serviço</th><th>Configuração</th><th>Custo / mês</th></tr></thead>
         <tbody>
-          <tr><td>Elastic Beanstalk (EC2)</td><td>t3.micro — Free Tier elegível</td><td><strong>~$0–10</strong></td></tr>
-          <tr><td>RDS PostgreSQL</td><td>db.t3.micro, 20 GB, Multi-AZ off</td><td><strong>~$15–25</strong></td></tr>
-          <tr><td>S3 + CloudFront</td><td>&lt;1 GB storage, &lt;10 GB transferência</td><td><strong>~$2–6</strong></td></tr>
-          <tr><td>CloudWatch</td><td>Logs básicos + 3 alarmes</td><td><strong>~$3–8</strong></td></tr>
-          <tr><td>Secrets Manager</td><td>2 secrets</td><td><strong>~$1</strong></td></tr>
+          <tr><td>🚀 Elastic Beanstalk (EC2 t3.micro)</td><td>Free Tier elegível · servidor persistente</td><td><strong>~$0–10</strong></td></tr>
+          <tr><td>🗄️ RDS PostgreSQL</td><td>db.t3.micro, 20 GB, Multi-AZ off</td><td><strong>~$15–25</strong></td></tr>
+          <tr><td>🌐 S3 + CloudFront</td><td>&lt;1 GB storage, &lt;10 GB transferência</td><td><strong>~$2–6</strong></td></tr>
+          <tr><td>📊 CloudWatch</td><td>Logs básicos + 3 alarmes</td><td><strong>~$3–8</strong></td></tr>
+          <tr><td>🔑 Secrets Manager</td><td>2 secrets</td><td><strong>~$1</strong></td></tr>
         </tbody>
       </table>
     </div>
     <div class="cost-total">
-      <div><div class="cost-total-label">Total MVP / mês</div><div style="font-size:11px;color:#BFDBFE;margin-top:2px;">Médio prazo: ~$80–150 · Longo prazo: ~$300–600</div></div>
+      <div>
+        <div class="cost-total-label">Total MVP / mês</div>
+        <div style="font-size:11px;color:#BFDBFE;margin-top:2px;">Médio prazo (+ ElastiCache + SES): ~$80–150 · Longo prazo (+ SageMaker): ~$300–600</div>
+        <div style="font-size:11px;color:#93C5FD;margin-top:2px;">🚀 EC2 no Free Tier: primeiros 750h/mês gratuitos no primeiro ano</div>
+      </div>
       <div class="cost-total-value">~$21–50</div>
     </div>
+  </div>
+
+  <!-- Elastic Beanstalk vs Lambda comparison -->
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-title">🚀 Elastic Beanstalk vs Lambda — Comparativo</div>
+    <table class="doc-table" style="margin-top:4px;">
+      <thead><tr><th>Critério</th><th>🚀 Elastic Beanstalk (esta versão)</th><th>⚡ Lambda (serverless)</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Custo em idle</td>
+          <td class="compare-lose">~$5–10/mês (EC2 rodando mesmo sem requisições)</td>
+          <td class="compare-win">$0 — escala para zero automaticamente</td>
+        </tr>
+        <tr>
+          <td>Gerenciamento de servidor</td>
+          <td class="compare-lose">Patching do SO gerenciado pelo Beanstalk (mas existe)</td>
+          <td class="compare-win">Zero — AWS gerencia tudo</td>
+        </tr>
+        <tr>
+          <td>Escala horizontal</td>
+          <td class="compare-lose">Auto-scaling com warmup (minutos para subir instância)</td>
+          <td class="compare-win">Automática e ilimitada por invocação</td>
+        </tr>
+        <tr>
+          <td>Deploy</td>
+          <td class="compare-lose">Deploy substitui a aplicação inteira no EC2</td>
+          <td class="compare-win">Cada função pode ser atualizada independentemente</td>
+        </tr>
+        <tr>
+          <td>Cold start</td>
+          <td class="compare-win">Sem cold start — servidor sempre quente</td>
+          <td class="compare-lose">50–200ms em Node.js (primeira invocação após idle)</td>
+        </tr>
+        <tr>
+          <td>Limite de execução</td>
+          <td class="compare-win">Sem limite de duração por requisição</td>
+          <td class="compare-lose">Máximo 15 minutos por invocação</td>
+        </tr>
+        <tr>
+          <td>Connection pooling com RDS</td>
+          <td class="compare-win">Pool gerenciado pela própria aplicação Express (pg-pool)</td>
+          <td class="compare-lose">Exige RDS Proxy (custo adicional ~$10–15/mês)</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- Risks -->
@@ -897,13 +1075,13 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
           <td>Qualidade dos dados (garbage in, garbage out)</td>
           <td><span class="badge badge-red">Alta</span></td>
           <td><span class="badge badge-red">Alto</span></td>
-          <td>Validações na API, campos obrigatórios, audit_log</td>
+          <td>Validações no Controller, campos obrigatórios, audit_log</td>
         </tr>
         <tr>
           <td>Crescimento inesperado de volume</td>
           <td><span class="badge badge-green">Baixa</span></td>
           <td><span class="badge badge-amber">Médio</span></td>
-          <td>Auto-scaling no Elastic Beanstalk, read replica RDS</td>
+          <td>Auto-scaling no Elastic Beanstalk · read replica RDS · considerar migração para serverless</td>
         </tr>
         <tr>
           <td>Custo AWS acima do planejado</td>
@@ -915,7 +1093,13 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
           <td>Vazamento de dados de clientes</td>
           <td><span class="badge badge-green">Baixa</span></td>
           <td><span class="badge badge-red">Muito Alto</span></td>
-          <td>HTTPS + RBAC + criptografia em repouso + Secrets Manager</td>
+          <td>HTTPS + JWT Middleware + RBAC + criptografia em repouso + Secrets Manager</td>
+        </tr>
+        <tr>
+          <td>Instância EC2 sempre ligada (custo mínimo fixo)</td>
+          <td><span class="badge badge-green">Baixa</span></td>
+          <td><span class="badge badge-green">Baixo</span></td>
+          <td>Free Tier no primeiro ano · migrar para Lambda no médio prazo se o volume for baixo</td>
         </tr>
       </tbody>
     </table>

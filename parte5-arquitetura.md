@@ -13,17 +13,17 @@
 │     Dashboard · Pedidos · Clientes · Insights              │
 └───────────────────────────┬────────────────────────────────┘
                             │ HTTPS / REST JSON
-                            │ Authorization: Bearer JWT
+                            │ Authorization: Bearer JWT (token do ERP)
 ┌───────────────────────────▼────────────────────────────────┐
 │              API — Node.js + Express                       │
 │                                                            │
 │  ┌──────────────┐  ┌────────────────┐  ┌───────────────┐  │
 │  │ Rotas REST   │  │  Controllers   │  │   Services    │  │
-│  │ /auth        │→ │ Validação HTTP │→ │ Regras de     │  │
-│  │ /clientes    │  │ Auth middleware│  │ negócio e     │  │
-│  │ /pedidos     │  │                │  │ insights      │  │
-│  │ /insights    │  └────────────────┘  └───────┬───────┘  │
-│  └──────────────┘                              │          │
+│  │ /clientes    │→ │ Validação HTTP │→ │ Regras de     │  │
+│  │ /pedidos     │  │ authMiddleware │  │ negócio e     │  │
+│  │ /insights    │  │ (valida JWT)   │  │ insights      │  │
+│  └──────────────┘  └────────────────┘  └───────┬───────┘  │
+│                                                │          │
 │                                      ┌─────────▼────────┐ │
 │                                      │   Repository     │ │
 │                                      │   Queries SQL    │ │
@@ -34,7 +34,18 @@
 │              Banco de Dados — PostgreSQL (RDS)             │
 │   clientes · pedidos · itens_pedido · produtos             │
 │   oportunidades · avaliacoes_nps · audit_log               │
-└────────────────────────────────────────────────────────────┘
+└────────────────────────────┬───────────────────────────────┘
+                             │
+                    ↑ Batch sync diário às 02h
+        (EventBridge Scheduler → Lambda SyncJob → RDS)
+                             │
+┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─▼─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐
+  ERP Corporativo (fonte de dados)
+
+  pedidos · clientes · avaliacoes_nps · produtos
+│                                                           │
+  EventBridge Scheduler (02h) → Lambda SyncJob → RDS
+└ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┘
 ```
 
 ---
@@ -63,6 +74,8 @@
 | **Secrets Manager** | JWT secret e credenciais do banco — nunca em código |
 | **CloudWatch Logs** | Logs de aplicação (erros, tempo de resposta) |
 | **CloudWatch Alarms** | Alertas automáticos (CPU > 80%, taxa de erro > 1%) |
+| **EventBridge Scheduler** | Dispara a Lambda SyncJob às 02h00 diariamente (EventBridge não invoca EC2/Beanstalk diretamente) — copia pedidos, clientes e avaliações NPS do ERP para o RDS |
+| **Lambda SyncJob** | Função Node.js dedicada invocada pelo EventBridge; executa UPSERTs no RDS e registra no CloudWatch Logs |
 
 ---
 
