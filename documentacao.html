@@ -369,7 +369,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
       </div>
       <div class="story-body"><strong>Como</strong> Gerente Comercial, <strong>quero</strong> visualizar o funil de vendas com proporção de estoque por etapa, <strong>para</strong> identificar gargalos antes de perder negócios no mês.</div>
       <div class="story-criteria">
-        <div class="criteria-item">Dashboard exibe contagem e valor total por etapa (prospecção → proposta → negociação → fechado)</div>
+        <div class="criteria-item">Dashboard exibe contagem e valor total por etapa (captação → proposta → negociação → fechado)</div>
         <div class="criteria-item">Proporção de estoque entre etapas calculada automaticamente</div>
         <div class="criteria-item">Etapas com proporção abaixo de 30% exibem alerta visual</div>
       </div>
@@ -702,7 +702,7 @@ router.<span class="fn">get</span>(<span class="str">'/pipeline'</span>,   auth,
       <div class="card-title" style="margin-bottom:8px;">I-03 — Gargalo no Funil</div>
       <div class="code-block" style="font-size:11px;">
 <span class="fn">FUNÇÃO</span> analisarFunil():
-  etapas = [<span class="str">"prospeccao"</span>, <span class="str">"proposta"</span>, <span class="str">"negociacao"</span>, <span class="str">"fechado_ganho"</span>]
+  etapas = [<span class="str">"captacao"</span>, <span class="str">"proposta"</span>, <span class="str">"negociacao"</span>, <span class="str">"fechado_ganho"</span>]
   <span class="kw">PARA CADA</span> par de etapas consecutivas:
     <span class="kw">SE</span> total_atual > <span class="num">0</span>:
       proporcao = total_proxima / total_atual

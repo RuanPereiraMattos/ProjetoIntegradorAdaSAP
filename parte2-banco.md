@@ -88,7 +88,7 @@ pedidos  (1) ──────────────────< avaliacoes_
 |---|---|---|---|---|
 | id | INT (PK) | Sim | Identificador único | Auto-increment |
 | cliente_id | INT (FK) | Sim | Cliente alvo da oportunidade | FK → clientes.id |
-| etapa | ENUM | Sim | `prospeccao` / `proposta` / `negociacao` / `fechado_ganho` / `fechado_perdido` | — |
+| etapa | ENUM | Sim | `captacao` / `proposta` / `negociacao` / `fechado_ganho` / `fechado_perdido` | — |
 | valor_estimado | DECIMAL(10,2) | Não | Receita potencial se ganhar | — |
 | data_abertura | DATE | Sim | Data de início da oportunidade | Default: NOW() |
 | data_fechamento_prev | DATE | Não | Previsão de fechamento | — |
@@ -225,12 +225,12 @@ pedidos  (1) ──────────────────< avaliacoes_
 
 | id | cliente_id | etapa | valor_estimado | data_abertura | data_fechamento_prev | responsavel |
 |---|---|---|---|---|---|---|
-| 1 | 1 | prospeccao | 15000.00 | 2024-08-15 | 2024-12-15 | Carlos Andrade |
-| 2 | 4 | prospeccao | 22000.00 | 2024-09-01 | 2024-12-01 | Marina Costa |
-| 3 | 5 | prospeccao | 8000.00 | 2024-09-10 | 2024-12-10 | Carlos Andrade |
-| 4 | 8 | prospeccao | 12000.00 | 2024-10-01 | 2025-01-15 | Rodrigo Silva |
-| 5 | 10 | prospeccao | 18000.00 | 2024-10-15 | 2025-02-01 | Marina Costa |
-| 6 | 7 | prospeccao | 5000.00 | 2024-10-20 | 2025-01-20 | Rodrigo Silva |
+| 1 | 1 | captacao | 15000.00 | 2024-08-15 | 2024-12-15 | Carlos Andrade |
+| 2 | 4 | captacao | 22000.00 | 2024-09-01 | 2024-12-01 | Marina Costa |
+| 3 | 5 | captacao | 8000.00 | 2024-09-10 | 2024-12-10 | Carlos Andrade |
+| 4 | 8 | captacao | 12000.00 | 2024-10-01 | 2025-01-15 | Rodrigo Silva |
+| 5 | 10 | captacao | 18000.00 | 2024-10-15 | 2025-02-01 | Marina Costa |
+| 6 | 7 | captacao | 5000.00 | 2024-10-20 | 2025-01-20 | Rodrigo Silva |
 | 7 | 1 | proposta | 15000.00 | 2024-07-01 | 2024-11-30 | Carlos Andrade |
 | 8 | 2 | proposta | 28000.00 | 2024-07-15 | 2024-11-15 | Marina Costa |
 | 9 | 3 | proposta | 9500.00 | 2024-07-20 | 2024-11-20 | Carlos Andrade |
@@ -246,7 +246,7 @@ pedidos  (1) ──────────────────< avaliacoes_
 | 19 | 5 | fechado_perdido | 9000.00 | 2024-06-01 | 2024-10-31 | Carlos Andrade |
 | 20 | 7 | fechado_perdido | 5500.00 | 2024-07-01 | 2024-10-15 | Rodrigo Silva |
 
-> Distribuição: prospeccao=6 · proposta=9 · negociacao=2 · fechado_ganho=1 · fechado_perdido=2
+> Distribuição: captacao=6 · proposta=9 · negociacao=2 · fechado_ganho=1 · fechado_perdido=2
 > Proporção de estoque Proposta→Negociação: 2/9 = **22%** (abaixo dos 30% de meta → dispara I-03)
 
 ### `audit_log` (12 registros — rastreia o ciclo completo de dois clientes em risco)

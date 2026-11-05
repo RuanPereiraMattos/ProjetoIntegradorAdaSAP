@@ -270,7 +270,7 @@ FUNÇÃO alertasNPS():
 
 ```
 FUNÇÃO analisarFunil():
-  etapas = ["prospeccao", "proposta", "negociacao", "fechado_ganho"]
+  etapas = ["captacao", "proposta", "negociacao", "fechado_ganho"]
   alertas = []
 
   PARA i DE 0 ATÉ etapas.length - 2:
@@ -338,7 +338,7 @@ Os casos abaixo verificam cada regra de negócio — caminho feliz, bordas e ent
 |---|---|---|---|
 | TC-12 | Gargalo real na transição Proposta→Negociação | `proposta=9`, `negociacao=2` | Alerta gerado: `de="proposta"`, `para="negociacao"`, `proporcao_estoque≈0.22` (tolerância ±0.01 — 2/9 = 0,2222…), texto indica 22% |
 | TC-13 | Transição saudável (sem gargalo) | `negociacao=2`, `fechado_ganho=1` → proporção 50% | **Sem alerta** — 50% > 30% |
-| TC-14 | Etapa com 0 registros não gera divisão por zero | Etapa `prospeccao` zerada | Transição ignorada silenciosamente — `SE total_atual > 0` protege o cálculo |
+| TC-14 | Etapa com 0 registros não gera divisão por zero | Etapa `captacao` zerada | Transição ignorada silenciosamente — `SE total_atual > 0` protege o cálculo |
 | TC-15 | Alerta contém todos os campos obrigatórios | Qualquer gargalo detectado | Resposta inclui: `de`, `para`, `proporcao_estoque` (número ≥ 0; pode ultrapassar 1 quando há mais oportunidades na etapa seguinte que na atual) e `alerta` (string descritiva) |
 
 ---

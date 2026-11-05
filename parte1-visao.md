@@ -30,7 +30,7 @@ Empresas de médio porte perdem receita por não identificar clientes em risco d
 **Como** Gerente Comercial, **quero** visualizar o funil de vendas com as oportunidades em cada etapa e a proporção de estoque entre etapas, **para** identificar gargalos e agir antes de perder negócios no mês.
 
 **Critérios de aceite:**
-- [x] O dashboard exibe contagem e valor total de oportunidades por etapa (prospecção, proposta, negociação, fechado)
+- [x] O dashboard exibe contagem e valor total de oportunidades por etapa (captação, proposta, negociação, fechado)
 - [x] A proporção de estoque entre etapas é calculada automaticamente
 - [x] Etapas com proporção abaixo de 30% exibem alerta visual
 
@@ -63,7 +63,7 @@ O MVP é organizado em dois pilares, ambos derivados dos dados operacionais do E
 - [x] Insight I-01 (churn risk) e I-02 (NPS crítico) com ação sugerida
 
 **Pilar 2 — Funil de Vendas**
-- [x] Painel de oportunidades por etapa (prospecção → proposta → negociação → fechado)
+- [x] Painel de oportunidades por etapa (captação → proposta → negociação → fechado)
 - [x] Proporção de estoque entre etapas calculada automaticamente
 - [x] Alerta visual em etapas com proporção abaixo de 30% (Insight I-03)
 

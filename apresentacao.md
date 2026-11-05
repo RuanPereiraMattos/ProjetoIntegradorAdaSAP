@@ -339,7 +339,7 @@ Diagrama ER completo: _[link dbdiagram.io]_
 
 **`pedidos`** — id · cliente_id (FK) · data_pedido · data_entrega_prev · data_entrega_real · valor_total · status _(pendente/aprovado/entregue/cancelado)_
 
-**`oportunidades`** — id · cliente_id (FK) · etapa _(prospeccao/proposta/negociacao/fechado_ganho/fechado_perdido)_ · valor_estimado · data_abertura · responsavel
+**`oportunidades`** — id · cliente_id (FK) · etapa _(captacao/proposta/negociacao/fechado_ganho/fechado_perdido)_ · valor_estimado · data_abertura · responsavel
 
 **`avaliacoes_nps`** — id · cliente_id (FK) · pedido_id (FK) · nota _(0–10)_ · comentario · data_avaliacao
 
