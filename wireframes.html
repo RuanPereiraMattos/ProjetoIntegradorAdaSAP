@@ -1019,5 +1019,272 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════════════════════════
+     TELA 5 — LISTA DE CLIENTES
+════════════════════════════════════════════════ -->
+<div>
+  <div class="screen-label">Tela 5 — Lista de Clientes</div>
+  <div class="screen">
+    <div class="topbar">
+      <div class="topbar-brand"><div class="dot">N</div>NexusVendas</div>
+      <div class="topbar-user"><div class="avatar">AL</div>Ana Lima ▾</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item">Dashboard</div>
+      <div class="nav-item">Pedidos</div>
+      <div class="nav-item active">Clientes</div>
+      <div class="nav-item">Relatórios</div>
+    </div>
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Clientes</div>
+          <div class="page-sub">10 clientes cadastrados · 3 em risco</div>
+        </div>
+        <button class="btn btn-primary btn-sm">+ Novo Cliente</button>
+      </div>
+
+      <!-- Filters -->
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+        <select class="filter-select">
+          <option>Status: Todos ▾</option>
+          <option>Ativo</option>
+          <option>Em Risco</option>
+          <option>Inativo</option>
+        </select>
+        <select class="filter-select">
+          <option>Segmento: Todos ▾</option>
+          <option>Varejo</option>
+          <option>Consultoria</option>
+          <option>Tecnologia</option>
+          <option>Indústria</option>
+        </select>
+        <input type="text" placeholder="🔍  Buscar cliente..." style="border:1.5px solid var(--border);border-radius:8px;padding:8px 14px;font-size:13px;min-width:220px;outline:none;">
+      </div>
+
+      <!-- Table -->
+      <div style="background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Segmento</th>
+              <th>Cidade</th>
+              <th>Último pedido</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="font-weight:600;">Alfa Comércio Ltda</div><div style="font-size:12px;color:var(--muted);">id: 1</div></td>
+              <td>Varejo</td><td>São Paulo, SP</td>
+              <td style="font-size:13px;color:var(--muted);">2024-10-28</td>
+              <td><span class="badge badge-success">● Ativo</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr style="background:#FFFBEB;">
+              <td><div style="font-weight:600;">Beta Distribuidora S.A.</div><div style="font-size:12px;color:var(--muted);">id: 2</div></td>
+              <td>Varejo</td><td>Campinas, SP</td>
+              <td><span style="color:var(--alert);font-weight:600;">118 dias atrás</span></td>
+              <td><span class="badge badge-warning">⚠ Em Risco</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr style="background:#FFF5F5;">
+              <td><div style="font-weight:600;">Gama Serviços Ltda</div><div style="font-size:12px;color:var(--muted);">id: 3</div></td>
+              <td>Consultoria</td><td>São Paulo, SP</td>
+              <td><span style="color:var(--alert);font-weight:600;">100 dias atrás</span></td>
+              <td><span class="badge badge-critical">🔴 Em Risco / NPS</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Delta Indústria S.A.</div><div style="font-size:12px;color:var(--muted);">id: 4</div></td>
+              <td>Indústria</td><td>Santo André, SP</td>
+              <td style="font-size:13px;color:var(--muted);">2024-11-01</td>
+              <td><span class="badge badge-success">● Ativo</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Epsilon TI Ltda</div><div style="font-size:12px;color:var(--muted);">id: 5</div></td>
+              <td>Tecnologia</td><td>Curitiba, PR</td>
+              <td style="font-size:13px;color:var(--muted);">2024-10-15</td>
+              <td><span class="badge badge-success">● Ativo</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Zeta Atacado ME</div><div style="font-size:12px;color:var(--muted);">id: 6</div></td>
+              <td>Varejo</td><td>Ribeirão Preto, SP</td>
+              <td style="font-size:13px;color:var(--muted);">2024-09-30</td>
+              <td><span class="badge badge-success">● Ativo</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr style="background:#FFFBEB;">
+              <td><div style="font-weight:600;">Eta Educação S.A.</div><div style="font-size:12px;color:var(--muted);">id: 7</div></td>
+              <td>Educação</td><td>Recife, PE</td>
+              <td><span style="color:var(--alert);font-weight:600;">583 dias atrás</span></td>
+              <td><span class="badge badge-warning">⚠ Em Risco</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Theta Saúde Ltda</div><div style="font-size:12px;color:var(--muted);">id: 8</div></td>
+              <td>Saúde</td><td>Belo Horizonte, MG</td>
+              <td style="font-size:13px;color:var(--muted);">2024-11-03</td>
+              <td><span class="badge badge-success">● Ativo</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Iota Financeira S.A.</div><div style="font-size:12px;color:var(--muted);">id: 9</div></td>
+              <td>Financeiro</td><td>São Paulo, SP</td>
+              <td style="font-size:13px;color:var(--muted);">2024-11-05</td>
+              <td><span class="badge badge-success">● Ativo</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+            <tr>
+              <td><div style="font-weight:600;">Kappa Logística Ltda</div><div style="font-size:12px;color:var(--muted);">id: 10</div></td>
+              <td>Logística</td><td>Guarulhos, SP</td>
+              <td style="font-size:13px;color:var(--muted);">2024-08-20</td>
+              <td><span class="badge badge-info" style="background:#F1F5F9;color:#475569;">○ Inativo</span></td>
+              <td><div class="action-icons">👁 ✏</div></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="pagination">
+          <span>Exibindo 10 de 10 clientes</span>
+          <div class="page-btns">
+            <div class="page-btn active">1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TELA 6 — ALERTAS DE INSIGHT (NPS + CHURN)
+════════════════════════════════════════════════ -->
+<div>
+  <div class="screen-label">Tela 6 — Alertas de Insight (I-01 Churn Risk + I-02 NPS Crítico)</div>
+  <div class="screen">
+    <div class="topbar">
+      <div class="topbar-brand"><div class="dot">N</div>NexusVendas</div>
+      <div class="topbar-user"><div class="avatar">AL</div>Ana Lima ▾</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item active">Dashboard</div>
+      <div class="nav-item">Pedidos</div>
+      <div class="nav-item">Clientes</div>
+      <div class="nav-item">Relatórios</div>
+    </div>
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Alertas de Insight</div>
+          <div class="page-sub">Atualizado agora · data_referencia: 2024-11-05</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span class="badge badge-critical" style="font-size:13px;padding:6px 14px;">🔴 4 alertas ativos</span>
+        </div>
+      </div>
+
+      <!-- I-01 Churn Risk -->
+      <div style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="background:var(--critical);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;">I-01</div>
+          <div style="font-size:16px;font-weight:700;">Risco de Churn — GET /insights/churn-risk?dias=90</div>
+          <span class="badge badge-critical">3 clientes</span>
+        </div>
+        <div style="background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Dias sem compra</th>
+                <th>Ticket médio</th>
+                <th>Ação sugerida</th>
+                <th>Prioridade</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#FFF5F5;">
+                <td><div style="font-weight:600;">Beta Distribuidora S.A.</div><div style="font-size:12px;color:var(--muted);">Varejo · Campinas, SP</div></td>
+                <td><span style="font-weight:700;color:var(--critical);font-size:15px;">118</span> <span style="font-size:12px;color:var(--muted);">dias</span></td>
+                <td><strong>R$ 4.200</strong></td>
+                <td style="font-size:13px;">Enviar oferta com 10% de desconto</td>
+                <td><span class="badge badge-critical">🔴 Alta</span></td>
+                <td><button class="btn btn-primary btn-sm">Acionar</button></td>
+              </tr>
+              <tr style="background:#FFFBEB;">
+                <td><div style="font-weight:600;">Gama Serviços Ltda</div><div style="font-size:12px;color:var(--muted);">Consultoria · São Paulo, SP</div></td>
+                <td><span style="font-weight:700;color:var(--alert);font-size:15px;">100</span> <span style="font-size:12px;color:var(--muted);">dias</span></td>
+                <td><strong>R$ 1.850</strong></td>
+                <td style="font-size:13px;">Agendar ligação de relacionamento</td>
+                <td><span class="badge badge-warning">⚠ Média</span></td>
+                <td><button class="btn btn-outline btn-sm">Acionar</button></td>
+              </tr>
+              <tr style="background:#FFFBEB;">
+                <td><div style="font-weight:600;">Eta Educação S.A.</div><div style="font-size:12px;color:var(--muted);">Educação · Recife, PE</div></td>
+                <td><span style="font-weight:700;color:var(--alert);font-size:15px;">583</span> <span style="font-size:12px;color:var(--muted);">dias</span></td>
+                <td><strong style="color:var(--muted);">—</strong></td>
+                <td style="font-size:13px;">Agendar ligação de relacionamento</td>
+                <td><span class="badge badge-warning">⚠ Média</span></td>
+                <td><button class="btn btn-outline btn-sm">Acionar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- I-02 NPS Crítico -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="background:var(--critical);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;">I-02</div>
+          <div style="font-size:16px;font-weight:700;">NPS Crítico — GET /insights/nps-alertas</div>
+          <span class="badge badge-critical">1 cliente</span>
+        </div>
+        <div style="background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Últimas 3 notas</th>
+                <th>Tendência</th>
+                <th>Ação sugerida</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#FFF5F5;">
+                <td>
+                  <div style="font-weight:600;">Gama Serviços Ltda</div>
+                  <div style="font-size:12px;color:var(--muted);">Consultoria · São Paulo, SP</div>
+                </td>
+                <td>
+                  <div style="display:flex;gap:6px;align-items:center;">
+                    <span style="background:#FEE2E2;color:#991B1B;font-weight:700;padding:4px 10px;border-radius:6px;font-size:13px;">5</span>
+                    <span style="color:var(--muted);">→</span>
+                    <span style="background:#FEE2E2;color:#991B1B;font-weight:700;padding:4px 10px;border-radius:6px;font-size:13px;">4</span>
+                    <span style="color:var(--muted);">→</span>
+                    <span style="background:#FEE2E2;color:#991B1B;font-weight:700;padding:4px 10px;border-radius:6px;font-size:13px;">3</span>
+                  </div>
+                </td>
+                <td><span style="color:var(--critical);font-weight:700;font-size:18px;">↘</span> Queda</td>
+                <td style="font-size:13px;">Acionar Customer Success imediatamente</td>
+                <td><span class="badge badge-critical">🔴 NPS Crítico</span></td>
+                <td><button class="btn btn-primary btn-sm" style="background:var(--critical);">Acionar CS</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:10px;background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid var(--critical);border-radius:8px;padding:12px 16px;font-size:13px;color:#991B1B;">
+          <strong>I-02 disparado:</strong> Gama Serviços registrou 3 avaliações consecutivas ≤ 6 (notas 5, 4, 3). Risco de cancelamento e impacto na reputação. Acionar CS antes de 24h.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
