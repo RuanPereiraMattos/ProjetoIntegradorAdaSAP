@@ -90,7 +90,7 @@ A arquitetura evoluída prevê mover o cálculo dos insights para **AWS Lambda**
 ## Bloco 5 — Identidade Visual e UX
 
 **Q16 (Aplicada)**
-A tela de Dashboard exibe 4 KPIs: Receita do mês, Pedidos ativos, Clientes em risco e NPS Médio. Segundo os princípios de **design de sistemas de BI**, qual é o problema de exibir variações percentuais (ex: ↑ +12%) sem contexto de período de comparação? Como o design deveria comunicar esse contexto ao usuário sem aumentar a carga cognitiva da tela?
+A tela de Dashboard exibe 4 KPIs: Receita do mês, Pedidos ativos, Clientes em risco e NPS (% promotores − % detratores). Segundo os princípios de **design de sistemas de BI**, qual é o problema de exibir variações percentuais (ex: ↑ +12%) sem contexto de período de comparação? Como o design deveria comunicar esse contexto ao usuário sem aumentar a carga cognitiva da tela?
 
 ---
 

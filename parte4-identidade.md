@@ -68,9 +68,9 @@
 ┌──────────────────────────────────────────────────────────┐
 │  🔷 NexusVendas                         Ana Lima ▼       │
 ├──────────────┬──────────────┬──────────────┬─────────────┤
-│ Receita/mês  │ Pedidos      │ Em Risco     │ Média notas │
-│ R$ 68.200    │ 12 ativos    │ ⚠ 3 clientes │ 6,9 (0–10)  │
-│ ↑ +12%       │ 3 pendentes  │              │ ▼ -0,3      │
+│ Receita/mês  │ Pedidos      │ Em Risco     │ NPS         │
+│ R$ 68.200    │ 12 ativos    │ ⚠ 3 clientes │ −10         │
+│ ↑ +12%       │ 3 pendentes  │              │ ▼ −5 pts    │
 ├──────────────┴──────────────┴──────────────┴─────────────┤
 │  Receita dos últimos 6 meses                             │
 │  [gráfico de linha — Mai Jun Jul Ago Set Out]            │

@@ -191,7 +191,6 @@ Authorization: Bearer eyJhbGc...
       "cliente_id": 3,
       "nome": "Gama Serviços Ltda",
       "ultimas_notas": [5, 4, 3],
-      "media": 4.0,
       "classificacao": "detrator",
       "acao_sugerida": "Acionar Customer Success imediatamente"
     }
@@ -252,8 +251,7 @@ FUNÇÃO alertasNPS():
 
     SE avaliacoes.length == 3:
       SE TODAS as avaliacoes.nota <= 6:
-        media = MÉDIA(avaliacoes.nota)
-        ADICIONAR { cliente, ultimas_notas, media, acao: "Acionar CS imediatamente" }
+        ADICIONAR { cliente, ultimas_notas, acao: "Acionar CS imediatamente" }
 
   RETORNAR resultado
 ```
