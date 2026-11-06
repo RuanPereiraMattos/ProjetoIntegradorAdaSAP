@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusVendas — Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Tokens ── */
+  :root {
+    --primary:   #1E40AF;
+    --secondary: #3B82F6;
+    --alert:     #F59E0B;
+    --critical:  #EF4444;
+    --success:   #10B981;
+    --bg:        #F8FAFC;
+    --text:      #1E293B;
+    --border:    #E2E8F0;
+    --muted:     #64748B;
+    --white:     #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #CBD5E1;
+    color: var(--text);
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    align-items: center;
+  }
+
+  /* ── Section labels ── */
+  .screen-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 12px;
+  }
+
+  /* ── Screen wrapper ── */
+  .screen {
+    width: 900px;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,.14);
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .topbar-brand .dot {
+    width: 28px; height: 28px;
+    background: var(--secondary);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .topbar-user {
+    display: flex; align-items: center; gap: 8px;
+    color: #BFDBFE; font-size: 14px; font-weight: 500;
+  }
+  .avatar {
+    width: 32px; height: 32px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 13px; font-weight: 600;
+  }
+
+  /* ── Nav tabs ── */
+  .nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    padding: 0 24px;
+  }
+  .nav-item {
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .nav-item.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* ── Page content ── */
+  .page { padding: 24px; }
+
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .page-title { font-size: 22px; font-weight: 700; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-outline {
+    background: white; color: var(--primary);
+    border: 1.5px solid var(--primary);
+  }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-alert { background: var(--alert); color: white; }
+
+  /* ── KPI cards ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+  }
+  .kpi-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+  .kpi-value { font-size: 26px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .kpi-change {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 13px; font-weight: 600; margin-top: 6px;
+  }
+  .kpi-change.up   { color: var(--success); }
+  .kpi-change.down { color: var(--critical); }
+  .kpi-change.warn { color: var(--alert); }
+
+  /* ── Chart card ── */
+  .chart-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--text);
+  }
+  .chart-area { width: 100%; height: 140px; }
+
+  /* ── Insight cards ── */
+  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+  .insight-list { display: flex; flex-direction: column; gap: 10px; }
+  .insight-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--alert);
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .insight-card.critical { border-left-color: var(--critical); }
+  .insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .insight-body { flex: 1; }
+  .insight-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .insight-desc  { font-size: 13px; color: var(--muted); }
+
+  /* ── Table screen ── */
+  .filter-row {
+    display: flex; gap: 10px; margin-bottom: 18px; align-items: center;
+  }
+  .filter-select {
+    padding: 8px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text); background: white;
+    appearance: none;
+    cursor: pointer;
+  }
+  .search-box {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px; color: var(--muted);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: #F1F5F9; }
+  th {
+    text-align: left;
+    padding: 11px 16px;
+    font-size: 12px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: .04em;
+  }
+  td {
+    padding: 13px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #F8FAFC; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .badge-success  { background: #D1FAE5; color: #065F46; }
+  .badge-warning  { background: #FEF3C7; color: #92400E; }
+  .badge-info     { background: #DBEAFE; color: #1E40AF; }
+  .badge-critical { background: #FEE2E2; color: #991B1B; }
+
+  .action-icons { display: flex; gap: 10px; color: var(--secondary); font-size: 16px; cursor: pointer; }
+
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--muted);
+  }
+  .page-btns { display: flex; gap: 4px; }
+  .page-btn {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1.5px solid var(--border);
+    background: white; color: var(--text);
+  }
+  .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* ── Client detail ── */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--secondary); font-weight: 500;
+    margin-bottom: 16px; cursor: pointer;
+  }
+  .client-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .client-name { font-size: 22px; font-weight: 700; }
+  .client-meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .client-meta span { margin-right: 16px; }
+
+  .detail-kpi-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 20px;
+  }
+
+  .history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .history-item {
+    background: white; border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px;
+  }
+  .history-id { font-weight: 600; color: var(--primary); margin-right: 10px; }
+  .history-val { font-weight: 600; }
+
+  .recommend-card {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-left: 4px solid var(--alert);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 20px;
+  }
+  .recommend-title { font-size: 14px; font-weight: 600; color: #92400E; margin-bottom: 6px; }
+  .recommend-text  { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .recommend-action { margin-top: 12px; display: flex; justify-content: flex-end; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  @media print {
+    body { background: white; margin: 0; padding: 0; }
+    .page-header { display: none; }
+    .screen-wrapper { page-break-after: always; break-after: page; padding: 24px 0; }
+    .screen-wrapper:last-child { page-break-after: avoid; break-after: avoid; }
+    .screen-label { margin-top: 0; color: #1E40AF; font-size: 13px; }
+    .screen { box-shadow: none; border: 1px solid #CBD5E1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="screen-wrapper">
+  <div class="screen-label">Tela 3 — Detalhe do Cliente</div>
+  <div class="screen">
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="dot">N</div>
+        NexusVendas
+      </div>
+      <div class="topbar-user">
+        <div class="avatar">AL</div>
+        Ana Lima ▾
+      </div>
+    </div>
+    <div class="nav">
+      <div class="nav-item">Dashboard</div>
+      <div class="nav-item">Pedidos</div>
+      <div class="nav-item active">Clientes</div>
+      <div class="nav-item">Relatórios</div>
+    </div>
+    <div class="page">
+      <div class="back-link">← Lista de Clientes</div>
+
+      <div class="client-header">
+        <div>
+          <div class="client-name">Beta Distribuidora S.A.</div>
+          <div class="client-meta">
+            <span>🏭 Varejo</span>
+            <span>📍 Campinas, SP</span>
+            <span>🗓 Cliente desde Jan/2023</span>
+          </div>
+        </div>
+        <span class="badge badge-warning" style="font-size:13px; padding:6px 14px;">⚠ EM RISCO</span>
+      </div>
+
+      <!-- KPIs -->
+      <div class="detail-kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-label">Ticket médio</div>
+          <div class="kpi-value">R$ 4.200</div>
+          <div class="kpi-change" style="color:var(--muted)">por pedido</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Total de pedidos</div>
+          <div class="kpi-value">1</div>
+          <div class="kpi-change down">▼ Baixo engajamento</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Último pedido</div>
+          <div class="kpi-value" style="font-size:20px">10/07/2024</div>
+          <div class="kpi-change warn">⚠ 118 dias atrás<br><span style="font-size:10px;color:var(--muted)">(data_referencia 2024-11-05)</span></div>
+        </div>
+      </div>
+
+      <!-- Two col: NPS chart + History -->
+      <div class="two-col">
+        <div class="chart-card" style="margin-bottom:0">
+          <div class="chart-title">NPS ao longo do tempo</div>
+          <svg viewBox="0 0 340 130" width="100%" height="120">
+            <!-- grid -->
+            <line x1="30" y1="15"  x2="320" y2="15"  stroke="#E2E8F0" stroke-width="1"/>
+            <line x1="30" y1="45"  x2="320" y2="45"  stroke="#E2E8F0" stroke-width="1"/>
+            <line x1="30" y1="75"  x2="320" y2="75"  stroke="#E2E8F0" stroke-width="1"/>
+            <line x1="30" y1="105" x2="320" y2="105" stroke="#E2E8F0" stroke-width="1"/>
+            <!-- y labels -->
+            <text x="0" y="18"  font-size="10" fill="#94A3B8" font-family="Inter">10</text>
+            <text x="3" y="48"  font-size="10" fill="#94A3B8" font-family="Inter">7</text>
+            <text x="3" y="78"  font-size="10" fill="#94A3B8" font-family="Inter">4</text>
+            <text x="3" y="108" font-size="10" fill="#94A3B8" font-family="Inter">1</text>
+            <!-- area -->
+            <defs>
+              <linearGradient id="npsGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#EF4444" stop-opacity="0.15"/>
+                <stop offset="100%" stop-color="#EF4444" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <polygon points="50,45 120,55 190,65 260,75 320,92 320,110 50,110"
+              fill="url(#npsGrad)"/>
+            <!-- line (declining) -->
+            <polyline points="50,45 120,55 190,65 260,75 320,92"
+              fill="none" stroke="#EF4444" stroke-width="2.5"
+              stroke-linejoin="round" stroke-linecap="round"/>
+            <!-- dots -->
+            <circle cx="50"  cy="45" r="4" fill="#EF4444"/>
+            <circle cx="120" cy="55" r="4" fill="#EF4444"/>
+            <circle cx="190" cy="65" r="4" fill="#EF4444"/>
+            <circle cx="260" cy="75" r="4" fill="#EF4444"/>
+            <circle cx="320" cy="92" r="5" fill="#991B1B" stroke="white" stroke-width="2"/>
+            <!-- x labels -->
+            <text x="40"  y="125" font-size="10" fill="#94A3B8" font-family="Inter">Mar</text>
+            <text x="110" y="125" font-size="10" fill="#94A3B8" font-family="Inter">Mai</text>
+            <text x="180" y="125" font-size="10" fill="#94A3B8" font-family="Inter">Jul</text>
+            <text x="250" y="125" font-size="10" fill="#94A3B8" font-family="Inter">Set</text>
+            <text x="308" y="125" font-size="10" fill="#94A3B8" font-family="Inter" font-weight="600">Nov</text>
+          </svg>
+        </div>
+
+        <div>
+          <div class="section-title">Histórico de Pedidos</div>
+          <div class="history-list">
+            <div class="history-item">
+              <div>
+                <span class="history-id">#2</span>
+                <span class="history-val">R$ 4.200</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="color:var(--muted);font-size:13px">Jul/2024</span>
+                <span class="badge badge-warning">⚠ Atrasado</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px">
+            <div class="section-title">Contato</div>
+            <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px 16px;font-size:13px;color:var(--muted);line-height:1.8">
+              📧 comercial@betadistrib.com.br<br>
+              📞 (19) 3221-0045<br>
+              👤 Responsável: Carlos Mendes
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insight recommendation -->
+      <div class="recommend-card">
+        <div class="recommend-title">💡 Insight Recomendado</div>
+        <div class="recommend-text">
+          Cliente sem compra há <strong>118 dias</strong>. Ticket médio de <strong>R$ 4.200 por pedido</strong> representa receita em risco.<br>
+          NPS em queda consistente: 8 → 7 → 6 → 5 → 4. Risco de churn elevado.<br>
+          <strong>→ Enviar oferta de reativação com 10% de desconto no próximo pedido.</strong>
+        </div>
+        <div class="recommend-action">
+          <button class="btn btn-alert btn-sm">Enviar Oferta de Reativação</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

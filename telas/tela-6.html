@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusVendas — Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Tokens ── */
+  :root {
+    --primary:   #1E40AF;
+    --secondary: #3B82F6;
+    --alert:     #F59E0B;
+    --critical:  #EF4444;
+    --success:   #10B981;
+    --bg:        #F8FAFC;
+    --text:      #1E293B;
+    --border:    #E2E8F0;
+    --muted:     #64748B;
+    --white:     #FFFFFF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #CBD5E1;
+    color: var(--text);
+    padding: 48px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    align-items: center;
+  }
+
+  /* ── Section labels ── */
+  .screen-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: 12px;
+  }
+
+  /* ── Screen wrapper ── */
+  .screen {
+    width: 900px;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,.14);
+  }
+
+  /* ── Top bar ── */
+  .topbar {
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 24px;
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--white);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .topbar-brand .dot {
+    width: 28px; height: 28px;
+    background: var(--secondary);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .topbar-user {
+    display: flex; align-items: center; gap: 8px;
+    color: #BFDBFE; font-size: 14px; font-weight: 500;
+  }
+  .avatar {
+    width: 32px; height: 32px;
+    background: var(--secondary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 13px; font-weight: 600;
+  }
+
+  /* ── Nav tabs ── */
+  .nav {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    padding: 0 24px;
+  }
+  .nav-item {
+    padding: 12px 18px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .nav-item.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+    font-weight: 600;
+  }
+
+  /* ── Page content ── */
+  .page { padding: 24px; }
+
+  .page-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .page-title { font-size: 22px; font-weight: 700; }
+  .page-sub { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; border: none;
+  }
+  .btn-primary { background: var(--primary); color: white; }
+  .btn-outline {
+    background: white; color: var(--primary);
+    border: 1.5px solid var(--primary);
+  }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-alert { background: var(--alert); color: white; }
+
+  /* ── KPI cards ── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .kpi-card {
+    background: white;
+    border-radius: 10px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+  }
+  .kpi-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+  .kpi-value { font-size: 26px; font-weight: 700; color: var(--text); line-height: 1.1; }
+  .kpi-change {
+    display: inline-flex; align-items: center; gap: 3px;
+    font-size: 13px; font-weight: 600; margin-top: 6px;
+  }
+  .kpi-change.up   { color: var(--success); }
+  .kpi-change.down { color: var(--critical); }
+  .kpi-change.warn { color: var(--alert); }
+
+  /* ── Chart card ── */
+  .chart-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    margin-bottom: 20px;
+  }
+  .chart-title {
+    font-size: 15px; font-weight: 600; margin-bottom: 16px; color: var(--text);
+  }
+  .chart-area { width: 100%; height: 140px; }
+
+  /* ── Insight cards ── */
+  .section-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+  .insight-list { display: flex; flex-direction: column; gap: 10px; }
+  .insight-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--alert);
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .insight-card.critical { border-left-color: var(--critical); }
+  .insight-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .insight-body { flex: 1; }
+  .insight-title { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .insight-desc  { font-size: 13px; color: var(--muted); }
+
+  /* ── Table screen ── */
+  .filter-row {
+    display: flex; gap: 10px; margin-bottom: 18px; align-items: center;
+  }
+  .filter-select {
+    padding: 8px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text); background: white;
+    appearance: none;
+    cursor: pointer;
+  }
+  .search-box {
+    margin-left: auto;
+    display: flex; align-items: center; gap: 8px;
+    background: white;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px; color: var(--muted);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead { background: #F1F5F9; }
+  th {
+    text-align: left;
+    padding: 11px 16px;
+    font-size: 12px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase; letter-spacing: .04em;
+  }
+  td {
+    padding: 13px 16px;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #F8FAFC; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 600;
+  }
+  .badge-success  { background: #D1FAE5; color: #065F46; }
+  .badge-warning  { background: #FEF3C7; color: #92400E; }
+  .badge-info     { background: #DBEAFE; color: #1E40AF; }
+  .badge-critical { background: #FEE2E2; color: #991B1B; }
+
+  .action-icons { display: flex; gap: 10px; color: var(--secondary); font-size: 16px; cursor: pointer; }
+
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--muted);
+  }
+  .page-btns { display: flex; gap: 4px; }
+  .page-btn {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1.5px solid var(--border);
+    background: white; color: var(--text);
+  }
+  .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+  /* ── Client detail ── */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--secondary); font-weight: 500;
+    margin-bottom: 16px; cursor: pointer;
+  }
+  .client-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .client-name { font-size: 22px; font-weight: 700; }
+  .client-meta { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  .client-meta span { margin-right: 16px; }
+
+  .detail-kpi-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 16px; margin-bottom: 20px;
+  }
+
+  .history-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .history-item {
+    background: white; border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 14px;
+  }
+  .history-id { font-weight: 600; color: var(--primary); margin-right: 10px; }
+  .history-val { font-weight: 600; }
+
+  .recommend-card {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-left: 4px solid var(--alert);
+    border-radius: 10px;
+    padding: 18px 20px;
+    margin-top: 20px;
+  }
+  .recommend-title { font-size: 14px; font-weight: 600; color: #92400E; margin-bottom: 6px; }
+  .recommend-text  { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .recommend-action { margin-top: 12px; display: flex; justify-content: flex-end; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  @media print {
+    body { background: white; margin: 0; padding: 0; }
+    .page-header { display: none; }
+    .screen-wrapper { page-break-after: always; break-after: page; padding: 24px 0; }
+    .screen-wrapper:last-child { page-break-after: avoid; break-after: avoid; }
+    .screen-label { margin-top: 0; color: #1E40AF; font-size: 13px; }
+    .screen { box-shadow: none; border: 1px solid #CBD5E1; }
+  }
+</style>
+</head>
+<body>
+
+<div class="screen-wrapper">
+  <div class="screen-label">Tela 6 — Alertas de Insight (I-01 Churn Risk + I-02 NPS Crítico)</div>
+  <div class="screen">
+    <div class="topbar">
+      <div class="topbar-brand"><div class="dot">N</div>NexusVendas</div>
+      <div class="topbar-user"><div class="avatar">AL</div>Ana Lima ▾</div>
+    </div>
+    <div class="nav">
+      <div class="nav-item active">Dashboard</div>
+      <div class="nav-item">Pedidos</div>
+      <div class="nav-item">Clientes</div>
+      <div class="nav-item">Relatórios</div>
+    </div>
+    <div class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Alertas de Insight</div>
+          <div class="page-sub">Atualizado agora · data_referencia: 2024-11-05</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <span class="badge badge-critical" style="font-size:13px;padding:6px 14px;">🔴 4 alertas ativos</span>
+        </div>
+      </div>
+
+      <!-- I-01 Churn Risk -->
+      <div style="margin-bottom:24px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="background:var(--critical);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;">I-01</div>
+          <div style="font-size:16px;font-weight:700;">Risco de Churn — GET /insights/churn-risk?dias=90</div>
+          <span class="badge badge-critical">3 clientes</span>
+        </div>
+        <div style="background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Dias sem compra</th>
+                <th>Ticket médio</th>
+                <th>Ação sugerida</th>
+                <th>Prioridade</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#FFF5F5;">
+                <td><div style="font-weight:600;">Beta Distribuidora S.A.</div><div style="font-size:12px;color:var(--muted);">Varejo · Campinas, SP</div></td>
+                <td><span style="font-weight:700;color:var(--critical);font-size:15px;">118</span> <span style="font-size:12px;color:var(--muted);">dias</span></td>
+                <td><strong>R$ 4.200</strong></td>
+                <td style="font-size:13px;">Enviar oferta com 10% de desconto</td>
+                <td><span class="badge badge-critical">🔴 Alta</span></td>
+                <td><button class="btn btn-primary btn-sm">Acionar</button></td>
+              </tr>
+              <tr style="background:#FFFBEB;">
+                <td><div style="font-weight:600;">Gama Serviços Ltda</div><div style="font-size:12px;color:var(--muted);">Consultoria · São Paulo, SP</div></td>
+                <td><span style="font-weight:700;color:var(--alert);font-size:15px;">100</span> <span style="font-size:12px;color:var(--muted);">dias</span></td>
+                <td><strong>R$ 1.850</strong></td>
+                <td style="font-size:13px;">Agendar ligação de relacionamento</td>
+                <td><span class="badge badge-warning">⚠ Média</span></td>
+                <td><button class="btn btn-outline btn-sm">Acionar</button></td>
+              </tr>
+              <tr style="background:#FFFBEB;">
+                <td><div style="font-weight:600;">Eta Educação S.A.</div><div style="font-size:12px;color:var(--muted);">Educação · Recife, PE</div></td>
+                <td><span style="font-weight:700;color:var(--alert);font-size:15px;">583</span> <span style="font-size:12px;color:var(--muted);">dias</span></td>
+                <td><strong style="color:var(--muted);">—</strong></td>
+                <td style="font-size:13px;">Agendar ligação de relacionamento</td>
+                <td><span class="badge badge-warning">⚠ Média</span></td>
+                <td><button class="btn btn-outline btn-sm">Acionar</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- I-02 NPS Crítico -->
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          <div style="background:var(--critical);color:white;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px;">I-02</div>
+          <div style="font-size:16px;font-weight:700;">NPS Crítico — GET /insights/nps-alertas</div>
+          <span class="badge badge-critical">1 cliente</span>
+        </div>
+        <div style="background:white;border-radius:12px;border:1px solid var(--border);overflow:hidden;">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Últimas 3 notas</th>
+                <th>Tendência</th>
+                <th>Ação sugerida</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background:#FFF5F5;">
+                <td>
+                  <div style="font-weight:600;">Gama Serviços Ltda</div>
+                  <div style="font-size:12px;color:var(--muted);">Consultoria · São Paulo, SP</div>
+                </td>
+                <td>
+                  <div style="display:flex;gap:6px;align-items:center;">
+                    <span style="background:#FEE2E2;color:#991B1B;font-weight:700;padding:4px 10px;border-radius:6px;font-size:13px;">5</span>
+                    <span style="color:var(--muted);">→</span>
+                    <span style="background:#FEE2E2;color:#991B1B;font-weight:700;padding:4px 10px;border-radius:6px;font-size:13px;">4</span>
+                    <span style="color:var(--muted);">→</span>
+                    <span style="background:#FEE2E2;color:#991B1B;font-weight:700;padding:4px 10px;border-radius:6px;font-size:13px;">3</span>
+                  </div>
+                </td>
+                <td><span style="color:var(--critical);font-weight:700;font-size:18px;">↘</span> Queda</td>
+                <td style="font-size:13px;">Acionar Customer Success imediatamente</td>
+                <td><span class="badge badge-critical">🔴 NPS Crítico</span></td>
+                <td><button class="btn btn-primary btn-sm" style="background:var(--critical);">Acionar CS</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="margin-top:10px;background:#FEF2F2;border:1px solid #FECACA;border-left:4px solid var(--critical);border-radius:8px;padding:12px 16px;font-size:13px;color:#991B1B;">
+          <strong>I-02 disparado:</strong> Gama Serviços registrou 3 avaliações consecutivas ≤ 6 (notas 5, 4, 3). Risco de cancelamento e impacto na reputação. Acionar CS antes de 24h.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
