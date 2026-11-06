@@ -502,8 +502,8 @@ Prancha visual completa: _[link Figma/Canva]_
 ┌─────────────────────────────────────────────────────────┐
 │ 🔷 NexusVendas                           Ana Lima ▼     │
 ├─────────────┬─────────────┬─────────────┬───────────────┤
-│ R$ 37.600   │ 12 não canc.│ ⚠ 3 alertas│ Média: 6,9    │
-│ Vendas out. │ Pedidos     │ Churn       │ (0–10)        │
+│ R$ 37.600   │ 12 não canc.│ ⚠ 3 alertas│ NPS: −10      │
+│ Vendas out. │ Pedidos     │ Churn       │ ▼ −5 pts      │
 ├─────────────┴─────────────┴─────────────┴───────────────┤
 │  Vendas por mês (data do pedido) [gráfico de linha]     │
 ├─────────────────────────────────────────────────────────┤

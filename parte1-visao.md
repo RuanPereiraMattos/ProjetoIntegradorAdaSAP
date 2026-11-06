@@ -57,7 +57,7 @@ Empresas de médio porte perdem receita por não identificar clientes em risco d
 O MVP é organizado em dois pilares, ambos derivados dos dados operacionais do ERP:
 
 **Pilar 1 — Clientes em Risco de Churn**
-- [x] Dashboard com KPIs: alertas de churn, média das notas, vendas do último mês fechado
+- [x] Dashboard com KPIs: alertas de churn, NPS (% promotores − % detratores), vendas do último mês fechado
 - [x] Lista de clientes inativos (≥ 90 dias sem pedido) com ticket médio e ação sugerida
 - [x] Alerta de NPS crítico (3 avaliações consecutivas ≤ 6)
 - [x] Insight I-01 (churn risk) e I-02 (NPS crítico) com ação sugerida

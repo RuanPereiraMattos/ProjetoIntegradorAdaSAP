@@ -68,9 +68,9 @@
 ┌──────────────────────────────────────────────────────────┐
 │  🔷 NexusVendas                         Ana Lima ▼       │
 ├──────────────┬──────────────┬──────────────┬─────────────┤
-│ Vendas mês   │ Pedidos      │ Em Risco     │ Média notas │
-│ R$ 37.600    │ 12 não canc. │ ⚠ 3 alertas  │ 6,9 (0–10)  │
-│ ↑ +166,7%    │ 3 pendentes  │              │              │
+│ Vendas mês   │ Pedidos      │ Em Risco     │ NPS         │
+│ R$ 37.600    │ 12 não canc. │ ⚠ 3 alertas  │ −10         │
+│ ↑ +166,7%    │ 3 pendentes  │              │ ▼ −5 pts    │
 ├──────────────┴──────────────┴──────────────┴─────────────┤
 │  Vendas por mês (data do pedido)                          │
 │  [gráfico de linha — Jul Ago Set Out]                    │

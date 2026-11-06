@@ -171,7 +171,7 @@ pedidos  (1) ──────────────────< avaliacoes_
 | 9 | 5 | 5 | 8 | Prazo respeitado, produto conforme | 2024-10-15 |
 | 10 | 9 | 9 | 9 | Ótimo atendimento comercial | 2024-10-22 |
 
-> IDs 9 e 10 completam o mínimo de 10 registros exigido. Média das notas (0–10) dos 10 registros: **(9+6+5+4+3+10+8+7+8+9) / 10 = 6,9** — nota: o NPS convencional seria −10 (3 promotores, 4 detratores em 10 respostas), mas o KPI exibido no painel é a média aritmética das notas.
+> IDs 9 e 10 completam o mínimo de 10 registros exigido. **NPS = % promotores − % detratores**: promotores (notas 9–10): IDs 1, 6, 10 → 3/10 = 30%; passivos (7–8): IDs 7, 8, 9 → 3/10 = 30%; detratores (0–6): IDs 2, 3, 4, 5 → 4/10 = 40%. **NPS = 30 − 40 = −10**. O KPI exibido no painel é o NPS = −10 (não uma média aritmética).
 
 ### `produtos` (10 registros)
 
