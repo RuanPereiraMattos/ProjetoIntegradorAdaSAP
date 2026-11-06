@@ -269,7 +269,7 @@ Três responsabilidades que hoje estão distribuídas e o API Gateway centraliza
 **Problema:** "↑ +12%" é ambíguo — 12% em relação a quê? Ao mês anterior? À mesma semana do ano passado? À meta? Sem esse contexto, o número pode induzir decisões erradas: um gerente pode comemorar +12% sem saber que a meta era +25%.
 
 **Solução sem aumentar carga cognitiva:**
-- Adicionar um tooltip ao passar o mouse sobre a variação: "vs. outubro/2024 (R$60.900)".
+- Adicionar um tooltip ao passar o mouse sobre a variação: "vs. setembro/2024 (R$14.100)".
 - Exibir o período de referência como microtexto abaixo do KPI: "vs. mês anterior".
 - Usar um seletor de período global no topo do dashboard (ex: "Outubro 2024 | Mês atual") que contextualize todos os KPIs simultaneamente — uma única escolha do usuário resolve o contexto de todos os cards.
 

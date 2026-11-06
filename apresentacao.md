@@ -502,10 +502,10 @@ Prancha visual completa: _[link Figma/Canva]_
 ┌─────────────────────────────────────────────────────────┐
 │ 🔷 NexusVendas                           Ana Lima ▼     │
 ├─────────────┬─────────────┬─────────────┬───────────────┤
-│ R$ 68.200   │ 12 ativos   │ ⚠ 3 clientes│ Nota: 6,9     │
-│ Receita/mês │ Pedidos     │ Em Risco    │ ▼ -0,3        │
+│ R$ 37.600   │ 12 não canc.│ ⚠ 3 alertas│ Média: 6,9    │
+│ Vendas out. │ Pedidos     │ Churn       │ (0–10)        │
 ├─────────────┴─────────────┴─────────────┴───────────────┤
-│  Receita dos últimos 6 meses  [gráfico de linha]        │
+│  Vendas por mês (data do pedido) [gráfico de linha]     │
 ├─────────────────────────────────────────────────────────┤
 │  ⚠ Alertas de Insight                                   │
 │  🔴 Beta Distribuidora — 118 dias sem compra            │

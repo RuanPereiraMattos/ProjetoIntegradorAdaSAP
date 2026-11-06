@@ -53,7 +53,7 @@
 | **Badge de status** | Pill colorido: azul (ativo), âmbar (em risco), cinza (inativo), vermelho (crítico) |
 | **Tabela de pedidos** | Colunas sortáveis, filtros inline, paginação |
 | **Funil de oportunidades** | Barras horizontais por etapa com contagem e proporção de estoque entre etapas |
-| **Gráfico de linha** | Receita mensal dos últimos 6 meses (Recharts) |
+| **Gráfico de linha** | Vendas mensais por `data_pedido`, com período e regra exibidos no contexto do KPI (Recharts) |
 | **Card de insight** | Fundo âmbar/azul com ícone de alerta, texto em 3 partes e botão de ação |
 
 ---
@@ -68,12 +68,12 @@
 ┌──────────────────────────────────────────────────────────┐
 │  🔷 NexusVendas                         Ana Lima ▼       │
 ├──────────────┬──────────────┬──────────────┬─────────────┤
-│ Receita/mês  │ Pedidos      │ Em Risco     │ Média notas │
-│ R$ 68.200    │ 12 ativos    │ ⚠ 3 clientes │ 6,9 (0–10)  │
-│ ↑ +12%       │ 3 pendentes  │              │ ▼ -0,3      │
+│ Vendas mês   │ Pedidos      │ Em Risco     │ Média notas │
+│ R$ 37.600    │ 12 não canc. │ ⚠ 3 alertas  │ 6,9 (0–10)  │
+│ ↑ +166,7%    │ 3 pendentes  │              │              │
 ├──────────────┴──────────────┴──────────────┴─────────────┤
-│  Receita dos últimos 6 meses                             │
-│  [gráfico de linha — Mai Jun Jul Ago Set Out]            │
+│  Vendas por mês (data do pedido)                          │
+│  [gráfico de linha — Jul Ago Set Out]                    │
 ├──────────────────────────────────────────────────────────┤
 │  ⚠ Alertas de Insight                                    │
 │  ┌─────────────────────────────────────────────────────┐ │
@@ -87,6 +87,8 @@
 │  └─────────────────────────────────────────────────────┘ │
 └──────────────────────────────────────────────────────────┘
 ```
+
+> **Contexto do KPI:** amostra com data de referência em 05/11/2024; “Vendas mês” é a soma de `valor_total` dos pedidos não cancelados pela `data_pedido`. O cartão mostra o último mês fechado (outubro/2024) e compara com setembro/2024.
 
 ---
 

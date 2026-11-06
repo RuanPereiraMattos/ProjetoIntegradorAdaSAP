@@ -154,6 +154,8 @@ pedidos  (1) ──────────────────< avaliacoes_
 | 11 | 4 | 2024-10-25 | 2024-11-05 | null | 4500.00 | pendente |
 | 12 | 6 | 2024-11-01 | 2024-11-10 | null | 3200.00 | pendente |
 
+> **KPI de vendas do dashboard:** para manter a amostra reproduzível, o valor exibido usa o último mês fechado na data de referência `2024-11-05` (outubro/2024). A fórmula adotada é `SUM(valor_total)` por `data_pedido`, excluindo pedidos com `status = 'cancelado'`. O resultado de outubro é **R$ 37.600,00**; setembro totaliza **R$ 14.100,00**, uma variação de **+166,7%**. Novembro ainda está incompleto na data de referência e soma apenas **R$ 3.200,00**, por isso não é usado como mês fechado. Esse indicador representa valor comercial dos pedidos, não receita contábil reconhecida.
+
 ### `avaliacoes_nps` (anomalia A-03 nos IDs 3, 4 e 5)
 
 | id | cliente_id | pedido_id | nota | comentario | data_avaliacao |
