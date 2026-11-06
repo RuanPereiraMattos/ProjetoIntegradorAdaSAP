@@ -1,69 +1,68 @@
-# Gabarito — Respostas da Banca Avaliadora NexusVendas
+# Respostas para a Banca — NexusVendas
+## Guia de resposta rápida para o apresentador
 
-> **Uso interno:** Respostas esperadas para orientar a avaliação. Respostas dos candidatos não precisam ser idênticas — avaliar coerência técnica e capacidade de argumentação.
-
----
-
-## Bloco 1 — Visão do Produto e Engenharia de Requisitos
+> **Como usar:** Cada resposta está escrita na primeira pessoa do plural ("a gente", "nós implementamos") porque você está defendendo seu projeto. Leia antes da apresentação, não durante. O objetivo é internalizar — não decorar.
 
 ---
 
-**Q1 — Heurística determinística vs. modelo preditivo de ML**
-
-Uma **regra determinística** aplica um limiar fixo definido por especialistas de domínio: se `dias_sem_compra >= 90`, o cliente está em risco. O resultado é binário, auditável e previsível — dado o mesmo input, o output é sempre o mesmo.
-
-Um **modelo preditivo de ML** aprende padrões multivariados a partir de dados históricos: frequência de compra, sazonalidade, ticket médio, variações de NPS, segmento, etc. O modelo produz uma probabilidade de churn, não uma classificação binária.
-
-**Quando a heurística é suficiente:** Base de clientes pequena (< 500), dados históricos escassos, equipe sem expertise em ML, produto em fase de MVP onde a regra captura os casos mais óbvios com boa precisão.
-
-**Quando é inadequada:** Base grande com comportamentos heterogêneos (um cliente do agronegócio que compra sazonalmente a cada 180 dias não está em risco, mas seria flagrado pela regra). O modelo de ML consegue aprender que sazonalidade é normal para aquele segmento.
+## Bloco 1 — Visão do Produto
 
 ---
 
-**Q2 — Threshold hardcoded R$3.000**
+### Q1 — Heurística vs. Machine Learning para churn
 
-**Riscos:** Qualquer alteração exige modificação de código, commit, CI/CD e redeployment — risco de bug em produção para uma mudança de regra de negócio. Além disso, o valor pode se tornar defasado pela inflação ou mudança de estratégia comercial sem que o time de negócios perceba que precisa acionar o time de engenharia.
+**Resposta curta (para chegar em ~40 segundos):**
 
-**Refatoração sugerida:**
-- Criar uma tabela de configuração no banco: `configuracoes(chave VARCHAR PK, valor TEXT, descricao TEXT)` com um registro `churn_ticket_threshold = 3000`.
-- O Service lê esse valor no início da execução: `const threshold = await ConfigRepository.get('churn_ticket_threshold')`.
-- Alterações via endpoint `PATCH /admin/config` (role `admin`), sem redeployment.
-- Alternativa mais simples: variável de ambiente `CHURN_TICKET_THRESHOLD=3000` lida via `process.env` — sem banco, mas ainda requer restart do processo.
+"Uma regra determinística como a nossa — 'sem compra há 90 dias = em risco' — é binária e auditável: dado o mesmo input, sempre dá o mesmo output. Um modelo de ML aprende padrões mais complexos: frequência de compra, sazonalidade, ticket, histórico de NPS.
+
+A nossa heurística é suficiente no MVP porque a base de clientes é pequena e os casos mais críticos são exatamente os mais óbvios. Ela seria inadequada com uma base grande e comportamentos heterogêneos — um cliente do agronegócio que compra uma vez por semestre não está em risco, mas seria flagrado pela regra. O ML está no backlog para quando tivermos dados históricos suficientes para treinar um modelo."
 
 ---
 
-**Q3 — Tagline mapeada para funcionalidades**
+### Q2 — Threshold hardcoded R$3.000
 
-| Objetivo | Funcionalidade | Persona | Como endereça a dor |
-|---|---|---|---|
-| **Venda mais** | Funil de oportunidades (F-04) + insight I-03 (gargalo) | Gerente Comercial | Identifica em qual etapa o pipeline está travado e sugere revisão de abordagem antes do fim do mês |
-| **Perca menos** | Insight I-01 (churn risk) + I-02 (NPS crítico) | Analista de CX | Lista clientes em risco com ação específica antes que cancelem — substitui a detecção reativa por proativa |
-| **Decida melhor** | Dashboard com 4 KPIs consolidados (F-01) | Gerente Comercial | Substitui planilhas dispersas por uma visão unificada de receita, pedidos, risco e satisfação em tempo real |
+**Resposta curta:**
 
----
+"O risco é que qualquer mudança de regra de negócio exige commit, deploy e risco de regressão em produção. Se o time comercial decidir mudar o threshold para R$2.500, precisa chamar o engenheiro.
 
-## Bloco 2 — Modelagem de Banco de Dados
+A correção que faríamos: criar uma tabela `configuracoes(chave, valor)` no banco com um registro `churn_ticket_threshold = 3000`, e o Service lê esse valor na execução. Alterações via endpoint `PATCH /admin/config` sem redeployment. Uma alternativa mais simples ainda: variável de ambiente `CHURN_TICKET_THRESHOLD=3000` lida via `process.env`."
 
 ---
 
-**Q4 — Snapshot de preço em `itens_pedido`**
+### Q3 — Tagline mapeada para funcionalidades
 
-O problema que a decisão resolve é a **mutabilidade retroativa de dados financeiros**. Se `itens_pedido` referenciasse `produtos.preco_base` via FK sem snapshot, qualquer atualização de preço do produto alteraria retroativamente o valor calculado de pedidos históricos.
+**Resposta direta:**
 
-Exemplo concreto: o produto "CRM Enterprise" custava R$3.500 em agosto/2024. Se em janeiro/2025 o preço subir para R$4.200, uma query de receita histórica recalcularia todos os pedidos antigos com o novo preço, distorcendo demonstrativos financeiros, comissões pagas e metas já fechadas.
-
-O snapshot garante **imutabilidade do registro transacional**: o preço capturado é o preço vigente no momento da venda, independente de alterações futuras no catálogo.
+| Objetivo | Funcionalidade | Como resolve a dor |
+|---|---|---|
+| **Venda mais** | Insight I-03: gargalo no funil | Mostra onde o pipeline trava antes de o mês fechar |
+| **Perca menos** | Insight I-01 (churn) + I-02 (NPS) | Substitui detecção reativa por proativa — alerta antes do cancelamento |
+| **Decida melhor** | Dashboard com 4 KPIs | Substitui planilhas dispersas por visão unificada em tempo real |
 
 ---
 
-**Q5 — Query SQL: ticket médio por cliente**
+## Bloco 2 — Banco de Dados
+
+---
+
+### Q4 — Snapshot de preço em `itens_pedido` *(pergunta clássica — saiba bem)*
+
+**Resposta curta:**
+
+"O problema que o snapshot resolve é a **mutabilidade retroativa de dados financeiros**. Se `itens_pedido` referenciasse o preço diretamente da tabela `produtos`, toda vez que o preço fosse atualizado, todos os pedidos históricos seriam recalculados com o novo valor — distorcendo relatórios de receita, comissões já pagas e metas fechadas.
+
+O snapshot garante que o preço registrado é o vigente no momento da venda. O campo `preco_unitario` em `itens_pedido` nunca muda depois de inserido."
+
+---
+
+### Q5 — Query SQL: ticket médio por cliente
 
 ```sql
 SELECT
     c.id,
     c.nome,
     AVG(p.valor_total) AS ticket_medio,
-    COUNT(p.id)        AS total_pedidos_entregues
+    COUNT(p.id)        AS total_pedidos
 FROM clientes c
 JOIN pedidos p ON p.cliente_id = c.id
 WHERE p.status = 'entregue'
@@ -72,220 +71,166 @@ HAVING COUNT(p.id) > 1
 ORDER BY ticket_medio DESC;
 ```
 
-**Explicação:** O `HAVING COUNT > 1` garante que apenas clientes com mais de um pedido entregue entram no resultado. O `AVG` calcula a média dos valores dos pedidos filtrados. O `ORDER BY ticket_medio DESC` ordena do maior para o menor.
+**Como explicar em voz alta:** "O `HAVING COUNT > 1` filtra clientes com mais de um pedido entregue. O `AVG` calcula a média dos valores. O `ORDER BY DESC` ordena do maior para o menor ticket."
 
 ---
 
-**Q6 — Novo insight para atrasos de entrega**
+### Q6 — Insight para atrasos de entrega
 
-**Critério de disparo:** `data_entrega_real > data_entrega_prev AND DATEDIFF(data_entrega_real, data_entrega_prev) >= 7` (atraso de 7 ou mais dias).
+"Adicionaríamos um endpoint `GET /insights/atrasos-entrega`. O critério de disparo seria: `data_entrega_real > data_entrega_prev` com diferença de 7 ou mais dias.
 
-**Endpoint sugerido:** `GET /insights/atrasos-entrega`
+A ação sugerida: contatar o cliente para explicar e oferecer compensação.
 
-**Resposta esperada:**
-```json
-{
-  "total": 2,
-  "pedidos": [
-    {
-      "pedido_id": 2,
-      "cliente": "Beta Distribuidora S.A.",
-      "dias_atraso": 19,
-      "valor_total": 4200.00,
-      "acao_sugerida": "Contatar cliente para explicar o atraso e oferecer compensação"
-    }
-  ]
-}
-```
-
-**Impacto no modelo:** Nenhuma nova tabela necessária. A lógica usa campos já existentes em `pedidos`. Seria necessário adicionar um índice em `pedidos(data_entrega_prev, data_entrega_real)` para performance.
-
-**Conexão com NPS:** O insight pode ser cruzado com `avaliacoes_nps` para identificar se pedidos atrasados geraram avaliações baixas — validando empiricamente a correlação A-01 → A-03.
+O impacto no modelo de dados é zero — os campos já existem em `pedidos`. Só precisaríamos de um índice em `(data_entrega_prev, data_entrega_real)` para performance. E o insight poderia ser cruzado com `avaliacoes_nps` para confirmar se atrasos geram NPS baixo — fechando o ciclo A-01 → A-03."
 
 ---
 
-**Q7 — Auditoria por trigger vs. auditoria na camada de serviço**
+### Q7 — Auditoria por trigger vs. na camada de serviço
 
-| Critério | Trigger no banco | Auditoria no Service |
-|---|---|---|
-| **Consistência** | Alta — captura toda operação, mesmo acessos diretos ao banco via DBA ou scripts de migração | Média — só captura operações que passam pela API |
-| **Manutenibilidade** | Baixa — lógica dispersa em DDL, difícil de testar, acoplada ao banco | Alta — código centralizado, testável com mocks |
-| **Performance** | Impacto em toda operação DML, mesmo as internas | Overhead apenas nas operações via API |
-| **Portabilidade** | Sintaxe de trigger varia entre SGBDs (PostgreSQL, MySQL, SQLite) | Independente de banco |
+"A auditoria por **trigger no banco** captura tudo, inclusive acessos diretos via DBA — alta consistência. Mas é difícil de testar e a sintaxe varia entre bancos.
 
-**Conclusão esperada:** Para o NexusVendas, a auditoria na camada de serviço é mais adequada no MVP por ser mais testável e manutenível. Em um ambiente com acesso direto ao banco por múltiplas aplicações ou times de dados, triggers seriam necessários para garantir cobertura total.
+A auditoria na **camada Service** é mais fácil de testar com mocks, fica em código versionado e é independente do banco. A desvantagem é que só captura operações que passam pela API.
+
+Para o NexusVendas, escolhemos a camada Service por ser mais manutenível no MVP. Em ambiente com múltiplas aplicações acessando o banco diretamente, triggers seriam necessários."
 
 ---
 
-**Q8 — `pedido_id` nullable em `avaliacoes_nps`**
+### Q8 — `pedido_id` nullable em `avaliacoes_nps`
 
-**Justificativa de negócio:** Uma empresa cliente pode responder uma pesquisa periódica de satisfação (NPS relacional) que não está vinculada a uma transação específica — avalia o relacionamento geral com o fornecedor. Isso é diferente do NPS transacional, disparado após uma entrega. O modelo suporta ambos os tipos.
+"O nullable existe porque há dois tipos de NPS: o **transacional** (após uma entrega específica) e o **relacional** (pesquisa periódica de satisfação geral, sem vínculo com pedido). O modelo suporta os dois.
 
-**Exemplo concreto nos dados:** Avaliações 4 e 5 do cliente Gama Serviços (IDs 4 e 5 em `avaliacoes_nps`) têm `pedido_id = null` — são avaliações espontâneas de relacionamento, não de pedidos específicos.
+Nos nossos dados de exemplo, as avaliações 4 e 5 do cliente Gama Serviços têm `pedido_id = null` — são avaliações espontâneas de relacionamento.
 
-**Restrição de integridade:** A FK `pedido_id → pedidos.id` com `ON DELETE SET NULL` garante que, quando preenchido, o valor referencia um pedido válido. O banco rejeita automaticamente um `pedido_id` inexistente.
-
----
-
-## Bloco 3 — Design de API REST
+A integridade é garantida pela FK com `ON DELETE SET NULL`: quando preenchido, o valor obrigatoriamente referencia um pedido existente. O banco rejeita um `pedido_id` inválido automaticamente."
 
 ---
 
-**Q9 — PUT vs. PATCH e problema de concorrência**
-
-**PUT** é idempotente e substitui o recurso inteiro: o cliente envia a representação completa e o servidor a sobrescreve. Se enviar apenas o campo `status`, todos os outros campos do pedido seriam apagados ou sobrescritos com null.
-
-**PATCH** atualiza parcialmente o recurso — apenas os campos enviados são modificados. É semanticamente correto para "alterar só o status" sem precisar conhecer ou re-enviar todos os campos do pedido.
-
-**Problema de concorrência (race condition):** Dois usuários leem o pedido com `status = pendente` simultaneamente. Ambos enviam `PATCH` — um para `aprovado`, outro para `cancelado`. Dependendo da ordem de chegada, um sobrescreve o outro sem saber que o estado mudou entre a leitura e a escrita.
-
-**Mitigação:** Otimistic locking com campo `versao INT` no pedido. O PATCH inclui a versão atual: `PATCH /pedidos/7/status { "status": "aprovado", "versao": 3 }`. O banco executa `UPDATE pedidos SET status='aprovado', versao=4 WHERE id=7 AND versao=3` — se retornar 0 linhas afetadas, a API responde 409 Conflict.
+## Bloco 3 — API REST
 
 ---
 
-**Q10 — Vulnerabilidade de validação: `?dias=0`**
+### Q9 — PUT vs. PATCH e concorrência *(pergunta técnica frequente)*
 
-**Vulnerabilidade:** O parâmetro `dias` não é validado. Com `dias=0`, a condição `diasSemCompra >= 0` é verdadeira para todos os clientes, incluindo os que compraram hoje — produzindo um falso positivo massivo e potencialmente expondo dados de todos os clientes a um usuário sem permissão de visão global.
+"**PUT** substitui o recurso inteiro — se mandar só o campo `status`, os outros campos sumiriam ou virariam null.
 
-**Correção no Controller:**
+**PATCH** atualiza parcialmente: só os campos enviados são modificados. É semanticamente correto para 'alterar apenas o status'.
+
+O problema de concorrência que persiste: dois usuários leem o pedido com `status = pendente` ao mesmo tempo. Um envia PATCH para `aprovado`, o outro para `cancelado`. O segundo sobrescreve o primeiro sem saber que o estado mudou.
+
+A mitigação é **optimistic locking**: adicionar um campo `versao INT` no pedido. O PATCH inclui a versão atual. O banco executa `UPDATE ... WHERE id=7 AND versao=3` — se não afetar nenhuma linha, retorna **409 Conflict**."
+
+---
+
+### Q10 — Vulnerabilidade `?dias=0`
+
+"Com `dias=0`, a condição `diasSemCompra >= 0` é verdadeira para todos os clientes — o endpoint retorna a base inteira como 'em risco', expondo dados que o vendedor não deveria ver.
+
+A correção no Controller:
 
 ```javascript
 const dias = parseInt(req.query.dias) || 90;
-
 if (isNaN(dias) || dias < 1 || dias > 3650) {
   return res.status(400).json({
-    error: {
-      code: "PARAMETRO_INVALIDO",
-      message: "O parâmetro 'dias' deve ser um número inteiro entre 1 e 3650.",
-      status: 400
-    }
+    error: { code: 'PARAMETRO_INVALIDO',
+             message: 'dias deve ser entre 1 e 3650.',
+             status: 400 }
   });
 }
 ```
 
-Código HTTP: **400 Bad Request**, no padrão de erro definido em `parte3-api.md §3.2`.
+HTTP **400 Bad Request**, no padrão de erro que definimos no projeto."
 
 ---
 
-**Q11 — Limitação temporal da regra NPS**
+### Q11 — Limitação temporal da regra NPS
 
-**Problema identificado:** A regra busca as últimas 3 avaliações sem filtro de data. Se um cliente teve notas 5, 4, 3 há dois anos e desde então não avaliou mais, o sistema dispara o alerta indefinidamente — mesmo que o cliente tenha sido recuperado e nunca mais respondeu uma pesquisa.
+"O problema é que se o cliente teve notas 5, 4, 3 há dois anos e nunca mais avaliou, o alerta dispara toda vez que a query roda — indefinidamente. O cliente pode ter sido recuperado.
 
-**Correção proposta na pseudológica:**
+A correção: adicionar um filtro temporal — verificar se a avaliação mais recente é de no máximo 180 dias atrás. Se a última avaliação for muito antiga, não disparar o alerta.
 
 ```
-avaliacoes = buscarAvaliacoes(cliente.id, ORDEM: data DESC, LIMITE: 3)
-
-SE avaliacoes.length == 3:
-  SE avaliacoes[0].data_avaliacao >= HOJE - 180 dias:  // avaliação mais recente < 6 meses
-    SE TODAS as avaliacoes.nota <= 6:
-      ADICIONAR alerta
+SE avaliacoes[0].data_avaliacao >= HOJE - 180 dias:
+  SE TODAS as notas <= 6: → ALERTAR
 ```
 
-O critério `data_avaliacao >= HOJE - 180 dias` garante que o alerta só é disparado se a avaliação mais recente for relativamente atual. O período de 180 dias é configurável (mesma recomendação da Q2 para evitar hardcode).
+O período de 180 dias ficaria configurável (mesma lógica da Q2 — sem hardcode)."
 
 ---
 
-**Q12 — Trade-off JWT: duração do token e armazenamento**
+### Q12 — Trade-off JWT: duração e armazenamento
 
-**Tokens curtos (1h):** Menor janela de exploração em caso de roubo — um token interceptado expira rapidamente. Porém exige que o cliente faça refresh frequentemente, aumentando tráfego e complexidade.
+"Token curto (1h) = menor janela de exploração se roubado. Token longo (7 dias de refresh) = menos re-logins, mas se comprometido o atacante emite novos access tokens por 7 dias.
 
-**Refresh token longo (7 dias):** Permite re-emissão silenciosa do access token sem re-login. O risco é que, se o refresh token for comprometido, o atacante pode emitir novos access tokens por até 7 dias. Por isso deve ser tratado como credencial e armazenado de forma mais segura.
+O refresh token não deve ficar em **localStorage** porque qualquer script XSS rodando na página consegue lê-lo e exfiltrá-lo — é acessível via JavaScript.
 
-**Por que não usar localStorage:** O localStorage é acessível via JavaScript — qualquer script XSS rodando na página pode ler e exfiltrar o token. Isso é especialmente crítico para o refresh token de longa duração.
-
-**Armazenamento recomendado:** Cookie `HttpOnly; Secure; SameSite=Strict`. Cookies com flag `HttpOnly` são inacessíveis via JavaScript, eliminando a superfície de ataque XSS. A flag `Secure` garante transmissão apenas via HTTPS. `SameSite=Strict` mitiga CSRF.
+A recomendação é cookie com flags `HttpOnly; Secure; SameSite=Strict`. Com `HttpOnly`, o JavaScript não consegue acessar o cookie. `Secure` garante HTTPS. `SameSite=Strict` mitiga CSRF."
 
 ---
 
-## Bloco 4 — Arquitetura de Software
+## Bloco 4 — Arquitetura
 
 ---
 
-**Q13 — Separação de camadas viabilizando testes unitários**
+### Q13 — Camadas e testes unitários *(pergunta conceitual importante)*
 
-Com a lógica de negócio isolada na camada **Service**, o teste unitário de `calcularChurnRisk` pode ser escrito sem instanciar banco, conexão HTTP ou framework Express:
+"Com a lógica de negócio isolada no **Service**, um teste unitário de `calcularChurnRisk` não precisa de banco, de Express nem de HTTP. Passamos um repositório mockado por injeção de dependência:
 
 ```javascript
-// Teste unitário — sem banco real
-const mockRepository = {
-  getClientesSemPedido: jest.fn().mockResolvedValue([
-    { id: 2, nome: "Beta Distribuidora", ultimo_pedido: "2024-07-10" }
-  ]),
-  getTicketMedio: jest.fn().mockResolvedValue(4200.00)
+const mockRepo = {
+  getClientesSemPedido: jest.fn().mockResolvedValue([...])
 };
-
-const service = new InsightService(mockRepository); // injeção de dependência
+const service = new InsightService(mockRepo);
 const resultado = await service.calcularChurnRisk(90);
-
-expect(resultado[0].acao_sugerida).toBe("Enviar oferta de reativação com 10% de desconto");
+expect(resultado[0].acao_sugerida).toBe('...');
 ```
 
-**Dependências eliminadas:** conexão PostgreSQL, dados de fixture no banco, lentidão de I/O. O teste roda em milissegundos e é determinístico.
-
-**Pré-requisito:** O Service deve receber o Repository por injeção de dependência (construtor ou parâmetro), não instanciá-lo internamente — caso contrário a separação de camadas não é suficiente para desacoplar o teste.
+O teste roda em milissegundos e é determinístico. Se o Service instanciasse o Repository internamente, seria impossível mockar — a separação de camadas só viabiliza o teste unitário se houver injeção de dependência."
 
 ---
 
-**Q14 — Responsabilidades do API Gateway**
+### Q14 — Responsabilidades do API Gateway
 
-Três responsabilidades que hoje estão distribuídas e o API Gateway centralizaria:
+"Três responsabilidades que o API Gateway centralizaria:
 
-1. **Rate limiting:** Hoje cada instância da API Node.js controlaria requisições individualmente. Com API Gateway, um vendedor não pode disparar 1.000 chamadas a `/insights/churn-risk` por minuto — o Gateway rejeita com 429 Too Many Requests antes de sequer chegar à aplicação.
+1. **Rate limiting:** Hoje a API não limita requisições por usuário. Com o Gateway, um vendedor não consegue disparar 1.000 chamadas a `/insights/churn-risk` em um minuto — o Gateway rejeita com **429 Too Many Requests** antes de chegar na aplicação.
 
-2. **Autenticação centralizada:** Hoje o middleware JWT está replicado em todas as rotas Express. O Gateway valida o token e injeta os claims do usuário no header antes de rotear — os microsserviços de Vendas, Insights e Notificações não precisam implementar auth individualmente.
+2. **Autenticação centralizada:** Hoje o middleware JWT está replicado em todas as rotas Express. Com o Gateway, ele valida o token e injeta os claims no header — os serviços de Vendas, Insights e Notificações não precisam implementar auth individualmente.
 
-3. **Roteamento e versionamento:** Hoje `/clientes`, `/pedidos` e `/insights` estão no mesmo processo Node.js. Com Gateway, `/v1/insights/*` pode ser roteado para a função Lambda de Insights enquanto `/v1/pedidos/*` vai para a API de Vendas no ECS/Fargate — sem que o frontend mude a URL base.
-
----
-
-**Q15 — Arquitetura síncrona vs. assíncrona com fila SQS**
-
-**Síncrona (atual):**
-- Usuário clica em "Dashboard" → React dispara `GET /insights/churn-risk` → API executa a query → retorna JSON → tela renderiza.
-- Latência percebida: igual ao tempo de execução da query (tipicamente < 500ms com dados de MVP, podendo chegar a 5-10s com 100k clientes).
-- Adequada quando: dados precisam ser sempre frescos, base pequena, resposta imediata é esperada.
-
-**Assíncrona com SQS + Lambda:**
-- Um job periódico (EventBridge Scheduler a cada 5 min) publica uma mensagem na fila SQS.
-- Lambda consome a mensagem, executa o cálculo de churn e persiste o resultado em uma tabela `insights_cache`.
-- O endpoint `GET /insights/churn-risk` simplesmente lê da tabela cache — tempo de resposta < 50ms, sem tocar nas tabelas de pedidos.
-- Latência percebida: praticamente zero, mas dados podem ter até 5 minutos de defasagem.
-- Adequada quando: cálculo é caro, dados não precisam ser em tempo real, escalabilidade é prioridade.
-
-**Como o frontend saberia que o resultado está pronto:**
-- Polling: React consulta `GET /insights/status` a cada N segundos até receber `{ ready: true }`.
-- WebSocket: API notifica o cliente quando o cálculo termina.
-- Server-Sent Events (SSE): solução mais simples para notificações unidirecionais servidor → cliente.
+3. **Roteamento e versionamento:** Com Gateway, `/v1/insights/*` pode rotear para Lambda enquanto `/v1/pedidos/*` vai para o Elastic Beanstalk — sem o frontend mudar a URL base."
 
 ---
 
-## Bloco 5 — Identidade Visual e UX
+### Q15 — Síncrono vs. assíncrono com SQS
+
+"**Síncrono (atual):** usuário clica → API executa a query → retorna o resultado. Latência depende do tempo da query — rápido com base pequena, pode chegar a 5-10 segundos com 100k clientes.
+
+**Assíncrono com SQS:** um job no EventBridge dispara a cada 5 minutos, publica na fila, o Lambda calcula e salva em uma tabela `insights_cache`. O endpoint simplesmente lê do cache — resposta em menos de 50ms. Dados podem ter até 5 minutos de defasagem.
+
+Preferimos síncrono para MVP: dados frescos, base pequena, sem complexidade de fila. O assíncrono entra no médio prazo quando o cálculo se tornar caro.
+
+Para o frontend saber quando o resultado assíncrono está pronto: polling em `GET /insights/status`, WebSocket, ou Server-Sent Events — SSE é o mais simples para notificação unidirecional."
 
 ---
 
-**Q16 — Variações percentuais sem contexto temporal**
-
-**Problema:** "↑ +12%" é ambíguo — 12% em relação a quê? Ao mês anterior? À mesma semana do ano passado? À meta? Sem esse contexto, o número pode induzir decisões erradas: um gerente pode comemorar +12% sem saber que a meta era +25%.
-
-**Solução sem aumentar carga cognitiva:**
-- Adicionar um tooltip ao passar o mouse sobre a variação: "vs. setembro/2024 (R$14.100)".
-- Exibir o período de referência como microtexto abaixo do KPI: "vs. mês anterior".
-- Usar um seletor de período global no topo do dashboard (ex: "Outubro 2024 | Mês atual") que contextualize todos os KPIs simultaneamente — uma única escolha do usuário resolve o contexto de todos os cards.
-
-A terceira opção é a mais eficiente em termos de densidade de informação: um controle, múltiplos KPIs contextualizados.
+## Bloco 5 — Identidade Visual
 
 ---
 
-**Q17 — Acessibilidade WCAG 2.1 e daltonismo**
+### Q16 — Variação percentual sem contexto
 
-**Contraste mínimo WCAG 2.1:**
-- Nível AA: razão de contraste ≥ 4.5:1 para texto normal, ≥ 3:1 para texto grande (≥ 18px bold ou ≥ 24px regular).
-- O âmbar `#F59E0B` sobre fundo branco `#F8FAFC` tem contraste de aproximadamente 2.8:1 — **abaixo do mínimo AA** para texto normal. Texto escuro `#1E293B` sobre o badge âmbar teria contraste de ~5.2:1, aprovado.
+"O problema: '↑ +12%' é ambíguo. 12% em relação a quê? Ao mês anterior? À meta? O gestor pode comemorar +12% sem saber que a meta era +25%.
 
-**Para daltonismo vermelho-verde (deuteranopia):**
-- Nunca comunicar estado apenas por cor — um badge "em risco" que é só âmbar e um badge "ativo" que é só verde parecem idênticos para um usuário com deuteranopia.
-- Soluções: (a) adicionar ícone ao badge (⚠ para risco, ✓ para ativo); (b) usar labels de texto dentro do badge além da cor; (c) usar padrões de textura ou borda diferente como segundo canal visual.
+Solução sem aumentar carga cognitiva: um **seletor de período global** no topo do dashboard (ex: 'Outubro 2024 | vs. mês anterior'). Um controle contextualiza todos os KPIs ao mesmo tempo — mais eficiente do que adicionar texto explicativo em cada card."
+
+---
+
+### Q17 — Acessibilidade WCAG 2.1 e daltonismo
+
+"WCAG 2.1 nível AA exige contraste mínimo de **4,5:1** para texto normal e **3:1** para texto grande.
+
+O âmbar `#F59E0B` sobre fundo branco tem contraste de aproximadamente 2,8:1 — abaixo do mínimo para texto normal. A solução é usar texto escuro `#1E293B` sobre o fundo âmbar, que chega a ~5,2:1.
+
+Para daltonismo vermelho-verde (deuteranopia): nunca comunicar estado só por cor. Um badge 'em risco' em âmbar e um badge 'ativo' em verde parecem idênticos para quem tem deuteranopia. A solução é adicionar ícone (⚠ para risco, ✓ para ativo) ou texto dentro do badge como segundo canal visual."
 
 ---
 
@@ -293,66 +238,51 @@ A terceira opção é a mais eficiente em termos de densidade de informação: u
 
 ---
 
-**Q18 — Índice composto: ordem das colunas**
+### Q18 — Índice composto
 
-**Conceito:** Um índice composto em `(cliente_id, data_pedido)` cria uma estrutura B-tree ordenada primeiro por `cliente_id`, depois por `data_pedido` dentro de cada cliente. A regra geral é: **colunas de igualdade primeiro, colunas de range/ordenação depois**.
+"Em um índice composto, a regra é: **colunas de filtro por igualdade primeiro, colunas de range ou ordenação depois**.
 
-**Ordem correta:** `(cliente_id, data_pedido DESC)` — porque a query filtra por `cliente_id = X` (igualdade) e depois ordena por `data_pedido DESC` para pegar o mais recente.
+Para a query de churn — `WHERE cliente_id = X ORDER BY data_pedido DESC LIMIT 1` — o índice correto é `(cliente_id, data_pedido)`. O banco faz um **Index Scan** direto nas entradas do cliente, já ordenadas por data, e retorna o primeiro registro sem varrer a tabela inteira.
 
-**Análise da query de churn:**
-```sql
-SELECT * FROM pedidos
-WHERE cliente_id = 2
-ORDER BY data_pedido DESC
-LIMIT 1;
-```
-Com o índice `(cliente_id, data_pedido)`, o plano de execução faria um **Index Scan** direto nas entradas de `cliente_id = 2`, já ordenadas por data — retornando o primeiro registro sem full table scan. Sem o índice, um **Seq Scan** percorreria todos os 100k+ registros.
-
-**Ordem invertida seria ineficiente:** Um índice em `(data_pedido, cliente_id)` não ajuda quando o filtro principal é por `cliente_id`, pois a primeira coluna do índice (`data_pedido`) não está sendo filtrada com igualdade.
+Índice invertido `(data_pedido, cliente_id)` não ajudaria porque o filtro principal é `cliente_id`, não `data_pedido`."
 
 ---
 
-**Q19 — LGPD aplicada aos campos `responsavel` e `usuario`**
+### Q19 — LGPD em `responsavel` e `usuario`
 
-**O problema:** Nomes de funcionários ("Carlos Andrade", "Marina Costa") em `oportunidades.responsavel` e `audit_log.usuario` são **dados pessoais** segundo o Art. 5º da LGPD — identificam diretamente uma pessoa física.
+"No MVP usamos dados fictícios de PJ — nenhum titular real. Em produção, os nomes de funcionários em `responsavel` e `audit_log.usuario` são dados pessoais segundo o Art. 5º da LGPD.
 
-**Obrigações LGPD:**
-- Definir base legal para o tratamento (legítimo interesse da empresa ou execução de contrato de trabalho).
-- Garantir direito de acesso, correção e anonimização ao titular (o funcionário).
-- Não reter dados além do necessário — `audit_log` crescendo indefinidamente viola o princípio da necessidade.
+**Duas medidas técnicas:**
 
-**Medidas técnicas propostas:**
-1. **Substituir nome livre por FK para tabela `usuarios`:** `responsavel VARCHAR(100)` → `responsavel_id INT FK → usuarios.id`. O nome fica em um único lugar, pode ser anonimizado ou excluído via cascade controlado, e a auditoria mantém apenas o ID.
-2. **Política de retenção e anonimização do `audit_log`:** Após 2 anos, executar `UPDATE audit_log SET usuario = 'anonimizado' WHERE timestamp < NOW() - INTERVAL '2 years'`, preservando o log de operação sem reter o dado pessoal além do necessário.
+1. **Substituir nome livre por FK:** `responsavel VARCHAR` → `responsavel_id INT FK → usuarios.id`. O nome fica em um único lugar e pode ser anonimizado ou excluído de forma controlada. O log mantém só o ID.
+
+2. **Política de retenção no `audit_log`:** após 2 anos, um job executa `UPDATE audit_log SET usuario = 'anonimizado' WHERE timestamp < NOW() - INTERVAL '2 years'`. Preserva o histórico de operação sem reter dado pessoal além do necessário."
 
 ---
 
-**Q20 — Serverless (Lambda + DynamoDB) vs. arquitetura atual**
+### Q20 — Serverless (Lambda + DynamoDB) vs. arquitetura atual
 
-**(a) Adequação ao modelo relacional:**
-O NexusVendas é fortemente relacional: 7 tabelas com FKs, JOINs complexos nos insights (churn cruza `clientes` + `pedidos`; NPS cruza `avaliacoes_nps` + `clientes`). DynamoDB é um banco NoSQL orientado a acesso por chave — JOINs multi-tabela exigiriam desnormalização agressiva ou múltiplas chamadas na aplicação, aumentando complexidade e custo de manutenção. PostgreSQL no RDS é a escolha natural.
+"Três problemas com serverless para o NexusVendas no MVP:
 
-**(b) Cold start e latência:**
-Lambda tem cold start de 200ms–1s em Node.js para a primeira invocação após período inativo. Para um dashboard que o gerente abre toda manhã, o primeiro acesso seria visivelmente mais lento. Com Elastic Beanstalk (processo contínuo), não há cold start — a API está sempre aquecida.
+1. **Modelo relacional:** temos 7 tabelas com JOINs complexos. DynamoDB é NoSQL — JOINs multi-tabela exigiriam desnormalização ou múltiplas chamadas na aplicação, aumentando complexidade.
 
-**(c) Curva de aprendizado:**
-Node.js + Express é o stack declarado no projeto — a equipe já tem familiaridade. Migrar para Lambda exigiria aprender SAM/CDK para infraestrutura, modelo de execução stateless de funções, limites de timeout (15 min) e gerenciamento de conexões de banco por invocação (problema clássico de Lambda com RDS).
+2. **Cold start:** Lambda em Node.js tem cold start de 200ms a 1s na primeira invocação depois de inativo. Para um dashboard que o gerente abre toda manhã, o primeiro acesso seria visivelmente lento. Elastic Beanstalk não tem esse problema.
 
-**Recomendação para MVP:** Elastic Beanstalk + RDS PostgreSQL conforme projetado. A arquitetura serverless é válida para o longo prazo quando os microsserviços já estiverem desacoplados e os padrões de acesso forem bem conhecidos.
+3. **Curva de aprendizado:** nosso stack é Node.js + Express — que o time já conhece. Lambda exigiria aprender SAM/CDK, modelo de execução stateless e gerenciamento de conexões de banco por invocação.
+
+Recomendamos Elastic Beanstalk + RDS para o MVP. Serverless faz sentido no longo prazo quando os microsserviços já estiverem desacoplados."
 
 ---
 
-**Q21 — Pontos de inconsistência de dados e mitigações**
+### Q21 — Inconsistências de dados e mitigações
 
-**Ponto 1 — `valor_total` em `pedidos` vs. soma de `itens_pedido`:**
-O campo `valor_total` pode ser inserido manualmente na API sem validar se bate com `SUM(quantidade * preco_unitario)` dos itens. Um pedido com `valor_total = 10.000` mas itens que somam `8.500` produziria KPIs de receita incorretos no dashboard.
+"**Ponto 1:** `valor_total` em `pedidos` pode ser enviado manualmente sem bater com a soma dos `itens_pedido`. Um pedido com `valor_total = R$10.000` mas itens que somam `R$8.500` distorce todos os KPIs de receita no dashboard.
 
-*Mitigação:* Na camada Service, antes de persistir o pedido, calcular `valorCalculado = SUM(itens.quantidade * itens.preco_unitario)` e ou sobrescrever `valor_total` com esse valor, ou rejeitar com 400 se divergir.
+*Mitigação:* na camada Service, antes de persistir, calcular `SUM(itens.quantidade * itens.preco_unitario)` e ou sobrescrever `valor_total`, ou rejeitar com 400 se divergir.
 
-**Ponto 2 — Status do cliente (`em_risco`) não sincronizado com a regra de churn:**
-Um cliente pode ter `status = ativo` no cadastro mas ser retornado pelo insight I-01 como em risco (sem compra há 90+ dias). A tela de clientes mostraria "ativo" enquanto o dashboard mostraria alerta — contradição visível ao usuário.
+**Ponto 2:** `clientes.status` pode estar como `ativo` enquanto o insight I-01 já o classifica como em risco. O usuário vê contradição entre a tela de clientes e o dashboard.
 
-*Mitigação:* Job diário (CRON via EventBridge) que executa a regra de churn e atualiza `clientes.status = 'em_risco'` para os clientes que atendem o critério, registrando a mudança no `audit_log`.
+*Mitigação:* job diário via EventBridge que executa a regra de churn e atualiza `clientes.status = 'em_risco'` para quem atender o critério, registrando no `audit_log`."
 
 ---
 
@@ -360,17 +290,29 @@ Um cliente pode ter `status = ativo` no cadastro mas ser retornado pelo insight 
 
 ---
 
-**Q22 — NexusVendas é um CRM ou um sistema de relatórios com alertas?**
+### Q22 — NexusVendas é CRM ou sistema de relatórios? *(a mais difícil — conheça bem)*
 
-**Definição de CRM segundo a literatura (Buttle & Maklan, 2015; Peppers & Rogers):**
-Um CRM (Customer Relationship Management) é um sistema que gerencia o ciclo de vida completo do relacionamento com o cliente: captação, engajamento, retenção e recuperação. Operacionalmente, envolve três capacidades: (1) **CRM operacional** — automação de força de vendas (SFA), automação de marketing e suporte; (2) **CRM analítico** — análise de dados para segmentação e predição; (3) **CRM colaborativo** — integração multicanal para comunicação com o cliente.
+"A crítica tem mérito parcial e vou ser honesto sobre isso.
 
-**Onde o NexusVendas se enquadra:**
-- CRM analítico: sim — os três insights (churn, NPS, funil) são análise de dados para apoio à decisão.
-- CRM operacional parcial: gestão de pedidos e oportunidades são funcionalidades SFA básicas. Porém não há automação de marketing, disparo de e-mails ou gestão de interações (ligações, e-mails) — itens explicitamente no backlog futuro.
-- CRM colaborativo: ausente — não há integração com canais de comunicação.
+Um CRM completo tem três pilares: **operacional** (automação de força de vendas), **analítico** (análise para segmentação e predição) e **colaborativo** (integração com canais de comunicação).
 
-**Defesa técnica:**
-A crítica tem mérito parcial. O NexusVendas é um **CRM operacional mínimo com camada analítica**, não um CRM completo. A diferença de um sistema de relatórios puro é que o NexusVendas possui: (a) dados transacionais proprietários (pedidos, oportunidades) — não apenas importação de dados externos; (b) ações sugeridas vinculadas aos alertas — não apenas visualização; (c) CRUD de clientes e oportunidades que fecha o ciclo operacional básico.
+O NexusVendas entrega:
+- **CRM analítico:** sim — os três insights são análise de dados para apoio à decisão.
+- **CRM operacional básico:** gestão de pedidos e oportunidades são funcionalidades de automação de força de vendas. Mas não temos disparo de e-mails, gestão de ligações nem integração com canais — itens no backlog.
+- **CRM colaborativo:** ausente.
 
-**Conclusão honesta:** O produto está no espectro de um CRM leve (lightweight CRM), equivalente a ferramentas como Pipedrive ou HubSpot Starter — distintos de sistemas como Salesforce ou SAP Sales Cloud que têm automação completa. Para médias empresas sem CRM, isso representa valor real. Apresentá-lo como "inspirado no SAP Sales Cloud" é defensável enquanto analogia de posicionamento de mercado, não como equivalência funcional.
+Então o que distingue o NexusVendas de um sistema de relatórios puro? Três coisas: os dados transacionais são proprietários — não são importados de fora; as ações sugeridas estão vinculadas aos alertas — não é só visualização; e o CRUD de clientes e oportunidades fecha o ciclo operacional básico.
+
+O NexusVendas é um **CRM leve**, similar ao Pipedrive ou HubSpot Starter — distinto de Salesforce ou SAP Sales Cloud, que têm automação completa. Posicioná-lo como 'inspirado no SAP Sales Cloud' é defensável como analogia de mercado para médias empresas, não como equivalência funcional."
+
+---
+
+## Resumo rápido para revisar antes de entrar na sala
+
+| Pergunta mais provável | Palavra-chave da resposta |
+|---|---|
+| Q1 — Heurística vs ML | Determinística vs. probabilística; ML no backlog por falta de dados |
+| Q4 — Snapshot de preço | Imutabilidade do registro transacional; evita distorção retroativa |
+| Q9 — PUT vs PATCH | PATCH parcial; concorrência → optimistic locking com `versao` |
+| Q13 — Camadas e testes | Service isolado + injeção de dependência → mockRepo sem banco |
+| Q22 — CRM ou relatório | CRM leve; tem dado transacional próprio + ação sugerida vinculada |

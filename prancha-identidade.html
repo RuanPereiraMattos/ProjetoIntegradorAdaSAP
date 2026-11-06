@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusVendas — Identidade Visual</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary:   #1E40AF;
+  --secondary: #3B82F6;
+  --alert:     #F59E0B;
+  --critical:  #EF4444;
+  --success:   #10B981;
+  --bg:        #F8FAFC;
+  --text:      #1E293B;
+  --border:    #E2E8F0;
+  --muted:     #64748B;
+  --white:     #FFFFFF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: #EEF2F7;
+  color: var(--text);
+  padding: 32px 24px;
+}
+
+.canvas {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0,0,0,.12);
+}
+
+/* ── Header ── */
+.header {
+  background: var(--primary);
+  padding: 32px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-logo {
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -1px;
+}
+.header-logo span { color: #93C5FD; }
+.header-meta {
+  text-align: right;
+  color: rgba(255,255,255,.75);
+  font-size: 13px;
+  line-height: 1.8;
+}
+.header-meta strong { color: white; }
+
+/* ── Section ── */
+.section {
+  padding: 36px 48px;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-child { border-bottom: none; }
+.section-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after {
+  content: '';
+  display: block;
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  margin-left: 8px;
+}
+
+/* ── Colors ── */
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+}
+.swatch {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.swatch-color { height: 64px; }
+.swatch-info { padding: 8px 10px; background: white; }
+.swatch-role { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 2px; }
+.swatch-hex { font-family: 'Courier New', monospace; font-size: 11px; color: var(--text); font-weight: 600; }
+.swatch-use { font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.3; }
+
+/* ── Typography ── */
+.typo-table { width: 100%; border-collapse: collapse; }
+.typo-table tr { border-bottom: 1px solid var(--border); }
+.typo-table tr:last-child { border-bottom: none; }
+.typo-table td { padding: 14px 0; vertical-align: middle; }
+.typo-label { width: 200px; padding-right: 24px !important; }
+.typo-spec { font-size: 11px; color: var(--muted); line-height: 1.6; font-family: 'Courier New', monospace; }
+.typo-sample { }
+
+/* ── Components grid ── */
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+.comp-block {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+}
+.comp-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+
+/* ── Badges ── */
+.badge-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+.b-ativo     { background: #DBEAFE; color: var(--primary); }
+.b-ativo .badge-dot { background: var(--primary); }
+.b-risco     { background: #FEF3C7; color: #B45309; }
+.b-risco .badge-dot { background: var(--alert); }
+.b-inativo   { background: #F1F5F9; color: var(--muted); }
+.b-inativo .badge-dot { background: var(--muted); }
+.b-critico   { background: #FEE2E2; color: #B91C1C; }
+.b-critico .badge-dot { background: var(--critical); }
+
+/* ── KPI Cards ── */
+.kpi-row { display: flex; gap: 12px; }
+.kpi-card {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.kpi-label { font-size: 11px; color: var(--muted); font-weight: 500; margin-bottom: 4px; }
+.kpi-value { font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.1; }
+.kpi-change { font-size: 11px; font-weight: 600; margin-top: 4px; }
+.kpi-change.up   { color: var(--success); }
+.kpi-change.down { color: var(--critical); }
+.kpi-change.warn { color: #B45309; }
+
+/* ── Insight Card ── */
+.insight {
+  border: 1px solid var(--border);
+  border-left: 4px solid;
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: var(--bg);
+}
+.insight.critical { border-left-color: var(--critical); }
+.insight.alert    { border-left-color: var(--alert); }
+.insight-id { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+.insight.critical .insight-id { color: #B91C1C; }
+.insight.alert .insight-id { color: #B45309; }
+.insight-row { font-size: 12px; margin: 3px 0; line-height: 1.4; }
+.insight-row strong { font-weight: 600; }
+.insight-row.acao {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+}
+.insight.critical .insight-row.acao { background: #FEE2E2; color: #991B1B; }
+.insight.alert .insight-row.acao    { background: #FEF3C7; color: #92400E; }
+
+/* ── Buttons ── */
+.btn-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  line-height: 1;
+}
+.btn-primary   { background: var(--primary); color: white; }
+.btn-secondary { background: #DBEAFE; color: var(--primary); }
+.btn-outline   { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
+.btn-danger    { background: #FEE2E2; color: #B91C1C; }
+
+/* ── Table sample ── */
+.table-sample { width: 100%; border-collapse: collapse; font-size: 12px; }
+.table-sample th {
+  background: var(--primary);
+  color: white;
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+}
+.table-sample td { padding: 7px 12px; border: 1px solid var(--border); vertical-align: middle; }
+.table-sample tr:nth-child(even) td { background: #F8FAFC; }
+
+/* ── Info/Warn boxes ── */
+.box { border-radius: 6px; padding: 12px 14px; font-size: 12px; margin: 6px 0; }
+.box.info { background: #EFF6FF; border: 1px solid #BFDBFE; border-left: 4px solid var(--secondary); }
+.box.warn { background: #FFFBEB; border: 1px solid #FDE68A; border-left: 4px solid var(--alert); }
+
+/* ── Footer ── */
+.footer {
+  background: var(--bg);
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+}
+.footer-brand { font-size: 13px; font-weight: 700; color: var(--primary); }
+.footer-tagline { font-size: 11px; color: var(--muted); font-style: italic; }
+.footer-ref { font-size: 10px; color: var(--muted); text-align: right; line-height: 1.6; }
+
+/* Print */
+@media print {
+  body { background: white; padding: 0; }
+  .canvas { box-shadow: none; border-radius: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="canvas">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="header-logo">Nexus<span>Vendas</span></div>
+      <div style="color:rgba(255,255,255,.7);font-size:13px;margin-top:4px;font-style:italic">Venda mais. Perca menos. Decida melhor.</div>
+    </div>
+    <div class="header-meta">
+      <strong>Identidade Visual — Design System</strong><br>
+      SAP Start Coding 2026 · Projeto Integrador<br>
+      Tema 3 · Vendas e Experiência do Cliente<br>
+      Parte 4 · Prancha Visual
+    </div>
+  </div>
+
+  <!-- CORES -->
+  <div class="section">
+    <div class="section-title">Cores</div>
+    <div class="palette-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1E40AF"></div>
+        <div class="swatch-info">
+          <div class="swatch-role">Primária</div>
+          <div class="swatch-hex">#1E40AF</div>
+          <div class="swatch-use">Headers, botões, links principais</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#3B82F6"></div>
+        <div class="swatch-info">
+          <div class="swatch-role">Secundária</div>
+          <div class="swatch-hex">#3B82F6</div>
+          <div class="swatch-use">Ações, links, ícones interativos</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F59E0B"></div>
+        <div class="swatch-info">
+          <div class="swatch-role">Alerta / Risco</div>
+          <div class="swatch-hex">#F59E0B</div>
+          <div class="swatch-use">Badge "em risco", gargalos, avisos</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#EF4444"></div>
+        <div class="swatch-info">
+          <div class="swatch-role">Crítico</div>
+          <div class="swatch-hex">#EF4444</div>
+          <div class="swatch-use">I-01 churn, I-02 NPS, erros</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#10B981"></div>
+        <div class="swatch-info">
+          <div class="swatch-role">Sucesso</div>
+          <div class="swatch-hex">#10B981</div>
+          <div class="swatch-use">Entregue, KPI positivo, ativo</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F8FAFC;border:1px solid #E2E8F0"></div>
+        <div class="swatch-info">
+          <div class="swatch-role">Fundo</div>
+          <div class="swatch-hex">#F8FAFC</div>
+          <div class="swatch-use">Background da página e cards</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1E293B"></div>
+        <div class="swatch-info">
+          <div class="swatch-role">Texto</div>
+          <div class="swatch-hex">#1E293B</div>
+          <div class="swatch-use">Corpo de texto, títulos escuros</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPOGRAFIA -->
+  <div class="section">
+    <div class="section-title">Tipografia · Inter (Google Fonts)</div>
+    <table class="typo-table">
+      <tr>
+        <td class="typo-label">
+          <div class="typo-spec">H1<br>32px · Bold 700</div>
+        </td>
+        <td class="typo-sample">
+          <span style="font-size:32px;font-weight:700;color:#1E293B;letter-spacing:-0.5px">NexusVendas Dashboard</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="typo-label">
+          <div class="typo-spec">H2<br>24px · SemiBold 600</div>
+        </td>
+        <td class="typo-sample">
+          <span style="font-size:24px;font-weight:600;color:#1E293B">Clientes em Risco de Churn</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="typo-label">
+          <div class="typo-spec">Body<br>16px · Regular 400</div>
+        </td>
+        <td class="typo-sample">
+          <span style="font-size:16px;font-weight:400;color:#1E293B">Empresas de médio porte perdem receita por não identificar clientes em risco a tempo.</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="typo-label">
+          <div class="typo-spec">Label / Dados<br>14px · Medium 500</div>
+        </td>
+        <td class="typo-sample">
+          <span style="font-size:14px;font-weight:500;color:#1E293B">Ticket médio  ·  R$ 4.200  ·  Beta Distribuidora S.A.  ·  118 dias sem compra</span>
+        </td>
+      </tr>
+      <tr>
+        <td class="typo-label">
+          <div class="typo-spec">Caption / Tags<br>12px · Regular 400</div>
+        </td>
+        <td class="typo-sample">
+          <span style="font-size:12px;font-weight:400;color:#64748B">Atualizado em 05/11/2024 às 02:00  ·  Fonte: batch sync ERP  ·  Defasagem máx. 24h</span>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- COMPONENTES -->
+  <div class="section">
+    <div class="section-title">Componentes</div>
+    <div class="comp-grid">
+
+      <!-- Badges -->
+      <div class="comp-block">
+        <div class="comp-label">Status Badges</div>
+        <div class="badge-row">
+          <span class="badge b-ativo"><span class="badge-dot"></span>ativo</span>
+          <span class="badge b-risco"><span class="badge-dot"></span>em risco</span>
+          <span class="badge b-inativo"><span class="badge-dot"></span>inativo</span>
+          <span class="badge b-critico"><span class="badge-dot"></span>NPS crítico</span>
+        </div>
+        <div style="margin-top:16px;font-size:11px;color:#64748B;line-height:1.7">
+          <strong style="color:#1E293B">Uso:</strong> ativo → cliente com pedido recente<br>
+          em risco → sem compra ≥ 60 dias ou NPS em queda<br>
+          inativo → sem movimentação ≥ 180 dias<br>
+          NPS crítico → 3 notas consecutivas ≤ 6
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="comp-block">
+        <div class="comp-label">KPI Cards — Dashboard</div>
+        <div class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-label">Vendas do Mês</div>
+            <div class="kpi-value">R$ 37.600</div>
+            <div class="kpi-change up">↑ +166,7% vs mês ant.</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Pedidos</div>
+            <div class="kpi-value">12</div>
+            <div class="kpi-change up">não cancelados</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Em Risco</div>
+            <div class="kpi-value" style="color:#EF4444">3</div>
+            <div class="kpi-change down">alertas ativos</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">NPS</div>
+            <div class="kpi-value" style="color:#EF4444">−10</div>
+            <div class="kpi-change warn">⚠ zona de perigo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Insight Cards -->
+      <div class="comp-block" style="grid-column:1/-1">
+        <div class="comp-label">Insight Cards — Padrão: O que aconteceu → Por que importa → Ação sugerida</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div class="insight critical">
+            <div class="insight-id">I-01 · Risco de Churn</div>
+            <div class="insight-row"><strong>O que:</strong> Beta Distribuidora sem compra há 118 dias</div>
+            <div class="insight-row"><strong>Por quê:</strong> Ticket médio R$ 4.200 por pedido — receita em risco</div>
+            <div class="insight-row acao">→ Enviar oferta de reativação com 10% de desconto</div>
+          </div>
+          <div class="insight critical">
+            <div class="insight-id">I-02 · NPS Crítico</div>
+            <div class="insight-row"><strong>O que:</strong> Gama Serviços — notas 5, 4, 3 consecutivas</div>
+            <div class="insight-row"><strong>Por quê:</strong> Detrator pode cancelar e prejudicar reputação</div>
+            <div class="insight-row acao">→ Acionar Customer Success imediatamente</div>
+          </div>
+          <div class="insight alert">
+            <div class="insight-id">I-03 · Gargalo no Funil</div>
+            <div class="insight-row"><strong>O que:</strong> Proposta→Negociação em 22% (meta: 30%)</div>
+            <div class="insight-row"><strong>Por quê:</strong> Meta de receita do mês em risco</div>
+            <div class="insight-row acao">→ Revisar script na etapa de proposta</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PADRÕES DE UI -->
+  <div class="section">
+    <div class="section-title">Padrões de UI</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+
+      <!-- Tabela -->
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748B;margin-bottom:10px">Tabela de Dados</div>
+        <table class="table-sample">
+          <tr><th>Cliente</th><th>Dias</th><th>Ticket médio</th><th>Status</th></tr>
+          <tr>
+            <td>Beta Distribuidora</td>
+            <td>118</td>
+            <td>R$ 4.200</td>
+            <td><span class="badge b-critico" style="font-size:10px;padding:2px 8px"><span class="badge-dot"></span>em risco</span></td>
+          </tr>
+          <tr>
+            <td>Gama Serviços</td>
+            <td>100</td>
+            <td>R$ 1.850</td>
+            <td><span class="badge b-risco" style="font-size:10px;padding:2px 8px"><span class="badge-dot"></span>em risco</span></td>
+          </tr>
+          <tr>
+            <td>Eta Educação</td>
+            <td>583</td>
+            <td>—</td>
+            <td><span class="badge b-inativo" style="font-size:10px;padding:2px 8px"><span class="badge-dot"></span>inativo</span></td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Botões e caixas -->
+      <div>
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748B;margin-bottom:10px">Botões</div>
+        <div class="btn-row" style="margin-bottom:16px">
+          <button class="btn btn-primary">Acionar CS</button>
+          <button class="btn btn-secondary">Ver detalhes</button>
+          <button class="btn btn-outline">Exportar</button>
+          <button class="btn btn-danger">Desativar</button>
+        </div>
+
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748B;margin-bottom:8px">Caixas de Contexto</div>
+        <div class="box info">
+          <strong>Info:</strong> O NexusVendas é um módulo do ERP — não possui cadastro próprio.
+        </div>
+        <div class="box warn">
+          <strong>Atenção:</strong> Dados com defasagem máxima de 24h (batch sync diário às 02h).
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div>
+      <div class="footer-brand">NexusVendas</div>
+      <div class="footer-tagline">Venda mais. Perca menos. Decida melhor.</div>
+    </div>
+    <div class="footer-ref">
+      Fonte: Inter (Google Fonts · gratuita)<br>
+      Paleta: Tailwind Blue + Amber + Red + Emerald<br>
+      SAP Start Coding 2026 · Projeto Integrador
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

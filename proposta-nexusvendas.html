@@ -298,6 +298,16 @@ code { padding: 1px 4px; }
   margin: 0 auto;
 }
 
+.wireframe-wrap iframe {
+  width: 100%;
+  max-width: 960px;
+  height: 660px;
+  display: block;
+  margin: 0 auto;
+  border: none;
+  background: #F8FAFC;
+}
+
 .wireframe-label {
   background: var(--bg);
   padding: 6px 12px;
@@ -447,7 +457,7 @@ code { padding: 1px 4px; }
       <div class="cover-subtitle">SAP Start Coding 2026 — Tema 3: Receita e Relacionamento</div>
     </div>
     <div class="cover-meta">
-      <strong>Data de entrega:</strong> 06/11/2025 às 09:00<br>
+      <strong>Data de entrega:</strong> 06/11/2026 às 09:00<br>
       <strong>Módulo:</strong> Vendas e Experiência do Cliente<br>
       <strong>Produto:</strong> Módulo de inteligência comercial integrado ao ERP<br>
       <strong>Tecnologias:</strong> Node.js · Express · PostgreSQL · React · AWS
@@ -485,9 +495,11 @@ code { padding: 1px 4px; }
     <div class="toc-item level2"><span>3.5 Plano de Testes</span></div>
 
     <div class="toc-item"><span class="toc-part">Parte 4 — Identidade Visual</span><span class="toc-page">14</span></div>
-    <div class="toc-item level2"><span>4.1 Nome, Conceito e Paleta</span></div>
-    <div class="toc-item level2"><span>4.2 Tipografia e Componentes</span></div>
-    <div class="toc-item level2"><span>4.3 Wireframes das 3 Telas</span></div>
+    <div class="toc-item level2"><span>4.1 Nome e Conceito do Produto</span></div>
+    <div class="toc-item level2"><span>4.2 Paleta de Cores</span></div>
+    <div class="toc-item level2"><span>4.3 Tipografia</span></div>
+    <div class="toc-item level2"><span>4.4 Componentes-chave</span></div>
+    <div class="toc-item level2"><span>4.5 Wireframes das 6 Telas</span></div>
 
     <div class="toc-item"><span class="toc-part">Parte 5 — Arquitetura da Solução</span><span class="toc-page">17</span></div>
     <div class="toc-item level2"><span>5.1 Diagrama de Componentes</span></div>
@@ -740,15 +752,119 @@ code { padding: 1px 4px; }
   </table>
   <p class="footnote">IDs 3–5 (linhas em amarelo/vermelho) formam a anomalia A-03: 3 notas consecutivas ≤ 6 do cliente 3 (Gama Serviços). NPS = % promotores (9–10) − % detratores (0–6) = 30% − 40% = <strong>−10</strong>.</p>
 
-  <h3>Oportunidades — Distribuição por Etapa (20 registros)</h3>
+  <h3>Pedidos (12 registros)</h3>
   <table class="no-break">
-    <tr><th>Etapa</th><th>Qtd</th><th>Valor estimado total</th><th>Proporção para próxima etapa</th></tr>
-    <tr><td>captação</td><td>6</td><td>R$ 80.000</td><td>9/6 = 150% → sem alerta</td></tr>
-    <tr style="background:#FEF3C7"><td>proposta</td><td>9</td><td>R$ 173.000</td><td>2/9 = <strong>22%</strong> ← abaixo de 30% → <strong>dispara I-03</strong></td></tr>
-    <tr><td>negociação</td><td>2</td><td>R$ 72.000</td><td>1/2 = 50% → sem alerta</td></tr>
-    <tr><td>fechado_ganho</td><td>1</td><td>R$ 15.000</td><td>—</td></tr>
-    <tr><td>fechado_perdido</td><td>2</td><td>R$ 14.500</td><td>—</td></tr>
+    <tr><th>id</th><th>cliente_id</th><th>data_pedido</th><th>data_entrega_prev</th><th>data_entrega_real</th><th>valor_total</th><th>status</th></tr>
+    <tr><td>1</td><td>1</td><td>2024-08-01</td><td>2024-08-10</td><td>2024-08-09</td><td>R$ 8.500,00</td><td><span class="badge badge-green">entregue</span></td></tr>
+    <tr style="background:#FEF3C7"><td>2</td><td>2</td><td>2024-07-10</td><td>2024-07-20</td><td><strong>2024-08-08</strong></td><td>R$ 4.200,00</td><td><span class="badge badge-green">entregue</span></td></tr>
+    <tr style="background:#FEF3C7"><td>3</td><td>3</td><td>2024-07-28</td><td>2024-08-05</td><td><strong>2024-08-22</strong></td><td>R$ 1.850,00</td><td><span class="badge badge-green">entregue</span></td></tr>
+    <tr><td>4</td><td>4</td><td>2024-09-15</td><td>2024-09-25</td><td>2024-09-24</td><td>R$ 12.000,00</td><td><span class="badge badge-green">entregue</span></td></tr>
+    <tr><td>5</td><td>5</td><td>2024-10-01</td><td>2024-10-12</td><td>—</td><td>R$ 3.300,00</td><td><span class="badge badge-blue">aprovado</span></td></tr>
+    <tr><td>6</td><td>6</td><td>2024-10-05</td><td>2024-10-15</td><td>—</td><td>R$ 5.600,00</td><td><span class="badge badge-blue">aprovado</span></td></tr>
+    <tr><td>7</td><td>1</td><td>2024-10-20</td><td>2024-10-30</td><td>—</td><td>R$ 9.200,00</td><td><span class="badge badge-gray">pendente</span></td></tr>
+    <tr><td>8</td><td>8</td><td>2024-09-28</td><td>2024-10-08</td><td>2024-10-07</td><td>R$ 2.100,00</td><td><span class="badge badge-green">entregue</span></td></tr>
+    <tr><td>9</td><td>9</td><td>2024-10-10</td><td>2024-10-20</td><td>—</td><td>R$ 15.000,00</td><td><span class="badge badge-blue">aprovado</span></td></tr>
+    <tr><td>10</td><td>10</td><td>2024-08-20</td><td>2024-08-30</td><td>2024-08-29</td><td>R$ 6.800,00</td><td><span class="badge badge-green">entregue</span></td></tr>
+    <tr><td>11</td><td>4</td><td>2024-10-25</td><td>2024-11-05</td><td>—</td><td>R$ 4.500,00</td><td><span class="badge badge-gray">pendente</span></td></tr>
+    <tr><td>12</td><td>6</td><td>2024-11-01</td><td>2024-11-10</td><td>—</td><td>R$ 3.200,00</td><td><span class="badge badge-gray">pendente</span></td></tr>
   </table>
+  <p class="footnote">IDs 2 e 3 (linhas em amarelo) — anomalia A-01: data_entrega_real ultrapassa data_entrega_prev em 19 e 17 dias respectivamente (15+ dias). ID 2 (Beta, 118 dias) e ID 3 (Gama, 100 dias) formam A-02. Outubro/2024: pedidos 5, 6, 7, 9 e 11 não cancelados somam <strong>R$ 37.600</strong> (KPI "Vendas mês"). Total não cancelados: <strong>12</strong> (todos os registros desta tabela).</p>
+
+  <h3>Produtos (10 registros)</h3>
+  <table class="no-break">
+    <tr><th>id</th><th>nome</th><th>categoria</th><th>preco_base</th><th>ativo</th></tr>
+    <tr><td>1</td><td>CRM Básico (por usuário/mês)</td><td>Software</td><td>R$ 1.200,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>2</td><td>CRM Enterprise (por usuário/mês)</td><td>Software</td><td>R$ 3.500,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>3</td><td>Módulo Analytics</td><td>Software</td><td>R$ 800,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>4</td><td>Consultoria de Implantação (por dia)</td><td>Consultoria</td><td>R$ 2.500,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>5</td><td>Suporte Técnico Anual</td><td>Serviço</td><td>R$ 1.800,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>6</td><td>Servidor Dell PowerEdge R350</td><td>Hardware</td><td>R$ 4.500,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>7</td><td>Licença Office 365 (por usuário/mês)</td><td>Software</td><td>R$ 45,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>8</td><td>Treinamento (por turma)</td><td>Treinamento</td><td>R$ 1.200,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>9</td><td>Integração API ERP</td><td>Serviço</td><td>R$ 3.200,00</td><td><span class="badge badge-green">sim</span></td></tr>
+    <tr><td>10</td><td>Backup Cloud 1 TB (mensal)</td><td>Serviço</td><td>R$ 300,00</td><td><span class="badge badge-green">sim</span></td></tr>
+  </table>
+  <p class="footnote">preco_base = preço de referência atual; preco_unitario em itens_pedido é snapshot do momento da venda e pode diferir.</p>
+
+  <h3>Itens de Pedido (30 registros)</h3>
+  <table class="no-break">
+    <tr><th>id</th><th>pedido_id</th><th>produto_id — nome</th><th>qtd</th><th>preco_unitario</th><th>subtotal</th></tr>
+    <tr><td>1</td><td>1</td><td>2 — CRM Enterprise</td><td>1</td><td>R$ 3.500,00</td><td>R$ 3.500,00</td></tr>
+    <tr><td>2</td><td>1</td><td>4 — Consultoria Implantação</td><td>2</td><td>R$ 2.500,00</td><td>R$ 5.000,00</td></tr>
+    <tr style="background:#FEF3C7"><td>3</td><td>2</td><td>1 — CRM Básico</td><td>2</td><td>R$ 1.200,00</td><td>R$ 2.400,00</td></tr>
+    <tr style="background:#FEF3C7"><td>4</td><td>2</td><td>8 — Treinamento</td><td>1</td><td>R$ 1.200,00</td><td>R$ 1.200,00</td></tr>
+    <tr style="background:#FEF3C7"><td>5</td><td>2</td><td>10 — Backup Cloud</td><td>2</td><td>R$ 300,00</td><td>R$ 600,00</td></tr>
+    <tr style="background:#FEF3C7"><td>6</td><td>3</td><td>3 — Módulo Analytics</td><td>2</td><td>R$ 800,00</td><td>R$ 1.600,00</td></tr>
+    <tr style="background:#FEF3C7"><td>7</td><td>3</td><td>10 — Backup Cloud</td><td>1</td><td>R$ 250,00</td><td>R$ 250,00</td></tr>
+    <tr><td>8</td><td>4</td><td>6 — Servidor Dell PowerEdge</td><td>2</td><td>R$ 4.500,00</td><td>R$ 9.000,00</td></tr>
+    <tr><td>9</td><td>4</td><td>4 — Consultoria Implantação</td><td>1</td><td>R$ 2.500,00</td><td>R$ 2.500,00</td></tr>
+    <tr><td>10</td><td>4</td><td>3 — Módulo Analytics</td><td>1</td><td>R$ 500,00</td><td>R$ 500,00</td></tr>
+    <tr><td>11</td><td>5</td><td>1 — CRM Básico</td><td>1</td><td>R$ 1.200,00</td><td>R$ 1.200,00</td></tr>
+    <tr><td>12</td><td>5</td><td>5 — Suporte Técnico Anual</td><td>1</td><td>R$ 1.800,00</td><td>R$ 1.800,00</td></tr>
+    <tr><td>13</td><td>5</td><td>10 — Backup Cloud</td><td>1</td><td>R$ 300,00</td><td>R$ 300,00</td></tr>
+    <tr><td>14</td><td>6</td><td>9 — Integração API ERP</td><td>1</td><td>R$ 3.200,00</td><td>R$ 3.200,00</td></tr>
+    <tr><td>15</td><td>6</td><td>4 — Consultoria Implantação</td><td>1</td><td>R$ 2.400,00</td><td>R$ 2.400,00</td></tr>
+    <tr><td>16</td><td>7</td><td>2 — CRM Enterprise</td><td>1</td><td>R$ 3.500,00</td><td>R$ 3.500,00</td></tr>
+    <tr><td>17</td><td>7</td><td>4 — Consultoria Implantação</td><td>2</td><td>R$ 2.500,00</td><td>R$ 5.000,00</td></tr>
+    <tr><td>18</td><td>7</td><td>10 — Backup Cloud</td><td>2</td><td>R$ 350,00</td><td>R$ 700,00</td></tr>
+    <tr><td>19</td><td>8</td><td>1 — CRM Básico</td><td>1</td><td>R$ 1.200,00</td><td>R$ 1.200,00</td></tr>
+    <tr><td>20</td><td>8</td><td>8 — Treinamento</td><td>1</td><td>R$ 900,00</td><td>R$ 900,00</td></tr>
+    <tr><td>21</td><td>9</td><td>6 — Servidor Dell PowerEdge</td><td>2</td><td>R$ 4.500,00</td><td>R$ 9.000,00</td></tr>
+    <tr><td>22</td><td>9</td><td>2 — CRM Enterprise</td><td>1</td><td>R$ 3.500,00</td><td>R$ 3.500,00</td></tr>
+    <tr><td>23</td><td>9</td><td>4 — Consultoria Implantação</td><td>1</td><td>R$ 2.500,00</td><td>R$ 2.500,00</td></tr>
+    <tr><td>24</td><td>10</td><td>9 — Integração API ERP</td><td>1</td><td>R$ 3.200,00</td><td>R$ 3.200,00</td></tr>
+    <tr><td>25</td><td>10</td><td>5 — Suporte Técnico Anual</td><td>1</td><td>R$ 1.800,00</td><td>R$ 1.800,00</td></tr>
+    <tr><td>26</td><td>10</td><td>3 — Módulo Analytics</td><td>2</td><td>R$ 900,00</td><td>R$ 1.800,00</td></tr>
+    <tr><td>27</td><td>11</td><td>2 — CRM Enterprise</td><td>1</td><td>R$ 3.500,00</td><td>R$ 3.500,00</td></tr>
+    <tr><td>28</td><td>11</td><td>3 — Módulo Analytics</td><td>1</td><td>R$ 1.000,00</td><td>R$ 1.000,00</td></tr>
+    <tr><td>29</td><td>12</td><td>1 — CRM Básico</td><td>2</td><td>R$ 1.200,00</td><td>R$ 2.400,00</td></tr>
+    <tr><td>30</td><td>12</td><td>10 — Backup Cloud</td><td>1</td><td>R$ 800,00</td><td>R$ 800,00</td></tr>
+  </table>
+  <p class="footnote">preco_unitario = snapshot do preço no momento da venda. IDs 3–7 em amarelo: pertencem aos pedidos 2 (A-01) e 3 (A-01). Pedido 3: itens 6+7 → R$ 1.600 + R$ 250 = <strong>R$ 1.850</strong> ✓. Pedido 6: itens 14+15 → R$ 3.200 + R$ 2.400 = <strong>R$ 5.600</strong> ✓. Cada subtotal verificado contra valor_total do pedido pai.</p>
+
+  <h3>Oportunidades (20 registros — distribuição dispara anomalia A-04)</h3>
+  <table class="no-break">
+    <tr><th>id</th><th>cliente_id</th><th>etapa</th><th>valor_estimado</th><th>data_abertura</th><th>data_fechamento_prev</th><th>responsavel</th></tr>
+    <tr><td>1</td><td>1</td><td><span class="badge badge-blue">captacao</span></td><td>R$ 15.000</td><td>2024-08-15</td><td>2024-12-15</td><td>Carlos Andrade</td></tr>
+    <tr><td>2</td><td>4</td><td><span class="badge badge-blue">captacao</span></td><td>R$ 22.000</td><td>2024-09-01</td><td>2024-12-01</td><td>Marina Costa</td></tr>
+    <tr><td>3</td><td>5</td><td><span class="badge badge-blue">captacao</span></td><td>R$ 8.000</td><td>2024-09-10</td><td>2024-12-10</td><td>Carlos Andrade</td></tr>
+    <tr><td>4</td><td>8</td><td><span class="badge badge-blue">captacao</span></td><td>R$ 12.000</td><td>2024-10-01</td><td>2025-01-15</td><td>Rodrigo Silva</td></tr>
+    <tr><td>5</td><td>10</td><td><span class="badge badge-blue">captacao</span></td><td>R$ 18.000</td><td>2024-10-15</td><td>2025-02-01</td><td>Marina Costa</td></tr>
+    <tr><td>6</td><td>7</td><td><span class="badge badge-blue">captacao</span></td><td>R$ 5.000</td><td>2024-10-20</td><td>2025-01-20</td><td>Rodrigo Silva</td></tr>
+    <tr style="background:#FEF3C7"><td>7</td><td>1</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 15.000</td><td>2024-07-01</td><td>2024-11-30</td><td>Carlos Andrade</td></tr>
+    <tr style="background:#FEF3C7"><td>8</td><td>2</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 28.000</td><td>2024-07-15</td><td>2024-11-15</td><td>Marina Costa</td></tr>
+    <tr style="background:#FEF3C7"><td>9</td><td>3</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 9.500</td><td>2024-07-20</td><td>2024-11-20</td><td>Carlos Andrade</td></tr>
+    <tr style="background:#FEF3C7"><td>10</td><td>4</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 35.000</td><td>2024-08-01</td><td>2024-11-30</td><td>Rodrigo Silva</td></tr>
+    <tr style="background:#FEF3C7"><td>11</td><td>5</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 12.000</td><td>2024-08-10</td><td>2024-11-28</td><td>Marina Costa</td></tr>
+    <tr style="background:#FEF3C7"><td>12</td><td>6</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 18.500</td><td>2024-08-20</td><td>2024-12-01</td><td>Carlos Andrade</td></tr>
+    <tr style="background:#FEF3C7"><td>13</td><td>9</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 42.000</td><td>2024-09-05</td><td>2024-12-15</td><td>Rodrigo Silva</td></tr>
+    <tr style="background:#FEF3C7"><td>14</td><td>10</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 15.000</td><td>2024-09-15</td><td>2024-12-20</td><td>Marina Costa</td></tr>
+    <tr style="background:#FEF3C7"><td>15</td><td>8</td><td><span class="badge badge-blue">proposta</span></td><td>R$ 8.000</td><td>2024-09-25</td><td>2024-11-30</td><td>Carlos Andrade</td></tr>
+    <tr><td>16</td><td>4</td><td><span class="badge badge-amber">negociacao</span></td><td>R$ 32.000</td><td>2024-06-01</td><td>2024-11-10</td><td>Rodrigo Silva</td></tr>
+    <tr><td>17</td><td>9</td><td><span class="badge badge-amber">negociacao</span></td><td>R$ 40.000</td><td>2024-06-15</td><td>2024-11-15</td><td>Marina Costa</td></tr>
+    <tr><td>18</td><td>1</td><td><span class="badge badge-green">fechado_ganho</span></td><td>R$ 15.000</td><td>2024-05-01</td><td>2024-09-30</td><td>Carlos Andrade</td></tr>
+    <tr><td>19</td><td>5</td><td><span class="badge badge-red">fechado_perdido</span></td><td>R$ 9.000</td><td>2024-06-01</td><td>2024-10-31</td><td>Carlos Andrade</td></tr>
+    <tr><td>20</td><td>7</td><td><span class="badge badge-red">fechado_perdido</span></td><td>R$ 5.500</td><td>2024-07-01</td><td>2024-10-15</td><td>Rodrigo Silva</td></tr>
+  </table>
+  <p class="footnote">IDs 7–15 em amarelo = etapa "proposta" (9 registros); IDs 16–17 = "negociacao" (2 registros) → proporção 2/9 = <strong>22%</strong> (abaixo da meta de 30%) → anomalia A-04 → dispara I-03. Distribuição: captacao=6 (R$80k) · proposta=9 (R$183k) · negociacao=2 (R$72k) · ganho=1 (R$15k) · perdido=2 (R$14,5k).</p>
+
+  <h3>Audit Log (12 registros)</h3>
+  <table class="no-break">
+    <tr><th>id</th><th>tabela</th><th>operacao</th><th>registro_id</th><th>usuario</th><th>timestamp</th><th>dados_anteriores</th></tr>
+    <tr><td>1</td><td>clientes</td><td><span class="badge badge-blue">INSERT</span></td><td>2</td><td>ana.lima</td><td>2023-01-22 09:14:33</td><td>—</td></tr>
+    <tr><td>2</td><td>pedidos</td><td><span class="badge badge-blue">INSERT</span></td><td>2</td><td>carlos.andrade</td><td>2024-07-10 14:22:07</td><td>—</td></tr>
+    <tr><td>3</td><td>pedidos</td><td><span class="badge badge-amber">UPDATE</span></td><td>2</td><td>ana.lima</td><td>2024-07-21 10:05:18</td><td>{"status":"pendente"}</td></tr>
+    <tr><td>4</td><td>pedidos</td><td><span class="badge badge-amber">UPDATE</span></td><td>2</td><td>sistema</td><td>2024-08-08 16:41:52</td><td>{"status":"aprovado","data_entrega_real":null}</td></tr>
+    <tr><td>5</td><td>avaliacoes_nps</td><td><span class="badge badge-blue">INSERT</span></td><td>2</td><td>sistema</td><td>2024-08-10 09:03:44</td><td>—</td></tr>
+    <tr style="background:#FEF3C7"><td>6</td><td>avaliacoes_nps</td><td><span class="badge badge-blue">INSERT</span></td><td>3</td><td>sistema</td><td>2024-08-25 11:17:29</td><td>—</td></tr>
+    <tr style="background:#FEF3C7"><td>7</td><td>avaliacoes_nps</td><td><span class="badge badge-blue">INSERT</span></td><td>4</td><td>sistema</td><td>2024-09-05 14:38:51</td><td>—</td></tr>
+    <tr style="background:#FEF3C7"><td>8</td><td>avaliacoes_nps</td><td><span class="badge badge-blue">INSERT</span></td><td>5</td><td>sistema</td><td>2024-10-01 08:55:12</td><td>—</td></tr>
+    <tr style="background:#FEF3C7"><td>9</td><td>clientes</td><td><span class="badge badge-amber">UPDATE</span></td><td>3</td><td>sistema</td><td>2024-10-01 08:55:15</td><td>{"status":"ativo"}</td></tr>
+    <tr><td>10</td><td>clientes</td><td><span class="badge badge-amber">UPDATE</span></td><td>2</td><td>sistema</td><td>2024-10-05 07:00:01</td><td>{"status":"ativo"}</td></tr>
+    <tr><td>11</td><td>oportunidades</td><td><span class="badge badge-amber">UPDATE</span></td><td>16</td><td>rodrigo.silva</td><td>2024-10-15 15:22:44</td><td>{"etapa":"proposta"}</td></tr>
+    <tr><td>12</td><td>pedidos</td><td><span class="badge badge-amber">UPDATE</span></td><td>9</td><td>ana.lima</td><td>2024-10-11 16:44:07</td><td>{"status":"pendente"}</td></tr>
+  </table>
+  <p class="footnote">IDs 6–9 em amarelo: as 3 avaliações NPS de Gama (A-03) chegando ao sistema; ID 9 mostra o status do cliente 3 sendo atualizado para "em_risco" automaticamente 3 s após o INSERT da nota 3 (08:55:12 → 08:55:15). ID 11: Rodrigo avança oportunidade 16 (Delta Indústria) de "proposta" → "negociacao". ID 4: entrega do pedido 2 (Beta, A-01) confirmada pelo sistema.</p>
 
   <h2>2.4 Anomalias Intencionais</h2>
   <table class="no-break">
@@ -1130,11 +1246,11 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
   </table>
 
   <h2>4.5 Wireframes das 6 Telas</h2>
-  <p class="footnote" style="margin-bottom:10px">Wireframes exportados do Figma com paleta e tipografia aplicadas. Para navegação interativa, abrir <code>wireframes.html</code>.</p>
+  <p class="footnote" style="margin-bottom:10px">Wireframes HTML interativos incorporados abaixo — renderizados diretamente dos arquivos <code>telas/tela-X.html</code> com dados e paleta canônicos.</p>
 
   <h3>Tela 1 — Dashboard (visão geral)</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/figma-tela-1.png" alt="Tela 1 — Dashboard">
+    <iframe src="telas/tela-1.html" title="Tela 1 — Dashboard" loading="lazy"></iframe>
     <div class="wireframe-label">Tela 1 — Dashboard · KPIs + Alertas de Insight + Gráfico de Vendas</div>
   </div>
   <p class="footnote">KPIs exibidos: Vendas mês (R$ 37.600, ↑+166,7%), Pedidos (12 não cancelados), Em Risco (3 alertas), NPS (−10). Valores calculados a partir dos dados de exemplo com data de referência 05/11/2024.</p>
@@ -1143,14 +1259,14 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
 <div class="page page-break">
   <h3>Tela 2 — Lista de Pedidos</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/figma-tela-2.png" alt="Tela 2 — Lista de Pedidos">
+    <iframe src="telas/tela-2.html" title="Tela 2 — Lista de Pedidos" loading="lazy"></iframe>
     <div class="wireframe-label">Tela 2 — Lista de Pedidos · Filtros inline + Paginação + Badges de status</div>
   </div>
   <p class="footnote">Tabela sortável com filtros por status, cliente e período. Pedidos com atraso (entrega_real &gt; entrega_prev) marcados com badge âmbar. Ações de visualizar e editar disponíveis conforme role do usuário.</p>
 
   <h3>Tela 3 — Detalhe do Cliente</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/figma-tela-3.png" alt="Tela 3 — Detalhe do Cliente">
+    <iframe src="telas/tela-3.html" title="Tela 3 — Detalhe do Cliente" loading="lazy"></iframe>
     <div class="wireframe-label">Tela 3 — Detalhe do Cliente · KPIs individuais + Histórico + Card de Insight</div>
   </div>
   <p class="footnote">Exibe KPIs individuais (ticket médio, total de pedidos, último pedido), gráfico de NPS ao longo do tempo, histórico de pedidos e card de insight com ação sugerida (reativação ou acionamento do CS).</p>
@@ -1159,14 +1275,14 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
 <div class="page page-break">
   <h3>Tela 4 — Relatórios (Funil de Oportunidades)</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/figma-tela-4.png" alt="Tela 4 — Relatórios">
+    <iframe src="telas/tela-4.html" title="Tela 4 — Relatórios" loading="lazy"></iframe>
     <div class="wireframe-label">Tela 4 — Relatórios · Funil I-03 + Proporções por etapa + Gargalo detectado</div>
   </div>
   <p class="footnote">Funil com 20 oportunidades (captação=6 R$80k → proposta=9 R$183k → negociação=2 R$72k → fechado=1 R$15k). Proporção proposta→negociação em 22% (meta: 30%) — I-03 disparado.</p>
 
   <h3>Tela 5 — Lista de Clientes</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/figma-tela-5.png" alt="Tela 5 — Lista de Clientes">
+    <iframe src="telas/tela-5.html" title="Tela 5 — Lista de Clientes" loading="lazy"></iframe>
     <div class="wireframe-label">Tela 5 — Lista de Clientes · 10 clientes · 3 em risco · Badges de status</div>
   </div>
   <p class="footnote">Tabela com todos os clientes, dias desde o último pedido, segmento e status. Beta (118 dias), Gama (100 dias / NPS crítico) e Eta (583 dias) destacados como em risco.</p>
@@ -1175,7 +1291,7 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
 <div class="page page-break">
   <h3>Tela 6 — Alertas de Insight (I-01 + I-02)</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/figma-tela-6.png" alt="Tela 6 — Alertas de Insight">
+    <iframe src="telas/tela-6.html" title="Tela 6 — Alertas de Insight" loading="lazy"></iframe>
     <div class="wireframe-label">Tela 6 — Alertas · I-01 Churn Risk (3 clientes) + I-02 NPS Crítico (Gama)</div>
   </div>
   <p class="footnote">I-01: Beta (118d, R$4.200, Alta prioridade), Gama (100d, R$1.850, Média), Eta (583d, —, Média). I-02: Gama com notas 5→4→3 consecutivas ≤6 — acionar CS antes de 24h.</p>
@@ -1436,8 +1552,19 @@ graph TB
 
   <h2>A1 — Prancha Visual</h2>
   <div class="warn-box">
-    <strong>Link Figma/Canva:</strong> <em>[cole aqui o link da prancha visual após publicar]</em><br>
+    <strong>Link Canva:</strong> <a href="https://canva.link/7kw2vr3x4q1hzca" style="color:var(--primary);font-weight:600">https://canva.link/7kw2vr3x4q1hzca</a><br>
     <span style="font-size:11px">Caso a prancha não caiba no documento, o link acima direciona para o artefato completo no Figma/Canva. Os wireframes das 3 telas estão incorporados na Parte 4 deste documento e também disponíveis para navegação interativa no arquivo <code>wireframes.html</code>.</span>
+  </div>
+
+  <p class="footnote" style="margin-bottom:12px">Páginas exportadas da prancha visual publicada no Canva (7 páginas):</p>
+  <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px">
+    <img src="prancha-identidade/1.png" alt="Prancha Visual — Página 1" style="width:100%;max-width:960px;border-radius:8px;border:1px solid var(--border);display:block">
+    <img src="prancha-identidade/2.png" alt="Prancha Visual — Página 2" style="width:100%;max-width:960px;border-radius:8px;border:1px solid var(--border);display:block">
+    <img src="prancha-identidade/3.png" alt="Prancha Visual — Página 3" style="width:100%;max-width:960px;border-radius:8px;border:1px solid var(--border);display:block">
+    <img src="prancha-identidade/4.png" alt="Prancha Visual — Página 4" style="width:100%;max-width:960px;border-radius:8px;border:1px solid var(--border);display:block">
+    <img src="prancha-identidade/5.png" alt="Prancha Visual — Página 5" style="width:100%;max-width:960px;border-radius:8px;border:1px solid var(--border);display:block">
+    <img src="prancha-identidade/6.png" alt="Prancha Visual — Página 6" style="width:100%;max-width:960px;border-radius:8px;border:1px solid var(--border);display:block">
+    <img src="prancha-identidade/7.png" alt="Prancha Visual — Página 7" style="width:100%;max-width:960px;border-radius:8px;border:1px solid var(--border);display:block">
   </div>
 
   <h2>A2 — Módulos da Formação Explicitamente Cobertos</h2>
