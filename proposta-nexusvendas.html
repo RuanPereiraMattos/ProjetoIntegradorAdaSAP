@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusVendas — Proposta de Projeto Integrador</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ── Tokens ── */
+:root {
+  --primary:   #1E40AF;
+  --secondary: #3B82F6;
+  --alert:     #F59E0B;
+  --critical:  #EF4444;
+  --success:   #10B981;
+  --bg:        #F8FAFC;
+  --text:      #1E293B;
+  --border:    #E2E8F0;
+  --muted:     #64748B;
+  --white:     #FFFFFF;
+}
+
+/* ── Reset ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ── Page layout ── */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 16mm 18mm;
+  background: var(--white);
+}
+
+/* ── Print optimizations ── */
+@media print {
+  body { background: white; }
+  .page { margin: 0; padding: 14mm 16mm; }
+  .page-break { page-break-before: always; break-before: page; }
+  .no-break { page-break-inside: avoid; break-inside: avoid; }
+  a { color: inherit; text-decoration: none; }
+}
+
+@page {
+  size: A4;
+  margin: 14mm 16mm;
+}
+
+/* ── Cover ── */
+.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 260mm;
+  text-align: center;
+  gap: 0;
+}
+
+.cover-logo {
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--primary);
+  letter-spacing: -1px;
+  margin-bottom: 8px;
+}
+
+.cover-logo span { color: var(--secondary); }
+
+.cover-tagline {
+  font-size: 14px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 40px;
+}
+
+.cover-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.cover-subtitle {
+  font-size: 15px;
+  color: var(--muted);
+  margin-bottom: 48px;
+}
+
+.cover-divider {
+  width: 64px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+  margin: 0 auto 40px;
+}
+
+.cover-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 2;
+}
+
+.cover-meta strong { color: var(--text); }
+
+.cover-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 18px;
+  border-radius: 20px;
+  margin-top: 40px;
+}
+
+/* ── TOC ── */
+.toc { margin-top: 24px; }
+.toc h2 { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 20px; padding-bottom: 8px; border-bottom: 2px solid var(--primary); }
+.toc-item { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
+.toc-item.level2 { padding-left: 20px; font-size: 12px; color: var(--muted); }
+.toc-part { font-weight: 600; color: var(--text); }
+.toc-page { color: var(--muted); font-size: 11px; }
+
+/* ── Section headings ── */
+.section-header {
+  background: var(--primary);
+  color: white;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  margin-top: 4px;
+}
+
+.section-header .part-num {
+  font-size: 11px;
+  font-weight: 500;
+  opacity: .75;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 2px;
+}
+
+.section-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 24px 0 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 16px 0 8px;
+}
+
+p { margin: 8px 0; }
+
+/* ── Tables ── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  margin: 10px 0 18px;
+}
+
+th {
+  background: var(--primary);
+  color: white;
+  padding: 7px 10px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+td {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+
+tr:nth-child(even) td { background: #F1F5F9; }
+
+/* ── Code blocks ── */
+pre, code {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  background: #F1F5F9;
+  border-radius: 4px;
+}
+
+pre {
+  padding: 12px 14px;
+  overflow-x: auto;
+  margin: 10px 0 16px;
+  border-left: 3px solid var(--secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+code { padding: 1px 4px; }
+
+/* ── Badges ── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge-blue   { background: #DBEAFE; color: var(--primary); }
+.badge-amber  { background: #FEF3C7; color: #B45309; }
+.badge-red    { background: #FEE2E2; color: #B91C1C; }
+.badge-green  { background: #D1FAE5; color: #065F46; }
+.badge-gray   { background: #F1F5F9; color: var(--muted); }
+
+/* ── Info boxes ── */
+.info-box {
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  border-left: 4px solid var(--secondary);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+
+.warn-box {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-left: 4px solid var(--alert);
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+
+/* ── Insight cards ── */
+.insight-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 10px 0;
+  background: var(--bg);
+}
+
+.insight-card.alert { border-left: 4px solid var(--alert); }
+.insight-card.critical { border-left: 4px solid var(--critical); }
+
+.insight-card h4 { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.insight-card p { font-size: 11.5px; margin: 2px 0; }
+
+/* ── Palette swatches ── */
+.palette-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+.swatch {
+  width: 120px;
+  border-radius: 6px;
+  overflow: hidden;
+  font-size: 11px;
+  border: 1px solid var(--border);
+}
+.swatch-color { height: 40px; }
+.swatch-info { padding: 4px 6px; background: white; }
+.swatch-label { font-weight: 600; font-size: 10px; color: var(--text); }
+.swatch-hex { color: var(--muted); font-size: 10px; font-family: monospace; }
+
+/* ── Wireframe image ── */
+.wireframe-wrap {
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 10px 0 18px;
+  text-align: center;
+}
+
+.wireframe-wrap img {
+  width: 100%;
+  max-width: 680px;
+  display: block;
+  margin: 0 auto;
+}
+
+.wireframe-label {
+  background: var(--bg);
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Diagram ── */
+.diagram-wrap {
+  text-align: center;
+  margin: 12px 0 18px;
+}
+
+.diagram-wrap img {
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+/* ── Architecture diagram ── */
+.arch-box {
+  background: #F8FAFC;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 10px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 10.5px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+/* ── Roadmap ── */
+.roadmap-row { display: flex; gap: 10px; margin: 14px 0; }
+.roadmap-card {
+  flex: 1;
+  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+}
+.roadmap-card.h1 { border-top: 4px solid var(--success); background: #F0FDF4; }
+.roadmap-card.h2 { border-top: 4px solid var(--secondary); background: #EFF6FF; }
+.roadmap-card.h3 { border-top: 4px solid var(--primary); background: #EEF2FF; }
+.roadmap-card h4 { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+.roadmap-card .period { font-size: 10px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+.roadmap-card ul { font-size: 11px; padding-left: 16px; }
+.roadmap-card li { margin: 2px 0; }
+
+/* ── HTTP example ── */
+.http-block {
+  background: #0F172A;
+  color: #E2E8F0;
+  border-radius: 8px;
+  padding: 14px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  margin: 10px 0 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.http-block .method { color: #7DD3FC; font-weight: 700; }
+.http-block .url { color: #86EFAC; }
+.http-block .header { color: #FCA5A5; }
+.http-block .key { color: #C4B5FD; }
+.http-block .str { color: #FCD34D; }
+.http-block .num { color: #6EE7B7; }
+
+/* ── Status pills in table ── */
+.pill {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.pill-alto    { background: #FEE2E2; color: #991B1B; }
+.pill-medio   { background: #FEF3C7; color: #92400E; }
+.pill-baixo   { background: #D1FAE5; color: #065F46; }
+
+/* ── Utility ── */
+.text-muted { color: var(--muted); font-size: 11px; }
+.mt-2 { margin-top: 8px; }
+.mb-2 { margin-bottom: 8px; }
+.footnote { font-size: 10.5px; color: var(--muted); font-style: italic; margin-top: 6px; }
+
+/* ── Mermaid ── */
+.mermaid-wrap {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin: 12px 0 18px;
+  text-align: center;
+  overflow: hidden;
+}
+.mermaid svg { max-width: 100% !important; height: auto !important; }
+
+@media print {
+  .mermaid svg { max-width: 100% !important; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'default',
+    flowchart: { htmlLabels: true, curve: 'basis', padding: 20 },
+    themeVariables: {
+      primaryColor: '#1E40AF',
+      primaryTextColor: '#FFFFFF',
+      primaryBorderColor: '#1E3A8A',
+      lineColor: '#64748B',
+      secondaryColor: '#EFF6FF',
+      tertiaryColor: '#F8FAFC',
+      fontFamily: 'Inter, sans-serif',
+      fontSize: '13px'
+    }
+  });
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.mermaid').forEach(el => {
+      if (!el.querySelector('svg')) mermaid.run({ nodes: [el] });
+    });
+  });
+</script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     CAPA
+════════════════════════════════════════════════════════ -->
+<div class="page">
+  <div class="cover">
+    <div>
+      <div class="cover-logo">Nexus<span>Vendas</span></div>
+      <div class="cover-tagline">Venda mais. Perca menos. Decida melhor.</div>
+    </div>
+    <div class="cover-divider"></div>
+    <div>
+      <div class="cover-title">Proposta de Projeto Integrador</div>
+      <div class="cover-subtitle">SAP Start Coding 2026 — Tema 3: Receita e Relacionamento</div>
+    </div>
+    <div class="cover-meta">
+      <strong>Data de entrega:</strong> 06/11/2025 às 09:00<br>
+      <strong>Módulo:</strong> Vendas e Experiência do Cliente<br>
+      <strong>Produto:</strong> Módulo de inteligência comercial integrado ao ERP<br>
+      <strong>Tecnologias:</strong> Node.js · Express · PostgreSQL · React · AWS
+    </div>
+    <div class="cover-badge">Proposta completa — 6 partes + artefatos</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     SUMÁRIO
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="toc">
+    <h2>Sumário</h2>
+
+    <div class="toc-item"><span class="toc-part">Parte 1 — Visão do Produto</span><span class="toc-page">3</span></div>
+    <div class="toc-item level2"><span>1.1 Problema e Inspiração de Mercado</span></div>
+    <div class="toc-item level2"><span>1.2 Usuários e Personas</span></div>
+    <div class="toc-item level2"><span>1.3 User Stories</span></div>
+    <div class="toc-item level2"><span>1.4 MVP e Backlog</span></div>
+    <div class="toc-item level2"><span>1.5 Insights Previstos</span></div>
+
+    <div class="toc-item"><span class="toc-part">Parte 2 — Estrutura do Banco de Dados</span><span class="toc-page">5</span></div>
+    <div class="toc-item level2"><span>2.1 Diagrama Entidade-Relacionamento</span></div>
+    <div class="toc-item level2"><span>2.2 Dicionário de Dados (todas as tabelas)</span></div>
+    <div class="toc-item level2"><span>2.3 Dados de Exemplo</span></div>
+    <div class="toc-item level2"><span>2.4 Anomalias Intencionais</span></div>
+    <div class="toc-item level2"><span>2.5 Batch Sync Diário — ERP → NexusVendas</span></div>
+
+    <div class="toc-item"><span class="toc-part">Parte 3 — Planejamento da API REST</span><span class="toc-page">10</span></div>
+    <div class="toc-item level2"><span>3.1 Autenticação</span></div>
+    <div class="toc-item level2"><span>3.2 Lista de Endpoints</span></div>
+    <div class="toc-item level2"><span>3.3 Exemplos Completos de Requisição e Resposta</span></div>
+    <div class="toc-item level2"><span>3.4 Regras de Insight (Pseudocódigo)</span></div>
+    <div class="toc-item level2"><span>3.5 Plano de Testes</span></div>
+
+    <div class="toc-item"><span class="toc-part">Parte 4 — Identidade Visual</span><span class="toc-page">14</span></div>
+    <div class="toc-item level2"><span>4.1 Nome, Conceito e Paleta</span></div>
+    <div class="toc-item level2"><span>4.2 Tipografia e Componentes</span></div>
+    <div class="toc-item level2"><span>4.3 Wireframes das 3 Telas</span></div>
+
+    <div class="toc-item"><span class="toc-part">Parte 5 — Arquitetura da Solução</span><span class="toc-page">17</span></div>
+    <div class="toc-item level2"><span>5.1 Diagrama de Componentes</span></div>
+    <div class="toc-item level2"><span>5.2 Padrão Arquitetural MVC Simplificado</span></div>
+    <div class="toc-item level2"><span>5.3 Serviços AWS</span></div>
+    <div class="toc-item level2"><span>5.4 Fluxo de Requisição</span></div>
+    <div class="toc-item level2"><span>5.5 Conexão com SAP CX</span></div>
+
+    <div class="toc-item"><span class="toc-part">Parte 6 — Evolução e Escalabilidade</span><span class="toc-page">19</span></div>
+    <div class="toc-item level2"><span>6.1 Roadmap em 3 Horizontes</span></div>
+    <div class="toc-item level2"><span>6.2 Pontos de Escalabilidade</span></div>
+    <div class="toc-item level2"><span>6.3 Segurança e LGPD</span></div>
+    <div class="toc-item level2"><span>6.4 Observabilidade</span></div>
+    <div class="toc-item level2"><span>6.5 Estimativa de Custos na AWS</span></div>
+    <div class="toc-item level2"><span>6.6 Riscos</span></div>
+    <div class="toc-item level2"><span>6.7 Arquitetura Evoluída</span></div>
+
+    <div class="toc-item" style="margin-top:12px"><span class="toc-part">Artefatos Complementares</span></div>
+    <div class="toc-item level2"><span>A1 — Link Prancha Visual</span></div>
+    <div class="toc-item level2"><span>A2 — Referências Técnicas</span></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 1 — VISÃO DO PRODUTO
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header">
+    <div class="part-num">Parte 1</div>
+    <h1>Visão do Produto</h1>
+  </div>
+
+  <h2>1.1 Problema</h2>
+  <p>Empresas de médio porte perdem receita por não identificar clientes em risco de churn a tempo e por não ter visibilidade consolidada do pipeline de vendas. Gestores tomam decisões com dados dispersos em planilhas, sem alertas automáticos — o que resulta em oportunidades perdidas, follow-ups esquecidos e cancelamentos que poderiam ter sido evitados.</p>
+
+  <div class="info-box">
+    <strong>Inspiração de mercado:</strong> O SAP Sales Cloud (parte do portfólio SAP CX) resolve exatamente este problema para grandes empresas. O <strong>NexusVendas</strong> traz essa inteligência para médias empresas, com foco em insights acionáveis no ciclo <em>transação → regra de negócio → insight → ação</em>.
+  </div>
+
+  <h2>1.2 Usuários</h2>
+  <div class="info-box">
+    O NexusVendas é um <strong>módulo</strong> implantado no ERP corporativo da empresa contratante. Os usuários são funcionários dessa empresa que já possuem acesso autenticado ao ERP — não existe cadastro ou login próprio no módulo.
+  </div>
+
+  <table>
+    <tr><th>Persona</th><th>Papel no ERP</th><th>Dor principal</th></tr>
+    <tr><td>Gerente Comercial</td><td>Acompanha metas, pipeline e receita</td><td>Não tem visão consolidada do funil de vendas</td></tr>
+    <tr><td>Vendedor</td><td>Registra pedidos e oportunidades</td><td>Perde follow-ups por falta de alertas automáticos</td></tr>
+    <tr><td>Analista de CX</td><td>Monitora NPS, satisfação e churn</td><td>Dados de satisfação separados das transações de venda</td></tr>
+  </table>
+
+  <h2>1.3 User Stories</h2>
+
+  <div class="no-break">
+    <h3>US-01 — Visão do pipeline em tempo real</h3>
+    <p><strong>Como</strong> Gerente Comercial, <strong>quero</strong> visualizar o funil de vendas com as oportunidades em cada etapa e a proporção de estoque entre etapas, <strong>para</strong> identificar gargalos e agir antes de perder negócios no mês.</p>
+    <p><strong>Critérios de aceite:</strong> dashboard exibe contagem e valor total por etapa; proporção de estoque calculada automaticamente; etapas abaixo de 30% exibem alerta visual.</p>
+  </div>
+
+  <div class="no-break">
+    <h3>US-02 — Alerta de clientes em risco de churn</h3>
+    <p><strong>Como</strong> Analista de CX, <strong>quero</strong> receber automaticamente uma lista de clientes que não compram há mais de 90 dias com o ticket médio histórico, <strong>para</strong> priorizar ações de reativação antes que o cliente cancele.</p>
+    <p><strong>Critérios de aceite:</strong> lista atualiza diariamente via batch sync (defasagem máx. 24h); cada item exibe nome, dias sem compra, ticket médio e ação sugerida; clientes com ticket > R$3.000 recebem ação diferenciada (desconto 10%).</p>
+  </div>
+
+  <div class="no-break">
+    <h3>US-03 — Alerta de NPS crítico</h3>
+    <p><strong>Como</strong> Analista de CX, <strong>quero</strong> ser notificado quando um cliente registrar 3 ou mais avaliações consecutivas com nota ≤ 6, <strong>para</strong> acionar o time de Customer Success antes que o cliente se torne um detrator público.</p>
+    <p><strong>Critérios de aceite:</strong> sistema avalia as últimas 3 avaliações após cada nova resposta; quando atingida, cliente aparece no painel com status "NPS Crítico"; alerta inclui notas recentes e botão de acionamento do CS.</p>
+  </div>
+
+  <h2>1.4 MVP</h2>
+  <table>
+    <tr><th>Pilar</th><th>Funcionalidade</th><th>Prioridade</th></tr>
+    <tr><td>Pilar 1 — Churn</td><td>Dashboard com KPIs: alertas de churn, NPS, vendas do último mês fechado</td><td><span class="pill pill-alto">Alta</span></td></tr>
+    <tr><td>Pilar 1 — Churn</td><td>Lista de clientes inativos (≥ 90 dias sem pedido) com ticket médio e ação sugerida</td><td><span class="pill pill-alto">Alta</span></td></tr>
+    <tr><td>Pilar 1 — Churn</td><td>Alerta de NPS crítico (3 avaliações consecutivas ≤ 6)</td><td><span class="pill pill-alto">Alta</span></td></tr>
+    <tr><td>Pilar 2 — Funil</td><td>Painel de oportunidades por etapa (captação → proposta → negociação → fechado)</td><td><span class="pill pill-alto">Alta</span></td></tr>
+    <tr><td>Pilar 2 — Funil</td><td>Proporção de estoque entre etapas com alerta visual abaixo de 30%</td><td><span class="pill pill-alto">Alta</span></td></tr>
+    <tr><td>Infra</td><td>Batch sync diário ERP via EventBridge Scheduler (02h) + Lambda SyncJob</td><td><span class="pill pill-alto">Alta</span></td></tr>
+    <tr><td>Infra</td><td>Token ERP validado por Express authMiddleware — sem login próprio no módulo</td><td><span class="pill pill-alto">Alta</span></td></tr>
+    <tr><td colspan="2"><em>Fora do MVP:</em> e-mail automático, relatórios PDF, campanhas, ML, app mobile</td><td><span class="pill pill-baixo">Backlog</span></td></tr>
+  </table>
+
+  <h2>1.5 Insights Previstos</h2>
+  <div class="info-box" style="margin-bottom:10px"><strong>Regra de ouro:</strong> todo insight segue o padrão <strong>o que aconteceu → por que importa → ação sugerida</strong>.</div>
+
+  <div class="insight-card critical no-break">
+    <h4>I-01 — Risco de Churn</h4>
+    <p><strong>O que aconteceu:</strong> Beta Distribuidora sem compra há 118 dias</p>
+    <p><strong>Por que importa:</strong> Ticket médio R$4.200 por pedido — receita em risco</p>
+    <p><strong>Ação sugerida:</strong> Enviar oferta de reativação com 10% de desconto</p>
+  </div>
+
+  <div class="insight-card critical no-break">
+    <h4>I-02 — NPS Crítico</h4>
+    <p><strong>O que aconteceu:</strong> Gama Serviços recebeu notas 5, 4 e 3 nas últimas 3 avaliações</p>
+    <p><strong>Por que importa:</strong> Cliente detrator pode cancelar e prejudicar reputação</p>
+    <p><strong>Ação sugerida:</strong> Acionar Customer Success imediatamente</p>
+  </div>
+
+  <div class="insight-card alert no-break">
+    <h4>I-03 — Gargalo no Funil de Vendas</h4>
+    <p><strong>O que aconteceu:</strong> Proporção de estoque Proposta→Negociação está em 22% (meta: 30%)</p>
+    <p><strong>Por que importa:</strong> Meta de receita do mês em risco se não corrigido esta semana</p>
+    <p><strong>Ação sugerida:</strong> Revisar script de abordagem na etapa de proposta</p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 2 — BANCO DE DADOS
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header">
+    <div class="part-num">Parte 2</div>
+    <h1>Estrutura do Banco de Dados</h1>
+  </div>
+
+  <h2>2.1 Diagrama Entidade-Relacionamento</h2>
+  <div class="diagram-wrap">
+    <img src="diagrama-banco.png" alt="Diagrama ER do NexusVendas">
+  </div>
+  <p class="footnote">Diagrama gerado com dbdiagram.io. Cada seta representa uma FK; o lado "muitos" é indicado pela notação crow's foot.</p>
+
+  <h2>2.2 Dicionário de Dados</h2>
+
+  <h3>Tabela: <code>clientes</code></h3>
+  <table class="no-break">
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th><th>Regra</th></tr>
+    <tr><td><code>id</code></td><td>INT (PK)</td><td>Sim</td><td>Identificador único</td><td>Auto-increment</td></tr>
+    <tr><td><code>erp_id</code></td><td>VARCHAR(50)</td><td>Não</td><td>ID do cliente no ERP</td><td>UNIQUE — chave de deduplicação no batch sync</td></tr>
+    <tr><td><code>nome</code></td><td>VARCHAR(100)</td><td>Sim</td><td>Razão social da empresa</td><td>—</td></tr>
+    <tr><td><code>segmento</code></td><td>VARCHAR(50)</td><td>Não</td><td>Ex: Varejo, Tecnologia, Indústria</td><td>—</td></tr>
+    <tr><td><code>cidade</code></td><td>VARCHAR(80)</td><td>Não</td><td>Cidade sede</td><td>—</td></tr>
+    <tr><td><code>data_cadastro</code></td><td>DATE</td><td>Sim</td><td>Data de criação do registro</td><td>Default: CURRENT_DATE</td></tr>
+    <tr><td><code>status</code></td><td>ENUM</td><td>Sim</td><td><code>ativo</code> / <code>inativo</code> / <code>em_risco</code></td><td>Default: ativo</td></tr>
+  </table>
+
+  <h3>Tabela: <code>pedidos</code></h3>
+  <table class="no-break">
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th><th>Regra</th></tr>
+    <tr><td><code>id</code></td><td>INT (PK)</td><td>Sim</td><td>Identificador único</td><td>Auto-increment</td></tr>
+    <tr><td><code>erp_id</code></td><td>VARCHAR(50)</td><td>Não</td><td>ID do pedido no ERP</td><td>UNIQUE — idempotência no UPSERT do sync</td></tr>
+    <tr><td><code>cliente_id</code></td><td>INT (FK)</td><td>Sim</td><td>Empresa compradora</td><td>FK → clientes.id</td></tr>
+    <tr><td><code>data_pedido</code></td><td>DATE</td><td>Sim</td><td>Data de criação</td><td>Default: CURRENT_DATE</td></tr>
+    <tr><td><code>data_entrega_prev</code></td><td>DATE</td><td>Não</td><td>Previsão de entrega acordada</td><td>—</td></tr>
+    <tr><td><code>data_entrega_real</code></td><td>DATE</td><td>Não</td><td>Data de entrega efetiva</td><td>—</td></tr>
+    <tr><td><code>valor_total</code></td><td>DECIMAL(10,2)</td><td>Sim</td><td>Valor total do pedido</td><td>&gt; 0</td></tr>
+    <tr><td><code>status</code></td><td>ENUM</td><td>Sim</td><td><code>pendente</code> / <code>aprovado</code> / <code>entregue</code> / <code>cancelado</code></td><td>Default: pendente</td></tr>
+  </table>
+
+  <h3>Tabela: <code>itens_pedido</code></h3>
+  <table class="no-break">
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th><th>Regra</th></tr>
+    <tr><td><code>id</code></td><td>INT (PK)</td><td>Sim</td><td>Identificador único</td><td>Auto-increment</td></tr>
+    <tr><td><code>erp_id</code></td><td>VARCHAR(50)</td><td>Não</td><td>ID do item no ERP</td><td>UNIQUE — idempotência</td></tr>
+    <tr><td><code>pedido_id</code></td><td>INT (FK)</td><td>Sim</td><td>Pedido ao qual pertence</td><td>FK → pedidos.id</td></tr>
+    <tr><td><code>produto_id</code></td><td>INT (FK)</td><td>Sim</td><td>Produto comprado</td><td>FK → produtos.id</td></tr>
+    <tr><td><code>quantidade</code></td><td>INT</td><td>Sim</td><td>Quantidade comprada</td><td>&gt; 0</td></tr>
+    <tr><td><code>preco_unitario</code></td><td>DECIMAL(10,2)</td><td>Sim</td><td>Preço no momento da venda</td><td>Snapshot — não atualiza com o produto</td></tr>
+  </table>
+
+  <h3>Tabela: <code>produtos</code></h3>
+  <table class="no-break">
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th><th>Regra</th></tr>
+    <tr><td><code>id</code></td><td>INT (PK)</td><td>Sim</td><td>Identificador único</td><td>Auto-increment</td></tr>
+    <tr><td><code>erp_id</code></td><td>VARCHAR(50)</td><td>Não</td><td>ID do produto no ERP</td><td>UNIQUE — sincronizado do catálogo ERP</td></tr>
+    <tr><td><code>nome</code></td><td>VARCHAR(100)</td><td>Sim</td><td>Nome do produto ou serviço</td><td>—</td></tr>
+    <tr><td><code>categoria</code></td><td>VARCHAR(50)</td><td>Não</td><td>Ex: Software, Hardware, Consultoria</td><td>—</td></tr>
+    <tr><td><code>preco_base</code></td><td>DECIMAL(10,2)</td><td>Sim</td><td>Preço de referência atual</td><td>&gt; 0</td></tr>
+    <tr><td><code>ativo</code></td><td>BOOLEAN</td><td>Sim</td><td>Disponível para venda</td><td>Default: true</td></tr>
+  </table>
+
+  <h3>Tabela: <code>oportunidades</code></h3>
+  <table class="no-break">
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th><th>Regra</th></tr>
+    <tr><td><code>id</code></td><td>INT (PK)</td><td>Sim</td><td>Identificador único</td><td>Auto-increment</td></tr>
+    <tr><td><code>cliente_id</code></td><td>INT (FK)</td><td>Sim</td><td>Cliente alvo da oportunidade</td><td>FK → clientes.id</td></tr>
+    <tr><td><code>etapa</code></td><td>ENUM</td><td>Sim</td><td><code>captacao</code> / <code>proposta</code> / <code>negociacao</code> / <code>fechado_ganho</code> / <code>fechado_perdido</code></td><td>—</td></tr>
+    <tr><td><code>valor_estimado</code></td><td>DECIMAL(10,2)</td><td>Não</td><td>Receita potencial se ganhar</td><td>—</td></tr>
+    <tr><td><code>data_abertura</code></td><td>DATE</td><td>Sim</td><td>Data de início da oportunidade</td><td>Default: NOW()</td></tr>
+    <tr><td><code>data_fechamento_prev</code></td><td>DATE</td><td>Não</td><td>Previsão de fechamento</td><td>—</td></tr>
+    <tr><td><code>responsavel</code></td><td>VARCHAR(100)</td><td>Não</td><td>Vendedor responsável</td><td>—</td></tr>
+  </table>
+
+  <h3>Tabela: <code>avaliacoes_nps</code></h3>
+  <table class="no-break">
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th><th>Regra</th></tr>
+    <tr><td><code>id</code></td><td>INT (PK)</td><td>Sim</td><td>Identificador único</td><td>Auto-increment</td></tr>
+    <tr><td><code>erp_id</code></td><td>VARCHAR(50)</td><td>Não</td><td>ID da avaliação no ERP</td><td>UNIQUE — idempotência</td></tr>
+    <tr><td><code>cliente_id</code></td><td>INT (FK)</td><td>Sim</td><td>Cliente que avaliou</td><td>FK → clientes.id</td></tr>
+    <tr><td><code>pedido_id</code></td><td>INT (FK)</td><td>Não</td><td>Pedido relacionado à avaliação</td><td>FK → pedidos.id</td></tr>
+    <tr><td><code>nota</code></td><td>INT</td><td>Sim</td><td>Nota de 0 a 10</td><td>Entre 0 e 10</td></tr>
+    <tr><td><code>comentario</code></td><td>TEXT</td><td>Não</td><td>Feedback livre do cliente</td><td>—</td></tr>
+    <tr><td><code>data_avaliacao</code></td><td>DATE</td><td>Sim</td><td>Data da resposta</td><td>Default: CURRENT_DATE</td></tr>
+  </table>
+
+  <h3>Tabela: <code>audit_log</code> <span class="badge badge-red">obrigatória</span></h3>
+  <table class="no-break">
+    <tr><th>Campo</th><th>Tipo</th><th>Obrigatório</th><th>Descrição</th><th>Regra</th></tr>
+    <tr><td><code>id</code></td><td>INT (PK)</td><td>Sim</td><td>Identificador único</td><td>Auto-increment</td></tr>
+    <tr><td><code>tabela</code></td><td>VARCHAR(50)</td><td>Sim</td><td>Nome da tabela afetada</td><td>—</td></tr>
+    <tr><td><code>operacao</code></td><td>ENUM</td><td>Sim</td><td><code>INSERT</code> / <code>UPDATE</code> / <code>DELETE</code></td><td>—</td></tr>
+    <tr><td><code>registro_id</code></td><td>INT</td><td>Sim</td><td>ID do registro afetado</td><td>—</td></tr>
+    <tr><td><code>usuario</code></td><td>VARCHAR(100)</td><td>Sim</td><td>Usuário que realizou a ação</td><td>—</td></tr>
+    <tr><td><code>timestamp</code></td><td>TIMESTAMPTZ</td><td>Sim</td><td>Data e hora da operação (com fuso)</td><td>Default: NOW()</td></tr>
+    <tr><td><code>dados_anteriores</code></td><td>JSON</td><td>Não</td><td>Snapshot do registro antes da mudança</td><td>Preenchido em UPDATE e DELETE</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 2 (continuação) — DADOS DE EXEMPLO
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header" style="background:#1E293B;">
+    <div class="part-num">Parte 2 — Continuação</div>
+    <h1>Dados de Exemplo e Anomalias</h1>
+  </div>
+
+  <h2>2.3 Dados de Exemplo</h2>
+
+  <h3>Clientes (10 registros)</h3>
+  <table class="no-break">
+    <tr><th>id</th><th>nome</th><th>segmento</th><th>cidade</th><th>data_cadastro</th><th>status</th></tr>
+    <tr><td>1</td><td>Alfa Tecnologia Ltda</td><td>Tecnologia</td><td>São Paulo</td><td>2023-03-10</td><td><span class="badge badge-blue">ativo</span></td></tr>
+    <tr><td>2</td><td>Beta Distribuidora S.A.</td><td>Varejo</td><td>Campinas</td><td>2023-01-22</td><td><span class="badge badge-amber">em_risco</span></td></tr>
+    <tr><td>3</td><td>Gama Serviços Ltda</td><td>Consultoria</td><td>Rio de Janeiro</td><td>2022-11-05</td><td><span class="badge badge-amber">em_risco</span></td></tr>
+    <tr><td>4</td><td>Delta Indústria Ltda</td><td>Indústria</td><td>Belo Horizonte</td><td>2023-06-18</td><td><span class="badge badge-blue">ativo</span></td></tr>
+    <tr><td>5</td><td>Épsilon Saúde S.A.</td><td>Saúde</td><td>Porto Alegre</td><td>2023-08-30</td><td><span class="badge badge-blue">ativo</span></td></tr>
+    <tr><td>6</td><td>Zeta Logística Ltda</td><td>Logística</td><td>Curitiba</td><td>2022-09-14</td><td><span class="badge badge-blue">ativo</span></td></tr>
+    <tr><td>7</td><td>Eta Educação S.A.</td><td>Educação</td><td>Recife</td><td>2023-04-02</td><td><span class="badge badge-gray">inativo</span></td></tr>
+    <tr><td>8</td><td>Theta Varejo Ltda</td><td>Varejo</td><td>Fortaleza</td><td>2023-07-19</td><td><span class="badge badge-blue">ativo</span></td></tr>
+    <tr><td>9</td><td>Iota Financeira S.A.</td><td>Financeiro</td><td>São Paulo</td><td>2023-02-28</td><td><span class="badge badge-blue">ativo</span></td></tr>
+    <tr><td>10</td><td>Kappa Agro Ltda</td><td>Agronegócio</td><td>Ribeirão Preto</td><td>2023-05-11</td><td><span class="badge badge-blue">ativo</span></td></tr>
+  </table>
+
+  <h3>Avaliações NPS (10 registros)</h3>
+  <table class="no-break">
+    <tr><th>id</th><th>cliente_id</th><th>pedido_id</th><th>nota</th><th>comentário</th><th>data</th></tr>
+    <tr><td>1</td><td>1</td><td>1</td><td>9</td><td>Entrega rápida, produto excelente</td><td>2024-08-12</td></tr>
+    <tr><td>2</td><td>2</td><td>2</td><td>6</td><td>Atraso na entrega prejudicou o planejamento</td><td>2024-08-10</td></tr>
+    <tr><td>3</td><td>3</td><td>3</td><td>5</td><td>Produto veio com defeito</td><td>2024-08-25</td></tr>
+    <tr style="background:#FEF3C7"><td>4</td><td>3</td><td>null</td><td>4</td><td>Suporte demorou a responder</td><td>2024-09-05</td></tr>
+    <tr style="background:#FEE2E2"><td>5</td><td>3</td><td>null</td><td>3</td><td>Cogitando cancelar contrato</td><td>2024-10-01</td></tr>
+    <tr><td>6</td><td>4</td><td>4</td><td>10</td><td>Excelente atendimento</td><td>2024-09-26</td></tr>
+    <tr><td>7</td><td>8</td><td>8</td><td>8</td><td>Boa experiência geral</td><td>2024-10-09</td></tr>
+    <tr><td>8</td><td>10</td><td>10</td><td>7</td><td>Dentro do esperado</td><td>2024-09-01</td></tr>
+    <tr><td>9</td><td>5</td><td>5</td><td>8</td><td>Prazo respeitado, produto conforme</td><td>2024-10-15</td></tr>
+    <tr><td>10</td><td>9</td><td>9</td><td>9</td><td>Ótimo atendimento comercial</td><td>2024-10-22</td></tr>
+  </table>
+  <p class="footnote">IDs 3–5 (linhas em amarelo/vermelho) formam a anomalia A-03: 3 notas consecutivas ≤ 6 do cliente 3 (Gama Serviços). NPS = % promotores (9–10) − % detratores (0–6) = 30% − 40% = <strong>−10</strong>.</p>
+
+  <h3>Oportunidades — Distribuição por Etapa (20 registros)</h3>
+  <table class="no-break">
+    <tr><th>Etapa</th><th>Qtd</th><th>Valor estimado total</th><th>Proporção para próxima etapa</th></tr>
+    <tr><td>captação</td><td>6</td><td>R$ 80.000</td><td>9/6 = 150% → sem alerta</td></tr>
+    <tr style="background:#FEF3C7"><td>proposta</td><td>9</td><td>R$ 173.000</td><td>2/9 = <strong>22%</strong> ← abaixo de 30% → <strong>dispara I-03</strong></td></tr>
+    <tr><td>negociação</td><td>2</td><td>R$ 72.000</td><td>1/2 = 50% → sem alerta</td></tr>
+    <tr><td>fechado_ganho</td><td>1</td><td>R$ 15.000</td><td>—</td></tr>
+    <tr><td>fechado_perdido</td><td>2</td><td>R$ 14.500</td><td>—</td></tr>
+  </table>
+
+  <h2>2.4 Anomalias Intencionais</h2>
+  <table class="no-break">
+    <tr><th>#</th><th>Tabela</th><th>Registro(s)</th><th>Anomalia</th><th>Insight disparado</th></tr>
+    <tr><td>A-01</td><td><code>pedidos</code></td><td>IDs 2 e 3</td><td><code>data_entrega_real</code> ultrapassa <code>data_entrega_prev</code> em 15+ dias</td><td>Pedido com atraso crítico → NPS em risco</td></tr>
+    <tr><td>A-02</td><td><code>clientes</code></td><td>IDs 2 e 3</td><td>Último pedido há 118 e 100 dias respectivamente</td><td>I-01 — Risco de churn → oferta de reativação</td></tr>
+    <tr><td>A-03</td><td><code>avaliacoes_nps</code></td><td>IDs 3, 4, 5 (cliente 3)</td><td>3 notas consecutivas ≤ 6 para Gama Serviços</td><td>I-02 — Cliente detrator → acionar CS</td></tr>
+    <tr><td>A-04</td><td><code>oportunidades</code></td><td>IDs 7–15 vs 16–17</td><td>9 registros em "proposta", apenas 2 em "negociacao" → proporção de 22%</td><td>I-03 — Gargalo no funil → revisar abordagem</td></tr>
+  </table>
+
+  <h2>2.5 Batch Sync Diário — ERP → NexusVendas</h2>
+  <table class="no-break">
+    <tr><th>Componente</th><th>Detalhe</th></tr>
+    <tr><td><strong>EventBridge Scheduler</strong></td><td>Cron <code>0 2 * * *</code> — dispara às 02h00 diariamente; invoca a Lambda SyncJob</td></tr>
+    <tr><td><strong>Lambda SyncJob</strong></td><td>Node.js — conecta à API REST do ERP, executa UPSERTs no RDS e registra no <code>audit_log</code> com <code>usuario='syncjob'</code></td></tr>
+    <tr><td><strong>Tabelas sincronizadas</strong></td><td><code>clientes</code>, <code>pedidos</code>, <code>itens_pedido</code>, <code>produtos</code>, <code>avaliacoes_nps</code> — defasagem máx. 24h</td></tr>
+    <tr><td><strong>Tabelas nativas</strong></td><td><code>oportunidades</code>, <code>audit_log</code> — gerenciadas diretamente pelo NexusVendas em tempo real</td></tr>
+    <tr><td><strong>Idempotência</strong></td><td>Campo <code>erp_id UNIQUE</code> em cada tabela; sync usa <code>INSERT … ON CONFLICT (erp_id) DO UPDATE SET</code></td></tr>
+  </table>
+
+  <div class="info-box">
+    <strong>Problema de onboarding:</strong> sem pedidos no banco no primeiro dia, a regra I-01 usaria <code>data_cadastro</code> como fallback — evitando falso positivo em massa para novos clientes sem sincronização ainda executada.
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 3 — API REST
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header">
+    <div class="part-num">Parte 3</div>
+    <h1>Planejamento da API REST</h1>
+  </div>
+
+  <h2>3.1 Autenticação</h2>
+  <div class="info-box">
+    O NexusVendas é um módulo implantado no ERP. O usuário já está autenticado no ERP — o frontend repassa o token JWT emitido pelo IdP corporativo (ex: Azure AD, Okta) em cada requisição. <strong>Não existe endpoint <code>/auth/login</code> no módulo.</strong>
+  </div>
+
+  <p>O <code>authMiddleware</code> do Express é aplicado em todas as rotas protegidas. A função valida: (1) assinatura do JWT (chave pública do IdP); (2) expiração do token (<code>exp</code>); (3) extração do <code>role</code> das claims para injetar em <code>req.user</code>.</p>
+  <p><strong>Roles lidas das claims do token:</strong> <code>admin</code> | <code>gerente</code> | <code>vendedor</code></p>
+
+  <h2>3.2 Lista Completa de Endpoints</h2>
+
+  <table class="no-break">
+    <tr><th>#</th><th>Método</th><th>Rota</th><th>Descrição</th><th>Auth</th></tr>
+    <tr><td>1</td><td><span class="badge badge-blue">GET</span></td><td><code>/clientes</code></td><td>Lista todos os clientes (filtros: status, segmento)</td><td>gerente, admin</td></tr>
+    <tr><td>2</td><td><span class="badge badge-blue">GET</span></td><td><code>/clientes/:id</code></td><td>Detalha um cliente com histórico resumido</td><td>qualquer role</td></tr>
+    <tr><td>3</td><td><span class="badge badge-green">POST</span></td><td><code>/clientes</code></td><td>Cria novo cliente</td><td>admin</td></tr>
+    <tr><td>4</td><td><span class="badge badge-amber">PATCH</span></td><td><code>/clientes/:id</code></td><td>Atualiza dados ou status do cliente</td><td>gerente, admin</td></tr>
+    <tr><td>5</td><td><span class="badge badge-blue">GET</span></td><td><code>/pedidos</code></td><td>Lista pedidos (filtros: status, cliente_id, data)</td><td>qualquer role</td></tr>
+    <tr><td>6</td><td><span class="badge badge-green">POST</span></td><td><code>/pedidos</code></td><td>Cria novo pedido com itens</td><td>vendedor, admin</td></tr>
+    <tr><td>7</td><td><span class="badge badge-amber">PATCH</span></td><td><code>/pedidos/:id/status</code></td><td>Atualiza status do pedido</td><td>vendedor, admin</td></tr>
+    <tr><td>8</td><td><span class="badge badge-blue">GET</span></td><td><code>/insights/churn-risk</code></td><td>Clientes sem pedido há ≥ N dias (default: 90)</td><td>gerente, admin</td></tr>
+    <tr><td>9</td><td><span class="badge badge-blue">GET</span></td><td><code>/insights/nps-alertas</code></td><td>Clientes com 3+ avaliações consecutivas ≤ 6</td><td>gerente, admin</td></tr>
+    <tr><td>10</td><td><span class="badge badge-blue">GET</span></td><td><code>/insights/pipeline</code></td><td>Análise do funil com proporção de estoque por etapa</td><td>gerente, admin</td></tr>
+  </table>
+
+  <h3>Padrão de Erro</h3>
+  <pre>{
+  "error": {
+    "code": "CLIENTE_NAO_ENCONTRADO",
+    "message": "Cliente com id 99 não existe.",
+    "status": 404
+  }
+}</pre>
+
+  <table class="no-break" style="width:auto">
+    <tr><th>HTTP</th><th>Quando usar</th></tr>
+    <tr><td>200</td><td>Sucesso com dados retornados</td></tr>
+    <tr><td>201</td><td>Recurso criado com sucesso</td></tr>
+    <tr><td>400</td><td>Dados inválidos ou campo obrigatório ausente</td></tr>
+    <tr><td>401</td><td>Token ausente ou expirado</td></tr>
+    <tr><td>403</td><td>Usuário não tem permissão para esta ação</td></tr>
+    <tr><td>404</td><td>Recurso não encontrado</td></tr>
+    <tr><td>500</td><td>Erro interno do servidor</td></tr>
+  </table>
+
+  <h2>3.3 Exemplos Completos — Exemplo 1: POST /clientes</h2>
+
+  <h3>Requisição</h3>
+  <div class="http-block">POST /clientes HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+
+{
+  "nome": "Omega Varejo Ltda",
+  "segmento": "Varejo",
+  "cidade": "Manaus",
+  "status": "ativo"
+}</div>
+
+  <h3>Resposta 201 — Criado com sucesso</h3>
+  <div class="http-block">HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "id": 11,
+  "nome": "Omega Varejo Ltda",
+  "segmento": "Varejo",
+  "cidade": "Manaus",
+  "data_cadastro": "2024-11-05",
+  "status": "ativo"
+}</div>
+
+  <h3>Resposta 400 — Campo obrigatório ausente</h3>
+  <div class="http-block">HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+  "error": {
+    "code": "CAMPO_OBRIGATORIO",
+    "message": "O campo 'nome' é obrigatório.",
+    "status": 400
+  }
+}</div>
+
+  <h2>3.3 Exemplos Completos — Exemplo 2: GET /insights/churn-risk</h2>
+
+  <h3>Requisição</h3>
+  <div class="http-block">GET /insights/churn-risk?dias=90 HTTP/1.1
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...</div>
+
+  <h3>Resposta 200</h3>
+  <div class="http-block">HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "total": 3,
+  "clientes": [
+    {
+      "id": 2,
+      "nome": "Beta Distribuidora S.A.",
+      "ultimo_pedido": "2024-07-10",
+      "dias_sem_compra": 118,
+      "ticket_medio": 4200.00,
+      "acao_sugerida": "Enviar oferta de reativação com 10% de desconto"
+    },
+    {
+      "id": 3,
+      "nome": "Gama Serviços Ltda",
+      "ultimo_pedido": "2024-07-28",
+      "dias_sem_compra": 100,
+      "ticket_medio": 1850.00,
+      "acao_sugerida": "Agendar ligação de relacionamento"
+    },
+    {
+      "id": 7,
+      "nome": "Eta Educação S.A.",
+      "ultimo_pedido": null,
+      "dias_sem_compra": 583,
+      "ticket_medio": null,
+      "acao_sugerida": "Agendar ligação de relacionamento"
+    }
+  ]
+}</div>
+
+  <h2>3.3 Exemplos Completos — Exemplo 3: GET /insights/nps-alertas</h2>
+
+  <h3>Requisição</h3>
+  <div class="http-block">GET /insights/nps-alertas HTTP/1.1
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...</div>
+
+  <h3>Resposta 200</h3>
+  <div class="http-block">HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "total": 1,
+  "alertas": [
+    {
+      "cliente_id": 3,
+      "nome": "Gama Serviços Ltda",
+      "ultimas_notas": [5, 4, 3],
+      "classificacao": "detrator",
+      "acao_sugerida": "Acionar Customer Success imediatamente"
+    }
+  ]
+}</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 3 (continuação) — PSEUDOCÓDIGO + TESTES
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header" style="background:#1E293B;">
+    <div class="part-num">Parte 3 — Continuação</div>
+    <h1>Regras de Insight e Plano de Testes</h1>
+  </div>
+
+  <h2>3.4 Regras de Insight (Pseudocódigo)</h2>
+
+  <h3>Regra I-01 — Risco de Churn</h3>
+  <pre>-- data_referencia declarada explicitamente para reproduzir os exemplos
+data_referencia = '2024-11-05'
+
+FUNÇÃO calcularChurnRisk(diasLimite = 90):
+  resultado = []
+  PARA CADA cliente EM clientes:
+    ultimoPedido = buscarUltimoPedido(cliente.id)  -- busca apenas status ≠ cancelado
+
+    -- fallback para data_cadastro evita falso positivo no onboarding
+    ref = ultimoPedido.data_pedido SE ultimoPedido NÃO É NULO
+          SENÃO cliente.data_cadastro
+
+    diasSemCompra = diasDesde(ref, data_referencia)
+
+    SE diasSemCompra >= diasLimite:
+      ticketMedio = MÉDIA(pedidos.valor_total ONDE cliente_id = cliente.id
+                          E status ≠ 'cancelado')
+
+      SE ticketMedio > 3000:
+        acao = "Enviar oferta de reativação com 10% de desconto"
+      SENÃO:
+        acao = "Agendar ligação de relacionamento"
+
+      ADICIONAR { cliente, diasSemCompra, ticketMedio, acao } ao resultado
+
+  RETORNAR resultado ORDENADO POR ticketMedio DESC NULLS LAST</pre>
+
+  <h3>Regra I-02 — NPS Crítico</h3>
+  <pre>FUNÇÃO alertasNPS():
+  resultado = []
+  PARA CADA cliente EM clientes:
+    avaliacoes = buscarAvaliacoes(cliente.id, ORDEM: data DESC, LIMITE: 3)
+
+    SE avaliacoes.length == 3:
+      SE TODAS as avaliacoes.nota &lt;= 6:
+        ADICIONAR { cliente, ultimas_notas, acao: "Acionar CS imediatamente" }
+
+  RETORNAR resultado</pre>
+
+  <h3>Regra I-03 — Gargalo no Funil de Vendas</h3>
+  <pre>FUNÇÃO analisarFunil():
+  etapas = ["captacao", "proposta", "negociacao", "fechado_ganho"]
+  alertas = []
+
+  PARA i DE 0 ATÉ etapas.length - 2:
+    etapa_atual   = etapas[i]
+    proxima_etapa = etapas[i + 1]
+
+    total_atual   = CONTAR(oportunidades ONDE etapa = etapa_atual)
+    total_proxima = CONTAR(oportunidades ONDE etapa = proxima_etapa)
+
+    SE total_atual > 0:
+      proporcao = total_proxima / total_atual
+
+      SE proporcao &lt; 0.30:
+        ADICIONAR {
+          de: etapa_atual, para: proxima_etapa,
+          proporcao_estoque: proporcao,
+          alerta: "Possível gargalo: proporção " + etapa_atual + " → " +
+                  proxima_etapa + " está em " + (proporcao * 100) + "%"
+        }
+
+  RETORNAR alertas</pre>
+
+  <h2>3.5 Plano de Testes das Regras de Insight</h2>
+
+  <h3>I-01 — calcularChurnRisk(diasLimite)</h3>
+  <table class="no-break">
+    <tr><th>ID</th><th>Cenário</th><th>Entrada</th><th>Resultado esperado</th></tr>
+    <tr><td>TC-01</td><td>Inativo com ticket alto</td><td>Beta Distribuidora (id=2), diasLimite=90</td><td>Retornado; acao = oferta 10% desconto (ticket R$4.200 &gt; R$3.000)</td></tr>
+    <tr><td>TC-02</td><td>Inativo com ticket baixo</td><td>Gama Serviços (id=3), diasLimite=90</td><td>Retornado; acao = Agendar ligação (ticket R$1.850 ≤ R$3.000)</td></tr>
+    <tr><td>TC-03</td><td>Pedido recente</td><td>Delta Indústria (id=4), diasLimite=90</td><td>Não retornado — último pedido há menos de 90 dias</td></tr>
+    <tr><td>TC-04</td><td>Limite customizado</td><td>Qualquer cliente, diasLimite=30</td><td>Lista maior que com diasLimite=90</td></tr>
+    <tr><td>TC-05</td><td>Sem nenhum pedido (onboarding)</td><td>Eta Educação (id=7), sem pedidos</td><td>Retornado — ref = data_cadastro (fallback); dias_sem_compra=583; ticket_medio=null</td></tr>
+    <tr><td>TC-06</td><td>Ordenação por ticket DESC</td><td>Beta (R$4.200) e Gama (R$1.850) em risco</td><td>Beta aparece antes de Gama na lista</td></tr>
+  </table>
+
+  <h3>I-02 — alertasNPS()</h3>
+  <table class="no-break">
+    <tr><th>ID</th><th>Cenário</th><th>Entrada</th><th>Resultado esperado</th></tr>
+    <tr><td>TC-07</td><td>3 consecutivas ≤ 6</td><td>Gama Serviços: notas [5, 4, 3]</td><td>Retornado; classificacao = "detrator"</td></tr>
+    <tr><td>TC-08</td><td>Última nota ≥ 7 quebra sequência</td><td>Hipotético: notas [3, 4, 8] → [8, 4, 3] por data DESC</td><td>Não retornado — nem todas as 3 últimas ≤ 6</td></tr>
+    <tr><td>TC-09</td><td>Menos de 3 avaliações</td><td>Cliente com apenas 2 avaliações [4, 5]</td><td>Não retornado — avaliacoes.length &lt; 3</td></tr>
+    <tr><td>TC-10</td><td>Exatamente no limite (nota = 6)</td><td>Notas [6, 6, 6]</td><td>Retornado — regra é ≤ 6, portanto 6 é incluído</td></tr>
+    <tr><td>TC-11</td><td>Nota 7 (não dispara)</td><td>Notas [7, 7, 7]</td><td>Não retornado — 7 &gt; 6</td></tr>
+  </table>
+
+  <h3>I-03 — analisarFunil()</h3>
+  <table class="no-break">
+    <tr><th>ID</th><th>Cenário</th><th>Entrada</th><th>Resultado esperado</th></tr>
+    <tr><td>TC-12</td><td>Gargalo real Proposta→Negociação</td><td>proposta=9, negociacao=2</td><td>Alerta: de="proposta", para="negociacao", proporcao≈0.22 (tolerância ±0.01)</td></tr>
+    <tr><td>TC-13</td><td>Transição saudável</td><td>negociacao=2, fechado_ganho=1 → 50%</td><td>Sem alerta — 50% &gt; 30%</td></tr>
+    <tr><td>TC-14</td><td>Etapa zerada (divisão por zero)</td><td>captacao = 0</td><td>Transição ignorada — SE total_atual &gt; 0 protege o cálculo</td></tr>
+    <tr><td>TC-15</td><td>Campos obrigatórios na resposta</td><td>Qualquer gargalo</td><td>Resposta inclui: de, para, proporcao_estoque (número), alerta (string)</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 4 — IDENTIDADE VISUAL
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header">
+    <div class="part-num">Parte 4</div>
+    <h1>Identidade Visual</h1>
+  </div>
+
+  <h2>4.1 Nome e Conceito do Produto</h2>
+  <p><strong>Nome:</strong> NexusVendas</p>
+  <p><strong>Conceito:</strong> Plataforma de inteligência comercial que conecta transações, relacionamentos e insights em um único painel — inspirada no SAP Sales Cloud, desenhada para empresas de médio porte que precisam agir antes de perder receita.</p>
+  <p><strong>Tagline:</strong> <em>Venda mais. Perca menos. Decida melhor.</em></p>
+
+  <h2>4.2 Paleta de Cores</h2>
+  <div class="palette-row">
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1E40AF"></div>
+      <div class="swatch-info">
+        <div class="swatch-label">Primária</div>
+        <div class="swatch-hex">#1E40AF</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#3B82F6"></div>
+      <div class="swatch-info">
+        <div class="swatch-label">Secundária</div>
+        <div class="swatch-hex">#3B82F6</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#F59E0B"></div>
+      <div class="swatch-info">
+        <div class="swatch-label">Alerta/Risco</div>
+        <div class="swatch-hex">#F59E0B</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#EF4444"></div>
+      <div class="swatch-info">
+        <div class="swatch-label">Crítico</div>
+        <div class="swatch-hex">#EF4444</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#10B981"></div>
+      <div class="swatch-info">
+        <div class="swatch-label">Sucesso</div>
+        <div class="swatch-hex">#10B981</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#F8FAFC; border:1px solid #E2E8F0;"></div>
+      <div class="swatch-info">
+        <div class="swatch-label">Fundo</div>
+        <div class="swatch-hex">#F8FAFC</div>
+      </div>
+    </div>
+    <div class="swatch">
+      <div class="swatch-color" style="background:#1E293B"></div>
+      <div class="swatch-info">
+        <div class="swatch-label">Texto</div>
+        <div class="swatch-hex">#1E293B</div>
+      </div>
+    </div>
+  </div>
+  <p class="footnote">Referência visual: azul corporativo (confiança e precisão) com âmbar e vermelho para alertas — padrão utilizado por produtos SAP CX e ferramentas de BI empresarial.</p>
+
+  <h2>4.3 Tipografia</h2>
+  <table style="width:auto" class="no-break">
+    <tr><th>Papel</th><th>Fonte</th><th>Tamanho</th><th>Peso</th></tr>
+    <tr><td>Títulos (H1)</td><td>Inter</td><td>32px</td><td>Bold (700)</td></tr>
+    <tr><td>Subtítulos (H2)</td><td>Inter</td><td>24px</td><td>SemiBold (600)</td></tr>
+    <tr><td>Corpo</td><td>Inter</td><td>16px</td><td>Regular (400)</td></tr>
+    <tr><td>Labels e dados</td><td>Inter</td><td>14px</td><td>Medium (500)</td></tr>
+    <tr><td>Caption / tags</td><td>Inter</td><td>12px</td><td>Regular (400)</td></tr>
+  </table>
+  <p class="footnote">Fonte: Inter (Google Fonts — gratuita, legível em dashboards). Aplicada consistentemente em todos os componentes.</p>
+
+  <h2>4.4 Componentes-chave</h2>
+  <table class="no-break">
+    <tr><th>Componente</th><th>Descrição</th></tr>
+    <tr><td><strong>KPI Card</strong></td><td>Número grande + label + variação % (verde/vermelho)</td></tr>
+    <tr><td><strong>Badge de status</strong></td><td>Pill colorido: azul (ativo), âmbar (em risco), cinza (inativo), vermelho (crítico)</td></tr>
+    <tr><td><strong>Tabela de pedidos</strong></td><td>Colunas sortáveis, filtros inline, paginação</td></tr>
+    <tr><td><strong>Funil de oportunidades</strong></td><td>Barras horizontais por etapa com contagem e proporção de estoque entre etapas</td></tr>
+    <tr><td><strong>Gráfico de linha</strong></td><td>Vendas mensais por data_pedido, com período e regra exibidos no contexto do KPI (Recharts)</td></tr>
+    <tr><td><strong>Card de insight</strong></td><td>Fundo âmbar/azul com ícone de alerta, texto em 3 partes e botão de ação</td></tr>
+  </table>
+
+  <h2>4.5 Wireframes das 3 Telas</h2>
+  <p class="footnote" style="margin-bottom:10px">Wireframes desenvolvidos com paleta e tipografia aplicadas. Para navegação interativa, abrir <code>wireframes.html</code>.</p>
+
+  <h3>Tela 1 — Dashboard (visão geral)</h3>
+  <div class="wireframe-wrap">
+    <img src="screenshots/tela1-dashboard.png" alt="Tela 1 — Dashboard">
+    <div class="wireframe-label">Tela 1 — Dashboard · KPIs + Alertas de Insight + Gráfico de Vendas</div>
+  </div>
+  <p class="footnote">KPIs exibidos: Vendas mês (R$ 37.600, ↑+166,7%), Pedidos (12 não cancelados), Em Risco (3 alertas), NPS (−10). Valores calculados a partir dos dados de exemplo com data de referência 05/11/2024.</p>
+</div>
+
+<div class="page page-break">
+  <h3>Tela 2 — Lista de Pedidos</h3>
+  <div class="wireframe-wrap">
+    <img src="screenshots/tela2-pedidos.png" alt="Tela 2 — Lista de Pedidos">
+    <div class="wireframe-label">Tela 2 — Lista de Pedidos · Filtros inline + Paginação + Badges de status</div>
+  </div>
+  <p class="footnote">Tabela sortável com filtros por status, cliente e período. Pedidos com atraso (entrega_real &gt; entrega_prev) marcados com badge âmbar. Ações de visualizar e editar disponíveis conforme role do usuário.</p>
+
+  <h3>Tela 3 — Detalhe do Cliente</h3>
+  <div class="wireframe-wrap">
+    <img src="screenshots/tela3-cliente.png" alt="Tela 3 — Detalhe do Cliente">
+    <div class="wireframe-label">Tela 3 — Detalhe do Cliente · KPIs individuais + Histórico + Card de Insight</div>
+  </div>
+  <p class="footnote">Exibe KPIs individuais (ticket médio, total de pedidos, último pedido), gráfico de NPS ao longo do tempo, histórico de pedidos e card de insight com ação sugerida (reativação ou acionamento do CS).</p>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 5 — ARQUITETURA
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header">
+    <div class="part-num">Parte 5</div>
+    <h1>Arquitetura da Solução</h1>
+  </div>
+
+  <h2>5.1 Diagrama de Componentes</h2>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+graph TB
+    subgraph FE["USUÁRIO FINAL"]
+        UI["React SPA — Vite<br/>Dashboard · Pedidos · Clientes · Insights"]
+    end
+
+    subgraph BE["API — Node&#46;js + Express"]
+        R["Rotas REST<br/>/clientes · /pedidos · /insights"]
+        CT["Controllers<br/>authMiddleware · Validação HTTP"]
+        SV["Services<br/>Regras de negócio e Insights"]
+        RP["Repository<br/>Queries SQL"]
+        R --> CT --> SV --> RP
+    end
+
+    DB[("PostgreSQL — RDS<br/>clientes · pedidos · itens_pedido<br/>produtos · oportunidades<br/>avaliacoes_nps · audit_log")]
+
+    subgraph SYNC["Batch Sync Diário — 02h00"]
+        EB["EventBridge Scheduler<br/>cron: 0 2 &#42; &#42; &#42;"]
+        LB["Lambda SyncJob<br/>Node&#46;js"]
+        EB --> LB
+    end
+
+    ERP["ERP Corporativo<br/>pedidos · clientes · avaliacoes_nps · produtos"]
+
+    UI -->|"HTTPS / REST JSON<br/>Authorization: Bearer JWT"| R
+    RP -->|"SQL"| DB
+    ERP -.->|"fonte de dados"| EB
+    LB -->|"UPSERT ON CONFLICT"| DB
+    </div>
+  </div>
+
+  <h2>5.2 Padrão Arquitetural: Camadas (MVC Simplificado)</h2>
+  <div class="info-box">
+    <strong>Justificativa:</strong> O padrão de camadas é o natural do Express + Node.js, separa responsabilidades claramente e facilita testes unitários nas regras de insight sem precisar de banco real.
+  </div>
+  <table class="no-break">
+    <tr><th>Camada</th><th>Responsabilidade</th><th>Tecnologia</th></tr>
+    <tr><td><strong>View</strong></td><td>Renderização de UI, componentes React, chamadas à API</td><td>React + Vite</td></tr>
+    <tr><td><strong>Controller</strong></td><td>Receber requisição HTTP, validar payload, chamar Service</td><td>Express.js</td></tr>
+    <tr><td><strong>Service</strong></td><td>Regras de negócio, cálculo de insights, lógica de domínio</td><td>Node.js (puro)</td></tr>
+    <tr><td><strong>Repository</strong></td><td>Queries SQL, mapeamento objeto-relacional</td><td>node-postgres (<code>pg</code>)</td></tr>
+    <tr><td><strong>Database</strong></td><td>Persistência relacional</td><td>PostgreSQL</td></tr>
+  </table>
+
+  <h2>5.3 Serviços AWS Previstos</h2>
+  <table class="no-break">
+    <tr><th>Serviço AWS</th><th>Uso no NexusVendas</th></tr>
+    <tr><td><strong>Elastic Beanstalk</strong></td><td>Deploy e gerenciamento da API Node.js (auto-scaling incluso)</td></tr>
+    <tr><td><strong>RDS (PostgreSQL)</strong></td><td>Banco de dados gerenciado com backups automáticos</td></tr>
+    <tr><td><strong>S3 + CloudFront</strong></td><td>Hosting do build estático do React com CDN global</td></tr>
+    <tr><td><strong>Secrets Manager</strong></td><td>JWT secret e credenciais do banco — nunca em código</td></tr>
+    <tr><td><strong>CloudWatch Logs</strong></td><td>Logs de aplicação (erros, tempo de resposta)</td></tr>
+    <tr><td><strong>CloudWatch Alarms</strong></td><td>Alertas automáticos (CPU &gt; 80%, taxa de erro &gt; 1%)</td></tr>
+    <tr><td><strong>EventBridge Scheduler</strong></td><td>Dispara a Lambda SyncJob às 02h00 diariamente — copia pedidos, clientes e avaliações NPS do ERP para o RDS</td></tr>
+    <tr><td><strong>Lambda SyncJob</strong></td><td>Função Node.js dedicada invocada pelo EventBridge; executa UPSERTs no RDS e registra no CloudWatch Logs</td></tr>
+  </table>
+
+  <h2>5.4 Fluxo de Requisição — GET /insights/churn-risk</h2>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+sequenceDiagram
+    actor Gerente
+    participant React as React SPA
+    participant MW as authMiddleware
+    participant Ctrl as Controller
+    participant Svc as InsightService
+    participant Repo as Repository
+    participant DB as PostgreSQL RDS
+
+    Gerente->>React: Abre o Dashboard
+    React->>MW: GET /insights/churn-risk?dias=90<br/>Authorization: Bearer JWT
+    MW->>MW: Valida JWT e extrai role
+    MW->>Ctrl: req.user = {userId, role}
+    Ctrl->>Svc: getChurnRisk(90)
+    Svc->>Repo: getClientesSemPedido(90)
+    Repo->>DB: SELECT WHERE dias >= 90
+    DB-->>Repo: lista de clientes
+    Repo-->>Svc: clientes[]
+    loop Para cada cliente
+        Svc->>Repo: getTicketMedio(cliente.id)
+        Repo-->>Svc: ticketMedio
+    end
+    Svc->>Svc: monta acao sugerida por faixa de ticket
+    Svc-->>Ctrl: lista com insights
+    Ctrl-->>React: 200 JSON {total, clientes[]}
+    React-->>Gerente: Renderiza cards de alerta
+    </div>
+  </div>
+
+  <h2>5.5 Conexão com SAP CX</h2>
+  <table class="no-break">
+    <tr><th>Conceito SAP Sales Cloud</th><th>Implementação NexusVendas</th></tr>
+    <tr><td>Pipeline de oportunidades</td><td>Tabela <code>oportunidades</code> + endpoint <code>/insights/pipeline</code></td></tr>
+    <tr><td>Deal scoring (risco de perda)</td><td>Regra I-03: conversão de funil abaixo de 30%</td></tr>
+    <tr><td>Customer churn prediction</td><td>Regra I-01: dias sem compra + ticket médio</td></tr>
+    <tr><td>NPS e Voice of Customer</td><td>Tabela <code>avaliacoes_nps</code> + Regra I-02</td></tr>
+    <tr><td>Audit trail</td><td>Tabela <code>audit_log</code> em todas as operações</td></tr>
+  </table>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     PARTE 6 — EVOLUÇÃO E ESCALABILIDADE
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header">
+    <div class="part-num">Parte 6</div>
+    <h1>Evolução e Escalabilidade</h1>
+  </div>
+
+  <h2>6.1 Roadmap de Evolução — 3 Horizontes</h2>
+  <div class="roadmap-row no-break">
+    <div class="roadmap-card h1">
+      <div class="period">Horizonte 1 · 0–6 meses</div>
+      <h4>MVP Estável em Produção</h4>
+      <ul>
+        <li>Deploy na AWS (Elastic Beanstalk)</li>
+        <li>Token ERP via Express middleware (sem login próprio)</li>
+        <li>Batch sync diário via EventBridge + Lambda SyncJob</li>
+        <li>3 insights automáticos (churn, NPS, funil)</li>
+        <li>Monitoramento com CloudWatch Logs e Alarms</li>
+        <li>Onboarding dos primeiros clientes</li>
+      </ul>
+    </div>
+    <div class="roadmap-card h2">
+      <div class="period">Horizonte 2 · 6–18 meses</div>
+      <h4>Performance e Alcance</h4>
+      <ul>
+        <li>Cache Redis (ElastiCache) para insights — TTL 5 min</li>
+        <li>Fila assíncrona SQS para notificações</li>
+        <li>Relatórios exportáveis em PDF</li>
+        <li>Integração com e-mail (SES)</li>
+        <li>App mobile React Native</li>
+      </ul>
+    </div>
+    <div class="roadmap-card h3">
+      <div class="period">Horizonte 3 · 18–36 meses</div>
+      <h4>Inteligência e Escala</h4>
+      <ul>
+        <li>ML para predição de churn (SageMaker)</li>
+        <li>Microsserviços independentes por domínio</li>
+        <li>Multitenancy (múltiplas empresas)</li>
+        <li>BI avançado com QuickSight</li>
+        <li>Integração nativa com SAP S/4HANA</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>6.2 Pontos de Escalabilidade</h2>
+  <table class="no-break">
+    <tr><th>Gargalo</th><th>Quando ocorre</th><th>Solução</th></tr>
+    <tr><td>Queries lentas nos insights</td><td>Tabela <code>pedidos</code> ultrapassa 100k registros</td><td>Índices em <code>pedidos(cliente_id, data_pedido)</code> e <code>avaliacoes_nps(cliente_id, data_avaliacao)</code></td></tr>
+    <tr><td>Alto volume no Dashboard</td><td>Muitos usuários acessando simultaneamente</td><td>Cache Redis (ElastiCache) para <code>/insights/*</code> com TTL de 5 minutos</td></tr>
+    <tr><td>Cálculo síncrono de churn/NPS</td><td>Base de clientes cresce — tempo de resposta aumenta</td><td>Mover cálculos para jobs assíncronos via SQS + Lambda</td></tr>
+    <tr><td>Banco sobrecarregado</td><td>Pico de acessos em horário comercial</td><td>Read replica no RDS para todas as queries de leitura</td></tr>
+    <tr><td>Crescimento da <code>audit_log</code></td><td>Acúmulo histórico sem limite</td><td>Particionamento por data (<code>PARTITION BY RANGE</code>) ou arquivamento para S3 Glacier após 1 ano</td></tr>
+  </table>
+
+  <h2>6.3 Segurança e LGPD</h2>
+  <table class="no-break">
+    <tr><th>Área</th><th>Medida implementada</th></tr>
+    <tr><td><strong>Autenticação</strong></td><td>JWT com expiração de 1h + refresh token de 7 dias</td></tr>
+    <tr><td><strong>Autorização</strong></td><td>RBAC — roles: <code>admin</code> (tudo), <code>gerente</code> (leitura + insights), <code>vendedor</code> (próprios pedidos)</td></tr>
+    <tr><td><strong>Dados em trânsito</strong></td><td>HTTPS obrigatório (TLS 1.2+) em todos os endpoints</td></tr>
+    <tr><td><strong>Dados em repouso</strong></td><td>RDS com encryption at rest habilitado</td></tr>
+    <tr><td><strong>LGPD</strong></td><td>Dados de exemplo são PJ fictícios. Em produção: base legal para cada finalidade, minimização, política de retenção para audit_log e NPS, pseudonimização em logs e exports</td></tr>
+    <tr><td><strong>Auditoria</strong></td><td><code>audit_log</code> registra todo INSERT/UPDATE/DELETE com usuário e timestamp</td></tr>
+    <tr><td><strong>Secrets</strong></td><td>Credenciais via AWS Secrets Manager — jamais em variáveis de ambiente no código</td></tr>
+    <tr><td><strong>Validação de entrada</strong></td><td>Campos obrigatórios validados na API antes de qualquer query ao banco</td></tr>
+  </table>
+
+  <h2>6.4 Observabilidade</h2>
+  <table class="no-break">
+    <tr><th>Tipo</th><th>Ferramenta</th><th>O que monitorar</th></tr>
+    <tr><td>Logs de aplicação</td><td>CloudWatch Logs</td><td>Erros 4xx/5xx, tempo de resposta por endpoint</td></tr>
+    <tr><td>Métricas de infra</td><td>CloudWatch Metrics</td><td>CPU e memória do EC2/RDS</td></tr>
+    <tr><td>Alertas automáticos</td><td>CloudWatch Alarms</td><td>CPU &gt; 80%, taxa de erro &gt; 1%, latência &gt; 2s</td></tr>
+    <tr><td>Health check</td><td><code>GET /health</code></td><td>Status da API e conectividade com o banco</td></tr>
+    <tr><td>Rastreamento (H2)</td><td>AWS X-Ray</td><td>Trace de requisições lentas ponta a ponta</td></tr>
+  </table>
+
+  <h2>6.5 Estimativa de Custos na AWS</h2>
+  <table class="no-break">
+    <tr><th>Serviço</th><th>Configuração</th><th>Custo estimado/mês</th></tr>
+    <tr><td>Elastic Beanstalk (EC2)</td><td>t3.micro — Free Tier elegível</td><td>~$0–10</td></tr>
+    <tr><td>RDS PostgreSQL</td><td>db.t3.micro, 20 GB, Multi-AZ desativado</td><td>~$15–25</td></tr>
+    <tr><td>S3 + CloudFront</td><td>&lt; 1 GB armazenamento, &lt; 10 GB transferência</td><td>~$2–6</td></tr>
+    <tr><td>EventBridge Scheduler</td><td>1 regra cron — batch sync diário</td><td>~$0–1</td></tr>
+    <tr><td>CloudWatch</td><td>Logs básicos + 3 alarmes</td><td>~$3–8</td></tr>
+    <tr><td>Secrets Manager</td><td>2 secrets</td><td>~$1</td></tr>
+    <tr style="background:#DBEAFE; font-weight:700"><td colspan="2"><strong>Total MVP</strong></td><td><strong>~$21–51/mês</strong></td></tr>
+    <tr><td colspan="2">Médio prazo (+ Redis + SQS + SES)</td><td>~$80–150/mês</td></tr>
+    <tr><td colspan="2">Longo prazo (microsserviços + SageMaker + QuickSight)</td><td>~$300–600/mês</td></tr>
+  </table>
+
+  <h2>6.6 Riscos</h2>
+  <table class="no-break">
+    <tr><th>Risco</th><th>Probabilidade</th><th>Impacto</th><th>Mitigação</th></tr>
+    <tr><td>Batch sync falha silenciosamente</td><td><span class="pill pill-medio">Média</span></td><td><span class="pill pill-alto">Alto</span></td><td>CloudWatch Alarm no SyncJob + alerta se log não aparecer em 25h</td></tr>
+    <tr><td>Baixa adoção pelos vendedores</td><td><span class="pill pill-medio">Média</span></td><td><span class="pill pill-alto">Alto</span></td><td>UX simples, dashboard com valor imediato visível no primeiro acesso</td></tr>
+    <tr><td>Qualidade dos dados (garbage in, garbage out)</td><td><span class="pill pill-alto">Alta</span></td><td><span class="pill pill-alto">Alto</span></td><td>Validações na API, campos obrigatórios, audit_log para rastreabilidade</td></tr>
+    <tr><td>Crescimento inesperado de volume</td><td><span class="pill pill-baixo">Baixa</span></td><td><span class="pill pill-medio">Médio</span></td><td>Elastic Beanstalk com auto-scaling, RDS com possibilidade de read replica</td></tr>
+    <tr><td>Custo AWS acima do planejado</td><td><span class="pill pill-baixo">Baixa</span></td><td><span class="pill pill-medio">Médio</span></td><td>AWS Budgets com alerta a 80% do limite mensal</td></tr>
+    <tr><td>Vazamento de dados de clientes</td><td><span class="pill pill-baixo">Baixa</span></td><td><span class="pill pill-alto">Muito Alto</span></td><td>HTTPS + RBAC + criptografia em repouso + Secrets Manager</td></tr>
+  </table>
+
+  <h2>6.7 Arquitetura Evoluída (Médio/Longo Prazo)</h2>
+  <div class="mermaid-wrap">
+    <div class="mermaid">
+graph TB
+    FE["React Frontend<br/>S3 + CloudFront"]
+    GW["API Gateway<br/>rate limiting · auth centralizada"]
+
+    subgraph MS["Microsserviços"]
+        AV["API Vendas<br/>ECS / Fargate"]
+        AI["API Insights<br/>Lambda"]
+        AN["API Notificações<br/>SQS + Lambda"]
+    end
+
+    DB[("RDS PostgreSQL<br/>primary + read replica")]
+    CACHE["ElastiCache Redis<br/>cache de insights — TTL 5 min"]
+
+    FE -->|"HTTPS"| GW
+    GW --> AV
+    GW --> AI
+    GW --> AN
+    AV -->|"SQL"| DB
+    AI -->|"SQL"| DB
+    DB -.->|"preenche cache"| CACHE
+    AI -.->|"cache hit / miss"| CACHE
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     ARTEFATOS COMPLEMENTARES
+════════════════════════════════════════════════════════ -->
+<div class="page page-break">
+  <div class="section-header" style="background:#64748B;">
+    <div class="part-num">Artefatos Complementares</div>
+    <h1>Links, Referências e Módulos da Formação</h1>
+  </div>
+
+  <h2>A1 — Prancha Visual</h2>
+  <div class="warn-box">
+    <strong>Link Figma/Canva:</strong> <em>[cole aqui o link da prancha visual após publicar]</em><br>
+    <span style="font-size:11px">Caso a prancha não caiba no documento, o link acima direciona para o artefato completo no Figma/Canva. Os wireframes das 3 telas estão incorporados na Parte 4 deste documento e também disponíveis para navegação interativa no arquivo <code>wireframes.html</code>.</span>
+  </div>
+
+  <h2>A2 — Módulos da Formação Explicitamente Cobertos</h2>
+  <table class="no-break">
+    <tr><th>Módulo</th><th>Onde aparece nesta proposta</th></tr>
+    <tr><td><strong>Lógica de programação</strong></td><td>Condicionais, laços e estruturas de dados nas regras I-01, I-02 e I-03 (Parte 3 — Pseudocódigo)</td></tr>
+    <tr><td><strong>POO</strong></td><td>Modelagem das entidades do banco (7 tabelas com atributos, tipos e relacionamentos) — Parte 2</td></tr>
+    <tr><td><strong>Front end + React</strong></td><td>Wireframes das 3 telas com componentes React (KPI Card, Badge, Funil, Gráfico Recharts) — Parte 4</td></tr>
+    <tr><td><strong>Node.js + Express</strong></td><td>10 endpoints REST com authMiddleware, controllers, services e repositories — Parte 3</td></tr>
+    <tr><td><strong>Métodos ágeis</strong></td><td>Backlog priorizado com MVP definido, User Stories com critérios de aceite — Parte 1</td></tr>
+    <tr><td><strong>Arquitetura</strong></td><td>Diagrama de componentes MVC + serviços AWS + fluxo de requisição — Parte 5</td></tr>
+    <tr><td><strong>Testes</strong></td><td>Plano de testes com 15 casos cobrindo caminhos felizes, bordas e entradas inválidas — Parte 3</td></tr>
+    <tr><td><strong>Infraestrutura AWS</strong></td><td>8 serviços AWS mapeados, desenho de implantação e estimativa de custos — Partes 5 e 6</td></tr>
+  </table>
+
+  <h2>A3 — Consistência entre Partes (Bônus)</h2>
+  <table class="no-break">
+    <tr><th>Critério de consistência</th><th>Evidência</th></tr>
+    <tr><td>Dados dos exemplos de API batem com o banco</td><td>Resposta do <code>GET /insights/churn-risk</code> usa Beta (id=2, 118 dias) e Gama (id=3, 100 dias) — exatamente os registros de <code>pedidos</code> nos dados de exemplo</td></tr>
+    <tr><td>Insights da Parte 1 são gerados pelas regras da Parte 3</td><td>I-01, I-02 e I-03 listados na Parte 1 têm pseudocódigo completo e casos de teste na Parte 3</td></tr>
+    <tr><td>Telas da Parte 4 consumem os endpoints da Parte 3</td><td>Dashboard exibe os 3 insights; Tela de Clientes exibe ticket médio calculado pela regra I-01</td></tr>
+    <tr><td>Anomalias do banco disparam os insights corretos</td><td>A-02 → I-01, A-03 → I-02, A-04 → I-03 — mapeado na seção 2.4</td></tr>
+    <tr><td>KPI "Vendas mês" é reproduzível</td><td>R$ 37.600 = soma de valor_total dos pedidos de outubro/2024 não cancelados — calculado a partir dos dados de exemplo com data de referência 05/11/2024</td></tr>
+  </table>
+
+  <div style="margin-top:40px; text-align:center; color:var(--muted); font-size:11px;">
+    <div style="font-size:18px; font-weight:700; color:var(--primary); margin-bottom:6px;">NexusVendas</div>
+    <div style="font-style:italic; margin-bottom:4px;">Venda mais. Perca menos. Decida melhor.</div>
+    <div>SAP Start Coding 2026 — Projeto Integrador · Tema 3: Receita e Relacionamento</div>
+  </div>
+</div>
+
+</body>
+</html>
