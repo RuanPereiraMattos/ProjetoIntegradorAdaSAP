@@ -1129,12 +1129,12 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
     <tr><td><strong>Card de insight</strong></td><td>Fundo âmbar/azul com ícone de alerta, texto em 3 partes e botão de ação</td></tr>
   </table>
 
-  <h2>4.5 Wireframes das 3 Telas</h2>
-  <p class="footnote" style="margin-bottom:10px">Wireframes desenvolvidos com paleta e tipografia aplicadas. Para navegação interativa, abrir <code>wireframes.html</code>.</p>
+  <h2>4.5 Wireframes das 6 Telas</h2>
+  <p class="footnote" style="margin-bottom:10px">Wireframes exportados do Figma com paleta e tipografia aplicadas. Para navegação interativa, abrir <code>wireframes.html</code>.</p>
 
   <h3>Tela 1 — Dashboard (visão geral)</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/tela1-dashboard.png" alt="Tela 1 — Dashboard">
+    <img src="screenshots/figma-tela-1.png" alt="Tela 1 — Dashboard">
     <div class="wireframe-label">Tela 1 — Dashboard · KPIs + Alertas de Insight + Gráfico de Vendas</div>
   </div>
   <p class="footnote">KPIs exibidos: Vendas mês (R$ 37.600, ↑+166,7%), Pedidos (12 não cancelados), Em Risco (3 alertas), NPS (−10). Valores calculados a partir dos dados de exemplo com data de referência 05/11/2024.</p>
@@ -1143,17 +1143,42 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
 <div class="page page-break">
   <h3>Tela 2 — Lista de Pedidos</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/tela2-pedidos.png" alt="Tela 2 — Lista de Pedidos">
+    <img src="screenshots/figma-tela-2.png" alt="Tela 2 — Lista de Pedidos">
     <div class="wireframe-label">Tela 2 — Lista de Pedidos · Filtros inline + Paginação + Badges de status</div>
   </div>
   <p class="footnote">Tabela sortável com filtros por status, cliente e período. Pedidos com atraso (entrega_real &gt; entrega_prev) marcados com badge âmbar. Ações de visualizar e editar disponíveis conforme role do usuário.</p>
 
   <h3>Tela 3 — Detalhe do Cliente</h3>
   <div class="wireframe-wrap">
-    <img src="screenshots/tela3-cliente.png" alt="Tela 3 — Detalhe do Cliente">
+    <img src="screenshots/figma-tela-3.png" alt="Tela 3 — Detalhe do Cliente">
     <div class="wireframe-label">Tela 3 — Detalhe do Cliente · KPIs individuais + Histórico + Card de Insight</div>
   </div>
   <p class="footnote">Exibe KPIs individuais (ticket médio, total de pedidos, último pedido), gráfico de NPS ao longo do tempo, histórico de pedidos e card de insight com ação sugerida (reativação ou acionamento do CS).</p>
+</div>
+
+<div class="page page-break">
+  <h3>Tela 4 — Relatórios (Funil de Oportunidades)</h3>
+  <div class="wireframe-wrap">
+    <img src="screenshots/figma-tela-4.png" alt="Tela 4 — Relatórios">
+    <div class="wireframe-label">Tela 4 — Relatórios · Funil I-03 + Proporções por etapa + Gargalo detectado</div>
+  </div>
+  <p class="footnote">Funil com 20 oportunidades (captação=6 R$80k → proposta=9 R$183k → negociação=2 R$72k → fechado=1 R$15k). Proporção proposta→negociação em 22% (meta: 30%) — I-03 disparado.</p>
+
+  <h3>Tela 5 — Lista de Clientes</h3>
+  <div class="wireframe-wrap">
+    <img src="screenshots/figma-tela-5.png" alt="Tela 5 — Lista de Clientes">
+    <div class="wireframe-label">Tela 5 — Lista de Clientes · 10 clientes · 3 em risco · Badges de status</div>
+  </div>
+  <p class="footnote">Tabela com todos os clientes, dias desde o último pedido, segmento e status. Beta (118 dias), Gama (100 dias / NPS crítico) e Eta (583 dias) destacados como em risco.</p>
+</div>
+
+<div class="page page-break">
+  <h3>Tela 6 — Alertas de Insight (I-01 + I-02)</h3>
+  <div class="wireframe-wrap">
+    <img src="screenshots/figma-tela-6.png" alt="Tela 6 — Alertas de Insight">
+    <div class="wireframe-label">Tela 6 — Alertas · I-01 Churn Risk (3 clientes) + I-02 NPS Crítico (Gama)</div>
+  </div>
+  <p class="footnote">I-01: Beta (118d, R$4.200, Alta prioridade), Gama (100d, R$1.850, Média), Eta (583d, —, Média). I-02: Gama com notas 5→4→3 consecutivas ≤6 — acionar CS antes de 24h.</p>
 </div>
 
 <!-- ════════════════════════════════════════════════════════
