@@ -301,6 +301,15 @@
   .recommend-action { margin-top: 12px; display: flex; justify-content: flex-end; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  @media print {
+    body { background: white; margin: 0; padding: 0; }
+    .page-header { display: none; }
+    .screen-wrapper { page-break-after: always; break-after: page; padding: 24px 0; }
+    .screen-wrapper:last-child { page-break-after: avoid; break-after: avoid; }
+    .screen-label { margin-top: 0; color: #1E40AF; font-size: 13px; }
+    .screen { box-shadow: none; border: 1px solid #CBD5E1; }
+  }
 </style>
 </head>
 <body>
@@ -308,7 +317,7 @@
 <!-- ═══════════════════════════════════════════════
      TELA 1 — DASHBOARD
 ════════════════════════════════════════════════ -->
-<div>
+<div class="screen-wrapper">
   <div class="screen-label">Tela 1 — Dashboard (visão geral)</div>
   <div class="screen">
     <!-- Top bar -->
@@ -357,9 +366,9 @@
           <div class="kpi-change warn">⚠ Atenção necessária</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Média das notas (0–10)</div>
-          <div class="kpi-value">6,9</div>
-          <div class="kpi-change down">▼ -0,3 vs. trimestre</div>
+          <div class="kpi-label">NPS (% prom − % det)</div>
+          <div class="kpi-value">−10</div>
+          <div class="kpi-change down">▼ −5 pts vs. trimestre</div>
         </div>
       </div>
 
@@ -430,7 +439,7 @@
 <!-- ═══════════════════════════════════════════════
      TELA 2 — LISTA DE PEDIDOS
 ════════════════════════════════════════════════ -->
-<div>
+<div class="screen-wrapper">
   <div class="screen-label">Tela 2 — Lista de Pedidos</div>
   <div class="screen">
     <div class="topbar">
@@ -547,7 +556,7 @@
 <!-- ═══════════════════════════════════════════════
      TELA 3 — DETALHE DO CLIENTE
 ════════════════════════════════════════════════ -->
-<div>
+<div class="screen-wrapper">
   <div class="screen-label">Tela 3 — Detalhe do Cliente</div>
   <div class="screen">
     <div class="topbar">
@@ -690,7 +699,7 @@
 <!-- ═══════════════════════════════════════════════
      TELA 4 — RELATÓRIOS
 ════════════════════════════════════════════════ -->
-<div>
+<div class="screen-wrapper">
   <div class="screen-label">Tela 4 — Relatórios</div>
   <div class="screen">
     <div class="topbar">
@@ -1018,7 +1027,7 @@
 <!-- ═══════════════════════════════════════════════
      TELA 5 — LISTA DE CLIENTES
 ════════════════════════════════════════════════ -->
-<div>
+<div class="screen-wrapper">
   <div class="screen-label">Tela 5 — Lista de Clientes</div>
   <div class="screen">
     <div class="topbar">
@@ -1158,7 +1167,7 @@
 <!-- ═══════════════════════════════════════════════
      TELA 6 — ALERTAS DE INSIGHT (NPS + CHURN)
 ════════════════════════════════════════════════ -->
-<div>
+<div class="screen-wrapper">
   <div class="screen-label">Tela 6 — Alertas de Insight (I-01 Churn Risk + I-02 NPS Crítico)</div>
   <div class="screen">
     <div class="topbar">

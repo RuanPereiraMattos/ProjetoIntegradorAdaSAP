@@ -419,7 +419,7 @@ code{font-family:'JetBrains Mono',monospace;font-size:12px;background:#F1F5F9;pa
       <div style="display:flex;flex-direction:column;gap:10px;font-size:13px;">
         <div style="font-weight:600;color:var(--critical);">Pilar 1 — Clientes em Risco de Churn</div>
         <div style="padding-left:10px;display:flex;flex-direction:column;gap:5px;">
-          <div>✓ Dashboard: KPIs de risco, NPS médio, receita</div>
+          <div>✓ Dashboard: KPIs de churn, NPS (% promotores − % detratores), vendas do último mês fechado</div>
           <div>✓ Lista de clientes inativos (≥ 90 dias) com ação sugerida</div>
           <div>✓ Alerta NPS crítico (3 avaliações ≤ 6)</div>
         </div>
@@ -727,7 +727,7 @@ Authorization: Bearer <span class="str">&lt;token-emitido-pelo-erp&gt;</span>
     <div class="section-num">4</div>
     <div class="section-title-block">
       <div class="section-title">Identidade Visual</div>
-      <div class="section-sub">Nome · Paleta · Tipografia · Componentes</div>
+      <div class="section-sub">Nome · Paleta · Tipografia · Componentes · 6 Wireframes</div>
     </div>
   </div>
 
@@ -790,9 +790,40 @@ Authorization: Bearer <span class="str">&lt;token-emitido-pelo-erp&gt;</span>
       </div>
     </div>
   </div>
-</section>
 
-<!-- ══════════════════════ PARTE 5 — ARQUITETURA (SERVERLESS) ══════════════════════ -->
+  <div class="card-title" style="margin-bottom:12px;">🖥️ Wireframes — 6 Telas (wireframes.html)</div>
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">
+      Arquivo <code>wireframes.html</code> — abrir no navegador. Para exportar: <strong>Ctrl+P → Salvar como PDF</strong> (cada tela em página separada via <code>@media print</code>). Para imagens individuais: <code>node screenshot-screens.js</code> (requer <code>npm install puppeteer</code>).
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;font-size:12px;">
+      <div style="background:#F1F5F9;border-radius:8px;padding:10px;">
+        <div style="font-weight:600;color:var(--primary);margin-bottom:4px;">Tela 1 — Dashboard</div>
+        <div style="color:var(--muted);">4 KPIs · gráfico de linha · alertas I-01 e I-02 · funil de oportunidades</div>
+      </div>
+      <div style="background:#F1F5F9;border-radius:8px;padding:10px;">
+        <div style="font-weight:600;color:var(--primary);margin-bottom:4px;">Tela 2 — Lista de Pedidos</div>
+        <div style="color:var(--muted);">Tabela com filtros, paginação, badges de status, ações inline</div>
+      </div>
+      <div style="background:#F1F5F9;border-radius:8px;padding:10px;">
+        <div style="font-weight:600;color:var(--primary);margin-bottom:4px;">Tela 3 — Detalhe do Cliente</div>
+        <div style="color:var(--muted);">KPIs do cliente · gráfico NPS · histórico de pedidos · card de insight</div>
+      </div>
+      <div style="background:#F1F5F9;border-radius:8px;padding:10px;">
+        <div style="font-weight:600;color:var(--primary);margin-bottom:4px;">Tela 4 — Relatórios</div>
+        <div style="color:var(--muted);">Funil completo com barras, proporções e badges de gargalo (I-03)</div>
+      </div>
+      <div style="background:#F1F5F9;border-radius:8px;padding:10px;">
+        <div style="font-weight:600;color:var(--primary);margin-bottom:4px;">Tela 5 — Lista de Clientes</div>
+        <div style="color:var(--muted);">10 clientes com badges de risco, dias sem compra, segmento e filtros</div>
+      </div>
+      <div style="background:#FEF3C7;border-radius:8px;padding:10px;border-left:3px solid var(--alert);">
+        <div style="font-weight:600;color:var(--primary);margin-bottom:4px;">Tela 6 — Alertas de Insight</div>
+        <div style="color:var(--muted);">I-01 (3 clientes em risco de churn) + I-02 (Gama NPS crítico 5→4→3)</div>
+      </div>
+    </div>
+  </div>
+</section>
 <section class="section" id="p5">
   <div class="section-header">
     <div class="section-num">5</div>
