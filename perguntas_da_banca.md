@@ -66,7 +66,7 @@ A regra I-02 (NPS crítico) verifica as **últimas 3 avaliações** de cada clie
 ---
 
 **Q12 (Conceitual)**
-O sistema implementa autenticação JWT com expiração de 1 hora e refresh token de 7 dias. Explique o **trade-off de segurança** entre tokens de curta e longa duração. Por que o refresh token não deve ser armazenado no localStorage do navegador? Qual mecanismo de armazenamento vocês recomendariam?
+O sistema usa JWT de acesso com expiração de 1 hora. Se o IdP corporativo habilitar refresh token, explique o **trade-off de segurança** entre tokens de curta e longa duração. Por que o refresh token não deve ser armazenado no localStorage do navegador? Qual mecanismo de armazenamento vocês recomendariam?
 
 ---
 

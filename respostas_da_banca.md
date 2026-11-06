@@ -159,7 +159,7 @@ O período de 180 dias ficaria configurável (mesma lógica da Q2 — sem hardco
 
 ### Q12 — Trade-off JWT: duração e armazenamento
 
-"Token curto (1h) = menor janela de exploração se roubado. Token longo (7 dias de refresh) = menos re-logins, mas se comprometido o atacante emite novos access tokens por 7 dias.
+"Token curto (1h) = menor janela de exploração se roubado. Se o IdP usar refresh token de longa duração, há menos re-logins, mas um refresh comprometido pode permitir novos access tokens durante sua validade.
 
 O refresh token não deve ficar em **localStorage** porque qualquer script XSS rodando na página consegue lê-lo e exfiltrá-lo — é acessível via JavaScript.
 
@@ -304,6 +304,36 @@ O NexusVendas entrega:
 Então o que distingue o NexusVendas de um sistema de relatórios puro? Três coisas: os dados transacionais são proprietários — não são importados de fora; as ações sugeridas estão vinculadas aos alertas — não é só visualização; e o CRUD de clientes e oportunidades fecha o ciclo operacional básico.
 
 O NexusVendas é um **CRM leve**, similar ao Pipedrive ou HubSpot Starter — distinto de Salesforce ou SAP Sales Cloud, que têm automação completa. Posicioná-lo como 'inspirado no SAP Sales Cloud' é defensável como analogia de mercado para médias empresas, não como equivalência funcional."
+
+---
+
+## Bloco 8 — Mecânicas internas em plain language
+
+### Q23 — O que significa “handshake” neste projeto?
+
+"Eu separo duas coisas. O handshake TLS acontece antes do HTTP: navegador e API negociam a versão do protocolo, cifra e certificado, criando um canal HTTPS protegido. Depois vem a autenticação da aplicação: o ERP/IdP entrega um JWT assinado e o frontend o envia como Bearer token.
+
+O `authMiddleware` valida a assinatura com a chave pública do IdP e confere `issuer`, `audience`, `expiração` e `role`. Só então coloca o usuário em `req.user`. Token ausente ou inválido retorna 401; token válido, mas sem permissão para a rota, retorna 403. O NexusVendas não tem login próprio nem emite refresh token: essa responsabilidade fica no ERP/IdP."
+
+### Q24 — Como o banco sincroniza com o ERP?
+
+"Às 02h, o EventBridge dispara a Lambda `SyncJob`. Ela lê o ERP em páginas, normaliza os dados e grava pais antes dos filhos: clientes e produtos, depois pedidos, itens e avaliações.
+
+O identificador `erp_id` é único. Se é a primeira vez, fazemos `INSERT`; se já existe, fazemos `UPDATE` com `ON CONFLICT`. Assim, se a Lambda cair e for executada novamente, ela não cria duplicatas. Cada página gera contadores e `audit_log`; o checkpoint só avança quando a execução inteira termina. Falhas temporárias usam retry com backoff. Um registro ausente em uma leitura parcial não é apagado automaticamente, porque não queremos perder histórico por uma falha de integração."
+
+### Q25 — Qual é o algoritmo completo de churn?
+
+"Para cada cliente, buscamos o pedido mais recente que não foi cancelado. Se não existir pedido, usamos `data_cadastro`. Subtraímos essa data de `data_referencia`, que é explícita para o resultado ser reproduzível. Quando `dias_sem_compra >= 90`, calculamos o ticket médio: acima de R$3.000, sugerimos reativação com 10% de desconto; abaixo disso, ligação de relacionamento. É uma heurística determinística e explicável, não machine learning."
+
+### Q26 — Como oportunidades e funil são calculados?
+
+"Oportunidades são nativas do NexusVendas e operam em tempo real. A API exige cliente, valida a etapa do ENUM, salva o valor estimado e registra a alteração no `audit_log`. O MVP guarda a etapa atual — `captacao`, `proposta`, `negociacao`, `fechado_ganho` ou `fechado_perdido`.
+
+O funil conta quantas oportunidades estão em cada etapa e divide a próxima pela atual. Se `negociacao / proposta < 30%`, sinaliza gargalo; no exemplo, `2 / 9 = 22,2%`. Isso mede estoque atual entre etapas, não conversão histórica. Para conversão histórica, precisaríamos registrar cada transição com data de entrada e saída."
+
+### Q27 — E o NPS crítico?
+
+"Buscamos as três avaliações mais recentes de cada cliente. Se existem exatamente três e todas têm nota menor ou igual a 6, geramos o alerta para Customer Success. `pedido_id` pode ser nulo porque a pesquisa pode não estar vinculada a uma compra específica; quando preenchido, a chave estrangeira garante a referência."
 
 ---
 

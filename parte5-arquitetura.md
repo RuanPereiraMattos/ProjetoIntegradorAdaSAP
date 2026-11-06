@@ -105,7 +105,7 @@ O NexusVendas implementa, em escala de médias empresas, os mesmos conceitos do 
 | Conceito SAP Sales Cloud | Implementação NexusVendas |
 |---|---|
 | Pipeline de oportunidades | Tabela `oportunidades` + endpoint `/insights/pipeline` |
-| Deal scoring (risco de perda) | Regra I-03: conversão de funil abaixo de 30% |
+| Saúde do pipeline (risco de perda) | Regra I-03: proporção de estoque do funil abaixo de 30% (proxy operacional, não conversão histórica) |
 | Customer churn prediction | Regra I-01: dias sem compra + ticket médio |
 | NPS e Voice of Customer | Tabela `avaliacoes_nps` + Regra I-02 |
 | Audit trail | Tabela `audit_log` em todas as operações |

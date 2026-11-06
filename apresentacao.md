@@ -620,7 +620,7 @@ _Roadmap em 3 horizontes, gargalos, segurança e custos_
 ## Segurança, LGPD e Observabilidade
 
 **Segurança:**
-- JWT expiração 1h + refresh token 7 dias
+- JWT de acesso com expiração de 1h; renovação/refresh, quando habilitada, fica sob responsabilidade do IdP corporativo
 - RBAC: admin · gerente · vendedor
 - HTTPS obrigatório (TLS 1.2+) · RDS encryption at rest
 - Secrets via AWS Secrets Manager

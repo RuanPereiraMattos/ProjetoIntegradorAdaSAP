@@ -883,10 +883,15 @@ code { padding: 1px 4px; }
     <tr><td><strong>Tabelas sincronizadas</strong></td><td><code>clientes</code>, <code>pedidos</code>, <code>itens_pedido</code>, <code>produtos</code>, <code>avaliacoes_nps</code> — defasagem máx. 24h</td></tr>
     <tr><td><strong>Tabelas nativas</strong></td><td><code>oportunidades</code>, <code>audit_log</code> — gerenciadas diretamente pelo NexusVendas em tempo real</td></tr>
     <tr><td><strong>Idempotência</strong></td><td>Campo <code>erp_id UNIQUE</code> em cada tabela; sync usa <code>INSERT … ON CONFLICT (erp_id) DO UPDATE SET</code></td></tr>
+    <tr><td><strong>Ordem de carga</strong></td><td>Processa pais antes de filhos: clientes/produtos → pedidos → itens e avaliações</td></tr>
+    <tr><td><strong>Falha e reprocessamento</strong></td><td>Retry com backoff; checkpoint só avança após todas as páginas; repetição não cria duplicatas</td></tr>
   </table>
 
   <div class="info-box">
     <strong>Problema de onboarding:</strong> sem pedidos no banco no primeiro dia, a regra I-01 usaria <code>data_cadastro</code> como fallback — evitando falso positivo em massa para novos clientes sem sincronização ainda executada.
+  </div>
+  <div class="warn-box">
+    <strong>Em portucode:</strong> se o <code>erp_id</code> ainda não existe, fazemos <code>INSERT</code>; se já existe, fazemos <code>UPDATE</code>. Se o job cair, rodar novamente é seguro. Um registro ausente em uma leitura parcial não é apagado automaticamente, para evitar perda de histórico.
   </div>
 </div>
 
@@ -904,8 +909,17 @@ code { padding: 1px 4px; }
     O NexusVendas é um módulo implantado no ERP. O usuário já está autenticado no ERP — o frontend repassa o token JWT emitido pelo IdP corporativo (ex: Azure AD, Okta) em cada requisição. <strong>Não existe endpoint <code>/auth/login</code> no módulo.</strong>
   </div>
 
-  <p>O <code>authMiddleware</code> do Express é aplicado em todas as rotas protegidas. A função valida: (1) assinatura do JWT (chave pública do IdP); (2) expiração do token (<code>exp</code>); (3) extração do <code>role</code> das claims para injetar em <code>req.user</code>.</p>
+  <div class="info-box">
+    <strong>Handshake em duas camadas:</strong> primeiro, o TLS/HTTPS negocia o canal criptografado e valida o certificado do servidor. Depois, o <code>authMiddleware</code> valida o JWT recebido no HTTP. São mecanismos diferentes: TLS protege o transporte; JWT prova a identidade e as permissões da requisição.
+  </div>
+  <p>O <code>authMiddleware</code> do Express é aplicado em todas as rotas protegidas. A função valida: (1) assinatura do JWT com a chave pública do IdP; (2) <code>issuer</code>, <code>audience</code> e expiração (<code>exp</code>); (3) extração do <code>userId</code> e <code>role</code> das claims para injetar em <code>req.user</code>.</p>
   <p><strong>Roles lidas das claims do token:</strong> <code>admin</code> | <code>gerente</code> | <code>vendedor</code></p>
+  <pre>usuário entra no ERP
+  → IdP autentica e assina o JWT
+  → frontend envia Authorization: Bearer &lt;token&gt;
+  → API valida assinatura, issuer, audience, expiração e role
+  → token inválido: 401 | sem permissão: 403 | válido: Controller</pre>
+  <p class="footnote">O NexusVendas não emite tokens nem implementa login próprio. Se houver refresh token, sua emissão e renovação ficam sob responsabilidade do ERP/IdP; o módulo não o armazena em <code>localStorage</code>.</p>
 
   <h2>3.2 Lista Completa de Endpoints</h2>
 
@@ -1056,6 +1070,9 @@ Content-Type: application/json
   </div>
 
   <h2>3.4 Regras de Insight (Pseudocódigo)</h2>
+  <div class="info-box">
+    <strong>Princípio do MVP:</strong> as três regras são determinísticas e explicáveis. Dada a mesma base, a mesma <code>data_referencia</code> e os mesmos parâmetros, o resultado é reproduzível. Machine learning fica para uma etapa futura, quando houver histórico suficiente.
+  </div>
 
   <h3>Regra I-01 — Risco de Churn</h3>
   <pre>-- data_referencia declarada explicitamente para reproduzir os exemplos
@@ -1121,6 +1138,21 @@ FUNÇÃO calcularChurnRisk(diasLimite = 90):
         }
 
   RETORNAR alertas</pre>
+
+  <div class="warn-box">
+    <strong>Limitação importante:</strong> <code>oportunidades</code> guarda apenas a etapa atual. Portanto, <code>proporcao_estoque</code> é um proxy operacional de gargalo — por exemplo, <code>2 negociacoes / 9 propostas = 22,2%</code> — e não uma taxa histórica de conversão. Para conversão real, seria necessário registrar cada transição com data de entrada e saída.
+  </div>
+
+  <h3>Mecânica operacional de oportunidades</h3>
+  <pre>criar oportunidade:
+  cliente_id obrigatório
+  etapa inicial = "captacao"
+  valor_estimado e responsavel opcionais
+
+alterar etapa:
+  validar etapa no ENUM
+  salvar o estado atual
+  registrar antes/depois no audit_log</pre>
 
   <h2>3.5 Plano de Testes das Regras de Insight</h2>
 
@@ -1401,7 +1433,7 @@ sequenceDiagram
   <table class="no-break">
     <tr><th>Conceito SAP Sales Cloud</th><th>Implementação NexusVendas</th></tr>
     <tr><td>Pipeline de oportunidades</td><td>Tabela <code>oportunidades</code> + endpoint <code>/insights/pipeline</code></td></tr>
-    <tr><td>Deal scoring (risco de perda)</td><td>Regra I-03: conversão de funil abaixo de 30%</td></tr>
+    <tr><td>Saúde do pipeline (risco de perda)</td><td>Regra I-03: proporção de estoque do funil abaixo de 30% (proxy operacional, não conversão histórica)</td></tr>
     <tr><td>Customer churn prediction</td><td>Regra I-01: dias sem compra + ticket médio</td></tr>
     <tr><td>NPS e Voice of Customer</td><td>Tabela <code>avaliacoes_nps</code> + Regra I-02</td></tr>
     <tr><td>Audit trail</td><td>Tabela <code>audit_log</code> em todas as operações</td></tr>
@@ -1468,7 +1500,7 @@ sequenceDiagram
   <h2>6.3 Segurança e LGPD</h2>
   <table class="no-break">
     <tr><th>Área</th><th>Medida implementada</th></tr>
-    <tr><td><strong>Autenticação</strong></td><td>JWT com expiração de 1h + refresh token de 7 dias</td></tr>
+    <tr><td><strong>Autenticação</strong></td><td>JWT de acesso com expiração de 1h; eventual renovação/refresh fica sob responsabilidade do IdP corporativo</td></tr>
     <tr><td><strong>Autorização</strong></td><td>RBAC — roles: <code>admin</code> (tudo), <code>gerente</code> (leitura + insights), <code>vendedor</code> (próprios pedidos)</td></tr>
     <tr><td><strong>Dados em trânsito</strong></td><td>HTTPS obrigatório (TLS 1.2+) em todos os endpoints</td></tr>
     <tr><td><strong>Dados em repouso</strong></td><td>RDS com encryption at rest habilitado</td></tr>

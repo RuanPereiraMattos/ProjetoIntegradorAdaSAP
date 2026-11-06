@@ -1,152 +1,273 @@
 # Script de Apresentação — NexusVendas
-## SAP Start Coding 2026 · 10 minutos
+## SAP Start Coding 2026 · apresentação
 
-> **Como usar:** cada bloco tem o tempo acumulado entre colchetes. Fale em ritmo normal — não apresse, mas não se perca nos detalhes. O slide já tem o texto; o script é o que você FALA, não lê.
+Cada bloco indica o foco visual do slide e a fala sugerida. Os detalhes de implementação ficam para a sessão de perguntas.
 
----
+## Sequência sugerida
 
-## [00:00 — SLIDE 1: Capa]
+| Slide | Foco |
+|---|---:|---|
+| 1 | Capa e proposta de valor |
+| 2 | Problema e solução |
+| 3 | Personas e user story |
+| 4 | Insight I-01: churn |
+| 5 | Insights I-02 e I-03 |
+| 6 | Banco e dados de exemplo |
+| 7 | API, segurança e testes |
+| 8 | Experiência visual e wireframes |
+| 9 | Arquitetura MVP |
+| 10 | Roadmap, escala e custos |
+| 11 | MVP e validação |
+| 12 | Fechamento |
 
-*Enquanto aparece o slide da capa, olhe para a banca e comece:*
+## Slide 1 — Capa
 
-"Boa tarde. Vou apresentar o **NexusVendas**, uma plataforma de inteligência de vendas e experiência do cliente que desenvolvemos como projeto integrador.
+“Boa tarde. Este é o **NexusVendas**, um módulo de inteligência comercial e experiência do cliente integrado ao ERP.
 
-O slogan resume o que o produto faz: **Venda mais. Perca menos. Decida melhor.**"
+O produto conecta transações, regras de negócio, insights e ações. Por isso, nosso slogan é: **Venda mais. Perca menos. Decida melhor.**”
 
----
+Não explique tecnologias ainda. A abertura deve deixar claro o produto e o benefício.
 
-## [00:30 — SLIDE 2: Agenda]
+## Slide 2 — Problema e solução
 
-*Passe rápido, só para situar a banca:*
+“Empresas de médio porte costumam ter os dados de vendas, relacionamento e satisfação separados. O gestor não enxerga o pipeline completo, o vendedor perde follow-ups e o time de CX percebe o risco de cancelamento tarde demais.
 
-"Em 10 minutos vou cobrir: o problema que motivou o produto, quem usa, os três insights principais, banco de dados, API, identidade visual, arquitetura e evolução."
+O NexusVendas concentra esses sinais em um painel e transforma dados em ações recomendadas. A inspiração é o SAP Sales Cloud, mas com escopo e complexidade adequados a uma empresa média.”
 
----
+Conclua apontando o ciclo: **transação → regra → insight → ação**.
 
-## [00:45 — SLIDE 3: O Problema]
+## Slide 3 — Personas e user story
 
-*Tom de contexto — apresente como se estivesse explicando para um cliente:*
+“O Gerente Comercial precisa enxergar o funil; o Vendedor precisa priorizar seus próximos contatos; e o Analista de CX precisa agir antes do churn.
 
-"**Empresas de médio porte perdem receita porque não identificam clientes em risco de cancelamento a tempo.**
+A user story central é a do Analista de CX: receber clientes sem pedido há pelo menos 90 dias, com ticket médio e ação sugerida. Assim, a plataforma não apenas informa que existe um problema: ela ajuda a decidir o próximo passo.”
 
-O gestor abre quatro planilhas diferentes para ver como o mês está indo. O vendedor esquece de fazer follow-up. O cliente cancela — e o time de CX fica sabendo pela NPS baixa uma semana depois, quando já é tarde.
+Passe rapidamente pelas três personas. Não leia todas as user stories.
 
-O SAP Sales Cloud resolve esse problema para grandes empresas. O **NexusVendas** traz essa mesma inteligência para médias empresas, com custo e complexidade adequados ao porte."
+## Slide 4 — Insight I-01: churn
 
----
+“O primeiro insight é o risco de churn. Na amostra, a Beta está há **118 dias sem comprar** e possui ticket médio de **R$ 4.200 por pedido**.
 
-## [02:00 — SLIDE 4: Personas]
+A regra é determinística: para clientes sem pedido há 90 dias ou mais, calculamos o tempo sem compra e o ticket médio. Para tickets acima de R$ 3.000, a ação sugerida é uma oferta de reativação com 10% de desconto; para tickets menores, sugerimos uma ligação de relacionamento.
 
-"Temos **três personas**:
-- O **Gerente Comercial**, que não tem visão consolidada do pipeline;
-- O **Vendedor**, que perde follow-ups por falta de alertas;
-- O **Analista de CX**, que só descobre insatisfação depois do cancelamento.
+Isso não é apresentado como machine learning. É uma heurística explicável, adequada ao MVP. ML entra no roadmap quando houver histórico suficiente para treinar e validar um modelo.”
 
-O produto foi desenhado para resolver a dor concreta de cada um deles."
+Enfatize que o sistema explica o motivo do alerta e sugere uma ação.
 
----
+## Slide 5 — Insights I-02 e I-03
 
-## [02:40 — SLIDE 5: User Stories]
+“O segundo insight é NPS crítico. A Gama Serviços possui três avaliações consecutivas de **5, 4 e 3**. A regra identifica a sequência de notas iguais ou menores que 6 e recomenda acionar Customer Success imediatamente.
 
-*Escolha uma User Story para detalhar — recomendo a US-02:*
+O terceiro insight é o gargalo do funil: existem **9 oportunidades em proposta** e apenas **2 em negociação**. Isso representa **22,2%**, abaixo da meta de 30%. A ação é revisar a abordagem comercial nessa etapa.
 
-"A US-02 é o coração do produto: *'Como Analista de CX, quero receber uma lista de clientes inativos há 90 dias com o ticket médio de cada um, para priorizar a reativação antes do cancelamento.'*
+Os três insights cobrem as três dores do produto: reduzir perdas, recuperar relacionamento e melhorar a conversão do pipeline.”
 
-Esse é exatamente o tipo de informação que hoje existe no banco de dados da empresa, mas nenhum sistema conecta os pontos de forma automática."
+Não transforme NPS em uma sequência de percentuais. Explique que 5, 4 e 3 são notas de satisfação e que o painel geral mostra o NPS convencional de -10.
 
----
+## Slide 6 — Banco e dados de exemplo
 
-## [03:20 — SLIDE 6/7: Os 3 Insights — bloco mais importante, 2 minutos]
+“O banco possui **7 tabelas**: clientes, pedidos, itens de pedido, produtos, oportunidades, avaliações NPS e audit log.
 
-*Aqui é o diferencial técnico — vá com confiança:*
+A relação central é cliente, pedido e oportunidade, com avaliações de satisfação separadas das transações. Em itens de pedido, o preço unitário é armazenado como snapshot. Se o catálogo mudar amanhã, o valor histórico do pedido não muda.
 
-"O coração do NexusVendas são os **três insights automáticos**. Todo insight segue a mesma estrutura: **o que aconteceu → por que importa → ação sugerida**.
+A amostra tem 10 clientes, 12 pedidos, 20 oportunidades e 10 avaliações. As quatro anomalias documentadas alimentam os cenários de teste de atraso, churn, NPS e gargalo do funil.”
 
-**Insight I-01: Churn Risk.**
-*O que aconteceu:* a Beta Distribuidora não compra há 118 dias.
-*Por que importa:* o ticket médio dela é R$4.200 por pedido — receita real em risco.
-*Ação:* enviar oferta de reativação com 10% de desconto.
+Mostre o diagrama apenas como apoio. Não leia o dicionário de dados.
 
-A regra é simples: se o cliente ficou sem compra por 90 dias ou mais, verifica-se o ticket médio para escolher a ação. Essa heurística não é ML — é uma regra determinística. O ML está no backlog para quando tivermos dados históricos suficientes.
+## Slide 7 — API, segurança e testes
 
-**Insight I-02: NPS Crítico.**
-A Gama Serviços teve três avaliações consecutivas com notas 5, 4 e 3. Três detratores em sequência é sinal de cliente saindo. A ação é acionar o Customer Success imediatamente — antes do cancelamento.
+“A API tem **10 endpoints REST**, implementados em Node.js com Express e organizados em Controller, Service e Repository.
 
-**Insight I-03: Gargalo no Funil.**
-De 9 oportunidades em proposta, só 2 avançaram para negociação — 22% de conversão, abaixo da meta de 30%. A ação é revisar o script de abordagem nessa etapa.
+O endpoint principal deste exemplo é `GET /insights/churn-risk?dias=90`, que retorna os clientes, os dias sem compra, o ticket médio e a ação sugerida.
 
-Esses três insights cobrem as três dores que identificamos no início: vender mais, perder menos e decidir melhor."
+A autenticação usa o JWT emitido pelo IdP do ERP. O módulo valida o token e aplica RBAC para as roles admin, gerente e vendedor. O plano de testes cobre validações, permissões e as três regras de insight.”
 
----
+Mostre um endpoint e o fluxo de camadas. Deixe os demais endpoints para perguntas.
 
-## [05:20 — SLIDE 8/9: Banco de Dados]
+## Slide 8 — Experiência visual
 
-"O banco tem **7 tabelas** centradas no cliente. A estrutura principal é: cliente tem pedidos, pedidos têm itens, cliente tem oportunidades e avaliações NPS.
+“A interface usa azul para a operação, âmbar para atenção e vermelho para criticidade, com tipografia Inter.
 
-Um detalhe de design importante: o campo `preco_unitario` em `itens_pedido` é um **snapshot** — não atualiza quando o preço do produto muda. Isso garante que relatórios financeiros históricos nunca sejam distorcidos retroativamente por atualizações de catálogo.
+O dashboard resume as decisões principais: vendas do último mês fechado de **R$ 37.600**, variação de **+166,7%**, NPS **-10** e três alertas de churn.
 
-O banco tem **4 anomalias intencionais** nos dados de exemplo — são exatamente os dados que disparam os três insights que mostrei."
+As telas de pedidos, detalhe do cliente, funil e alertas levam o usuário do indicador até a ação recomendada. O objetivo é que o gestor não precise sair do painel para entender o que fazer.”
 
----
+Mostre o dashboard e cite somente os KPIs que aparecem no slide. Não entre em detalhes de cada tela.
 
-## [06:20 — SLIDE 10/11: API REST]
+## Slide 9 — Arquitetura MVP
 
-"A API tem **10 endpoints REST** em Node.js com Express, seguindo o padrão de camadas: Controller → Service → Repository.
+“No MVP, o frontend React com Vite é servido por S3 e CloudFront. A API Node.js roda no Elastic Beanstalk e o PostgreSQL fica no RDS.
 
-O endpoint `GET /insights/churn-risk?dias=90` retorna a lista de clientes em risco com o ticket médio e a ação sugerida. Autenticação é via JWT — o token é emitido pelo ERP existente da empresa e o NexusVendas apenas valida.
+O EventBridge agenda a sincronização diária do ERP por uma Lambda, que executa UPSERTs e registra o processamento no audit log. O fluxo operacional é: frontend, API, banco; o fluxo de integração é: ERP, Scheduler, SyncJob e RDS.
 
-Temos RBAC com três roles: admin, gerente e vendedor — cada um com acesso limitado ao que precisa."
+Escolhemos PostgreSQL porque o domínio é relacional e possui JOINs entre clientes, pedidos, itens, produtos e oportunidades.”
 
----
+Não discuta todos os serviços AWS. Explique apenas a função de cada bloco.
 
-## [07:00 — SLIDE 12/13: Identidade Visual]
+## Slide 10 — Roadmap, escala e custos
 
-"O nome **NexusVendas** vem de *nexus* — ponto de conexão — porque o produto conecta transações, relacionamentos e insights.
+“No curto prazo, priorizamos deploy, autenticação, observabilidade e onboarding. No médio prazo, entram Redis para cache de insights, SQS para notificações assíncronas, exportação e aplicativo móvel. No longo prazo, entram ML para churn, microsserviços e multitenancy.
 
-A paleta é azul corporativo como cor primária, âmbar para alertas de risco e vermelho para crítico. Tipografia Inter, clean e legível em dashboard.
+O MVP foi estimado em aproximadamente **US$ 21 a 51 por mês**, considerando Beanstalk, RDS, S3 e CloudFront em configuração básica. A evolução aumenta custo somente quando houver volume que justifique cache, filas e modelos especializados.”
 
-As três telas principais são: Dashboard com KPIs e alertas, Lista de Pedidos com filtros, e Detalhe do Cliente com histórico e sugestão de ação."
+Deixe claro que ML é evolução, não uma promessa do MVP.
 
----
+## Slide 11 — MVP e validação
 
-## [07:45 — SLIDE 14/15: Arquitetura]
+“O MVP entrega o ciclo completo: banco relacional documentado, API protegida, três regras de insight, dashboard, telas de apoio e arquitetura de implantação.
 
-"A arquitetura MVP é em três camadas: React com Vite no frontend hospedado no S3 com CloudFront, API Node.js no Elastic Beanstalk, e PostgreSQL no RDS.
+Os números apresentados são reproduzíveis na amostra: R$ 37.600 em vendas de outubro de 2024, NPS -10, Beta com 118 dias sem compra e gargalo de 22% no funil. Isso permite testar a regra e explicar o resultado, em vez de mostrar apenas um número sem origem.”
 
-Escolhemos Elastic Beanstalk sobre Lambda por dois motivos: o modelo de dados é relacional com JOINs complexos — PostgreSQL é mais natural que DynamoDB — e eliminamos o problema de cold start para um dashboard que o gerente abre toda manhã.
+Este é o momento de demonstrar que a proposta é implementável e auditável.
 
-O custo estimado é **$21 a $50 por mês** no nível de MVP."
+## Slide 12 — Fechamento
 
----
-
-## [08:45 — SLIDE 16/17: Evolução]
-
-"O roadmap tem **três horizontes**:
-
-- **Curto prazo** (0-6 meses): deploy AWS, JWT, CloudWatch, onboarding.
-- **Médio prazo** (6-18 meses): cache Redis para insights, fila SQS para notificações assíncronas, exportação PDF, app mobile.
-- **Longo prazo** (18-36 meses): ML para churn no SageMaker, microsserviços, multitenancy.
-
-A arquitetura atual foi desenhada para comportar essa evolução sem reescrita."
-
----
-
-## [09:30 — SLIDE FINAL: Obrigado]
-
-*Feche com o slogan — dê uma pausa antes:*
-
-"O NexusVendas resolve um problema real, com tecnologia acessível, seguindo os conceitos aprendidos no programa: banco relacional, API REST, arquitetura em camadas, identidade visual coerente e roadmap de evolução sustentável.
+“O NexusVendas resolve um problema concreto com tecnologia proporcional ao porte do cliente. Ele conecta:
 
 **Transação → Regra de Negócio → Insight → Ação.**
 
-Obrigado. Estou à disposição para perguntas."
+Começamos com regras explicáveis e uma arquitetura preparada para evoluir. Assim, o produto ajuda a vender mais, perder menos e decidir melhor.
 
----
+Obrigado. Estou à disposição para as perguntas.”
 
-## Dicas para a Q&A (5 min)
+## Perguntas prováveis
 
-- **Se a pergunta for técnica e você souber:** responda diretamente com a solução, não com "nós pensamos em..."
-- **Se a pergunta for sobre limitação conhecida:** aceite e explique o que está no backlog para resolver
-- **Se não souber:** diga "não implementamos esse ponto, mas a abordagem seria..." — nunca invente
-- **Perguntas prováveis da banca:** Q1 (heurística vs ML), Q4 (snapshot de preço), Q9 (PUT vs PATCH), Q13 (camadas e testes unitários), Q22 (CRM ou sistema de relatórios)
-- **Tempo:** a Q&A é 5 min — uma pergunta demorada e acabou. Seja objetivo.
+- **É machine learning?** Não no MVP. As três regras são determinísticas e explicáveis; ML está no longo prazo.
+- **Por que PostgreSQL?** O domínio é relacional e exige JOINs e consistência transacional.
+- **Por que o preço é snapshot?** Para preservar o valor histórico do pedido quando o catálogo mudar.
+- **Por que não existe login próprio?** O módulo herda a autenticação do ERP e valida o JWT do IdP corporativo.
+- **Como a solução escala?** Cache Redis, filas SQS, read replica, microsserviços e SageMaker entram conforme volume e maturidade.
+- **O que significa R$ 37.600?** É o valor comercial dos pedidos não cancelados de outubro/2024, não receita contábil reconhecida.
+
+## Apêndice técnico — explicação em plain language e portucode
+
+Use este bloco nas perguntas técnicas. A ideia é explicar a mecânica sem transformar a apresentação em uma aula de código.
+
+### 1. Segurança: o que acontece no handshake
+
+Existem dois handshakes diferentes:
+
+1. **TLS/HTTPS:** antes da requisição, navegador e API negociam uma conexão criptografada. O certificado prova que o servidor é quem diz ser e os dados passam cifrados.
+2. **Autenticação:** o usuário já entrou no ERP. O IdP corporativo emite um JWT assinado. O NexusVendas não faz login próprio e não emite esse token.
+
+```text
+usuário entra no ERP
+    ↓
+IdP autentica e assina um JWT
+    ↓
+frontend chama a API com "Authorization: Bearer <token>"
+    ↓
+authMiddleware valida assinatura, issuer, audience, expiração e role
+    ↓
+token inválido → 401
+token válido, mas sem permissão → 403
+token válido → req.user chega ao Controller
+```
+
+Em linguagem simples: o NexusVendas não confia no nome enviado pelo navegador. Ele confia apenas em um token assinado pelo IdP. A API valida a assinatura com a chave pública do IdP e só depois aplica RBAC (`admin`, `gerente`, `vendedor`).
+
+O refresh token, quando existir, é responsabilidade do ERP/IdP. O módulo não guarda refresh token em `localStorage` e não implementa `/auth/login`.
+
+### 2. Sync do ERP para o banco NexusVendas
+
+O ERP continua sendo a fonte oficial de clientes, pedidos, produtos e avaliações. O RDS é uma cópia otimizada para consulta e insight.
+
+```text
+02:00 → EventBridge dispara a Lambda SyncJob
+      → SyncJob lê o ERP em páginas
+      → normaliza campos e relaciona erp_id
+      → UPSERT no RDS
+      → grava audit_log e contadores
+      → só marca a execução como concluída se todas as páginas terminarem
+```
+
+O ponto-chave é a idempotência:
+
+```text
+SE erp_id ainda não existe:
+    INSERT
+SENÃO:
+    UPDATE somente os campos sincronizáveis
+
+SE a Lambda cair:
+    repetir a execução é seguro
+    não cria duplicatas
+```
+
+O job deve processar pais antes de filhos (`clientes` antes de `pedidos`, `pedidos` antes de `itens_pedido`), usar retry com backoff para falhas temporárias e só salvar o checkpoint depois do sucesso. Um registro ausente na leitura não é apagado automaticamente: histórico não deve desaparecer por uma falha parcial de integração.
+
+### 3. Oportunidades: como o pipeline funciona
+
+Uma oportunidade é uma possibilidade de venda ligada a um cliente. Ela guarda o estado atual, não todo o filme da negociação:
+
+```text
+criar oportunidade:
+    cliente_id obrigatório
+    etapa inicial = captacao
+    valor_estimado opcional
+    responsavel opcional
+
+alterar etapa:
+    validar se a etapa pertence ao ENUM
+    salvar a nova etapa
+    registrar antes/depois no audit_log
+```
+
+As etapas do MVP são `captacao → proposta → negociacao → fechado_ganho` ou `fechado_perdido`. Como a tabela guarda apenas a etapa atual, o painel mede estoque do funil. Ele ainda não afirma uma conversão histórica real. Para isso, seria necessário adicionar uma tabela de histórico de transições.
+
+### 4. Algoritmo de churn risk
+
+```text
+para cada cliente:
+    último pedido = pedido mais recente que não foi cancelado
+
+    se não existe pedido:
+        referência = data_cadastro
+    senão:
+        referência = data_pedido do último pedido
+
+    dias_sem_compra = data_referencia - referência
+
+    se dias_sem_compra >= 90:
+        ticket = média dos pedidos não cancelados
+
+        se ticket > R$ 3.000:
+            ação = oferta de reativação com 10% de desconto
+        senão:
+            ação = ligação de relacionamento
+
+        adicionar cliente à lista de risco
+```
+
+O resultado é reproduzível: mesma base, mesma data de referência e mesma regra produzem a mesma lista. Por isso chamamos de heurística explicável, não de machine learning.
+
+### 5. NPS crítico
+
+```text
+para cada cliente:
+    buscar as 3 avaliações mais recentes
+
+    se existem exatamente 3
+       e todas têm nota <= 6:
+        gerar alerta para Customer Success
+```
+
+`pedido_id` pode ser nulo porque a pesquisa pode ser relacional, sem estar ligada a uma compra específica. Quando preenchido, a FK garante que o pedido existe.
+
+### 6. Funil e gargalo
+
+```text
+etapas = [captacao, proposta, negociacao, fechado_ganho]
+
+para cada par de etapas consecutivas:
+    atual = quantidade na primeira etapa
+    proxima = quantidade na etapa seguinte
+
+    se atual > 0:
+        proporcao = proxima / atual
+
+        se proporcao < 0.30:
+            sinalizar gargalo
+```
+
+No exemplo, `2 negociacoes / 9 propostas = 22,2%`. O painel recomenda revisar a etapa de proposta. Isso é uma proporção de estoque atual; não é uma taxa histórica de conversão.

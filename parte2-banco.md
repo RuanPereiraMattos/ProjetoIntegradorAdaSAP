@@ -332,3 +332,35 @@ Um cliente cadastrado há 30 dias, mas sem pedidos ainda por causa do onboarding
 | **Lambda SyncJob** | Node.js (função Lambda separada do Beanstalk) — conecta à API REST ou read replica do ERP, executa os UPSERTs no RDS e registra a execução no `audit_log` com `usuario='syncjob'` |
 | **Fonte** | API REST ou read replica do banco ERP corporativo |
 | **Log** | Cada execução registra registros inseridos/atualizados no CloudWatch Logs; erros de sync disparam CloudWatch Alarm |
+
+### Algoritmo operacional do SyncJob
+
+```text
+iniciar execução e gerar sync_run_id
+ler o ERP em páginas
+para cada página:
+    normalizar campos e validar erp_id
+    upsert clientes e produtos
+    upsert pedidos
+    upsert itens_pedido e avaliações_nps
+    registrar contadores no log
+
+se todas as páginas terminarem:
+    gravar checkpoint da execução
+senão:
+    registrar erro e não avançar o checkpoint
+    repetir com backoff
+```
+
+O `erp_id` único torna a repetição segura: registro novo faz `INSERT`; registro já conhecido faz `UPDATE`, sem duplicata. O job não apaga automaticamente um registro ausente em uma leitura parcial, para não remover histórico por falha de integração. A ordem pais → filhos preserva as chaves estrangeiras. O `audit_log` registra `usuario='syncjob'`, quantidade inserida/atualizada e o horário da execução.
+
+### Mecânica de oportunidades
+
+`oportunidades` pertence ao NexusVendas e mantém o estado atual de cada possibilidade de venda. Ao criar, `cliente_id` é obrigatório, `etapa` começa em `captacao` e `valor_estimado`/`responsavel` são opcionais. Ao mudar a etapa, a API valida o ENUM e registra o antes/depois no `audit_log`.
+
+```text
+captacao → proposta → negociacao → fechado_ganho
+                                      ↘ fechado_perdido
+```
+
+Como a tabela não possui histórico de transições, a análise atual mede estoque por etapa, não conversão histórica. Uma conversão real exigiria uma tabela adicional, por exemplo `historico_oportunidade(id, oportunidade_id, etapa, entrou_em, saiu_em)`.

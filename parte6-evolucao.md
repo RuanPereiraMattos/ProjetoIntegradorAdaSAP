@@ -30,7 +30,7 @@
 
 | Área | Medida implementada |
 |---|---|
-| **Autenticação** | JWT com expiração de 1h + refresh token de 7 dias |
+| **Autenticação** | JWT de acesso com expiração de 1h; renovação/refresh, quando habilitada, fica sob responsabilidade do IdP corporativo |
 | **Autorização** | RBAC — roles: `admin` (tudo), `gerente` (leitura + insights), `vendedor` (próprios pedidos) |
 | **Dados em trânsito** | HTTPS obrigatório (TLS 1.2+) em todos os endpoints |
 | **Dados em repouso** | RDS com encryption at rest habilitado |

@@ -27,6 +27,25 @@ Token válido → req.user = { userId, role } disponível no controller
 
 **Roles lidas das claims do token:** `admin` | `gerente` | `vendedor`
 
+### 3.1.1 Handshake em linguagem simples
+
+Há duas etapas diferentes:
+
+1. **TLS/HTTPS:** navegador e API negociam uma conexão criptografada e validam o certificado do servidor.
+2. **JWT:** o usuário já foi autenticado no ERP. O IdP corporativo emite um token assinado; o NexusVendas não possui login próprio nem emite esse token.
+
+```text
+usuário entra no ERP
+  → IdP autentica e assina o JWT
+  → frontend envia Authorization: Bearer <token>
+  → authMiddleware valida assinatura, issuer, audience, exp e role
+  → token inválido: 401
+  → token válido sem permissão: 403
+  → token válido: req.user chega ao Controller
+```
+
+O middleware valida a assinatura com a chave pública do IdP e não confia em um `userId` enviado separadamente pelo navegador. A renovação de sessão, quando aplicável, é responsabilidade do ERP/IdP; o módulo não guarda refresh token em `localStorage` e não implementa `/auth/login`.
+
 ---
 
 ## 3.2 Padrão de Erros
@@ -295,7 +314,7 @@ FUNÇÃO analisarFunil():
 
 **O que aconteceu:** proporção de estoque entre etapas consecutivas abaixo de 30%
 **Por que importa:** Meta de receita do mês em risco
-**Ação sugerida:** Revisar abordagem na etapa com menor conversão
+**Ação sugerida:** Revisar abordagem na etapa com menor proporção entre estoques
 
 ---
 
